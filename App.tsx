@@ -10,7 +10,6 @@ import {
   BarChart3, 
   Layers, 
   Search, 
-  Bell, 
   Sparkles, 
   MessageSquare, 
   X, 
@@ -31,19 +30,19 @@ import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <div className={`bg-[#111111] border border-[#222] rounded-2xl p-6 relative overflow-hidden ${className}`}>
+  <div className={`bg-[#111111] border border-[#222] rounded-2xl p-4 sm:p-6 relative overflow-hidden ${className}`}>
     {children}
   </div>
 );
 
-const Badge: React.FC<{ children: React.ReactNode; type?: "success" | "danger" | "neutral" }> = ({ children, type = "success" }) => {
+const Badge: React.FC<{ children: React.ReactNode; type?: "success" | "danger" | "neutral"; className?: string }> = ({ children, type = "success", className = "" }) => {
   const styles = {
     success: "text-[#D2F445] bg-[#D2F445]/10",
     danger: "text-red-400 bg-red-400/10",
     neutral: "text-gray-400 bg-gray-400/10"
   };
   return (
-    <span className={`px-2 py-1 rounded-md text-xs font-medium ${styles[type]}`}>
+    <span className={`px-2 py-1 rounded-md text-xs font-medium ${styles[type]} ${className}`}>
       {children}
     </span>
   );
@@ -356,18 +355,11 @@ export default function App() {
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                className="hidden md:flex bg-[#222] hover:bg-[#333] text-white px-4 py-1.5 rounded-full text-xs font-medium border border-[#D2F445] transition-colors items-center gap-2"
+                className="flex bg-[#222] hover:bg-[#333] text-white px-3 sm:px-4 py-1.5 rounded-full text-xs font-medium border border-[#D2F445] transition-colors items-center gap-2"
               >
                 <UserPlus className="w-3 h-3 text-[#D2F445]" />
-                I want DG Indicator
+                Get DG Indicator
               </button>
-
-              <div className="hidden sm:flex bg-[#111] border border-[#222] rounded-full px-4 py-1.5 items-center gap-2 text-sm text-gray-400">
-                <Search className="w-4 h-4" />
-                <input type="text" placeholder="Search ticker..." className="bg-transparent border-none outline-none w-24 placeholder:text-gray-600" />
-              </div>
-              <button className="p-2 text-gray-400 hover:text-white"><Bell className="w-5 h-5" /></button>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#D2F445] to-green-600"></div>
             </div>
           </div>
         </div>
@@ -379,10 +371,6 @@ export default function App() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold text-white mb-1">Neuland Laboratories</h1>
-            <p className="text-gray-400 flex items-center gap-2 text-sm">
-              <span className="bg-[#D2F445]/20 text-[#D2F445] px-2 py-0.5 rounded text-xs border border-[#D2F445]/20">PHARMA</span>
-              System: DG Alpha v2.0
-            </p>
           </div>
           <div className="flex gap-3">
              <button 
@@ -396,64 +384,64 @@ export default function App() {
         </div>
 
         {/* Hero Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="bg-gradient-to-br from-[#111] to-[#161616]">
-            <div className="flex justify-between items-start mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+          <Card className="col-span-2 sm:col-span-1 bg-gradient-to-br from-[#111] to-[#161616]">
+            <div className="flex justify-between items-start mb-2 sm:mb-4">
               <div className="p-2 bg-[#D2F445]/10 rounded-lg">
-                <Wallet className="w-5 h-5 text-[#D2F445]" />
+                <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-[#D2F445]" />
               </div>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Total Free Holding Value</p>
-            <h2 className="text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Total Free Holding Value</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
             <div className="mt-4 h-1 w-full bg-[#222] rounded-full overflow-hidden">
               <div className="h-full bg-[#D2F445] w-[85%]"></div>
             </div>
           </Card>
 
           <Card>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-2 sm:mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-green-500" />
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
               </div>
               <Badge type="success">High Perf</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Total ROI</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Total ROI</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
             <p className="text-xs text-gray-500 mt-2">Over {investmentMetrics.time}</p>
           </Card>
 
           <Card>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-2 sm:mb-4">
               <div className="p-2 bg-blue-500/10 rounded-lg">
-                <PieChart className="w-5 h-5 text-blue-500" />
+                <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
               </div>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Annualised Yield</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Annualised Yield</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
             <p className="text-xs text-gray-500 mt-2">Ratio: {investmentMetrics.ratio}</p>
           </Card>
 
           <Card>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-2 sm:mb-4">
               <div className="p-2 bg-red-500/10 rounded-lg">
-                <Activity className="w-5 h-5 text-red-500" />
+                <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
               </div>
               <Badge type="danger">Risk Low</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Max Drawdown</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Max Drawdown</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
             <p className="text-xs text-gray-500 mt-2">Historical Max</p>
           </Card>
 
           <Card>
-            <div className="flex justify-between items-start mb-4">
+            <div className="flex justify-between items-start mb-2 sm:mb-4">
               <div className="p-2 bg-purple-500/10 rounded-lg">
-                <DollarSign className="w-5 h-5 text-purple-500" />
+                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
               </div>
               <Badge type="neutral">Passive</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Dividend Income</p>
-            <h2 className="text-2xl font-bold text-white mt-1">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Dividend Income</p>
+            <h2 className="text-lg sm:text-2xl font-bold text-white mt-1">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
             <p className="text-xs text-gray-500 mt-2">
               <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Invested (3L)
             </p>
@@ -534,8 +522,8 @@ export default function App() {
                       { label: "Annual ROI / Max DD Ratio", value: investmentMetrics.ratio, sub: "Efficiency" },
                     ].map((row, idx) => (
                       <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors group">
-                        <td className="px-4 py-4 text-gray-400 font-medium">{row.label}</td>
-                        <td className="px-4 py-4 text-right">
+                        <td className="px-3 sm:px-4 py-4 text-gray-400 font-medium">{row.label}</td>
+                        <td className="px-3 sm:px-4 py-4 text-right">
                           <div className="font-bold text-white">{row.value}</div>
                           <div className="text-xs text-gray-600 group-hover:text-[#D2F445] transition-colors">{row.sub}</div>
                         </td>
@@ -554,40 +542,40 @@ export default function App() {
                 </h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left whitespace-nowrap">
+                <table className="w-full text-xs sm:text-sm text-left whitespace-nowrap">
                   <thead className="bg-[#1a1a1a] text-gray-400 font-medium">
                     <tr>
-                      <th className="px-4 py-3 rounded-l-lg">Entry Date</th>
-                      <th className="px-4 py-3">Entry Price</th>
-                      <th className="px-4 py-3">Qty</th>
-                      <th className="px-4 py-3">Doubled On</th>
-                      <th className="px-4 py-3 text-[#D2F445]">Free Qty</th>
-                      <th className="px-4 py-3 text-right">Current Val</th>
-                      <th className="px-4 py-3 rounded-r-lg">Invested Time</th>
+                      <th className="px-3 sm:px-4 py-3 rounded-l-lg">Entry Date</th>
+                      <th className="px-3 sm:px-4 py-3">Entry Price</th>
+                      <th className="px-3 sm:px-4 py-3">Qty</th>
+                      <th className="px-3 sm:px-4 py-3">Doubled On</th>
+                      <th className="px-3 sm:px-4 py-3 text-[#D2F445]">Free Qty</th>
+                      <th className="px-3 sm:px-4 py-3 text-right">Current Val</th>
+                      <th className="px-3 sm:px-4 py-3 rounded-r-lg">Invested Time</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#222]">
                     {pnlData.map((row, idx) => (
                       <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors">
-                        <td className="px-4 py-3 text-gray-300">{row.date}</td>
-                        <td className="px-4 py-3 text-gray-300">₹ {row.entry}</td>
-                        <td className="px-4 py-3 text-gray-500">{row.qty}</td>
-                        <td className="px-4 py-3 text-gray-300">
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">{row.date}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">₹ {row.entry}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-500">{row.qty}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">
                           {row.doubleDate} <span className="text-xs text-gray-600">(@ {row.doublePrice})</span>
                         </td>
-                        <td className="px-4 py-3 font-bold text-[#D2F445]">{row.freeQty}</td>
-                        <td className="px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-gray-400">{row.time}</td>
+                        <td className="px-3 sm:px-4 py-3 font-bold text-[#D2F445]">{row.freeQty}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-400">{row.time}</td>
                       </tr>
                     ))}
                     <tr className="bg-[#D2F445]/5 border-t border-[#D2F445]/20 font-bold">
-                      <td className="px-4 py-4 text-white">Total</td>
-                      <td className="px-4 py-4"></td>
-                      <td className="px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
-                      <td className="px-4 py-4"></td>
-                      <td className="px-4 py-4 text-[#D2F445]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
-                      <td className="px-4 py-4 text-right text-[#D2F445]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
-                      <td className="px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-white">Total</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-[#D2F445]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
+                      <td className="px-3 sm:px-4 py-4 text-right text-[#D2F445]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -860,8 +848,8 @@ export default function App() {
           </div>
         )}
 
-        {/* Floating Chat Button */}
-        <div className="fixed bottom-6 right-6 z-40">
+        {/* Floating Chat Button (Refactored for mobile responsiveness) */}
+        <div className={`fixed z-50 transition-all duration-300 ${isChatOpen ? 'bottom-0 right-0 left-0 sm:bottom-6 sm:right-6 sm:left-auto' : 'bottom-6 right-6'}`}>
            {!isChatOpen ? (
              <button 
                onClick={() => setIsChatOpen(true)}
@@ -870,21 +858,23 @@ export default function App() {
                <MessageSquare className="w-6 h-6" />
              </button>
            ) : (
-             <div className="bg-[#111] border border-[#222] rounded-2xl w-80 sm:w-96 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+             <div className="bg-[#111] border-t sm:border border-[#222] sm:rounded-2xl w-full sm:w-96 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300 h-[70vh] sm:h-[500px]">
+                {/* Chat Header */}
                 <div className="bg-[#1a1a1a] p-4 flex items-center justify-between border-b border-[#222]">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-[#D2F445] animate-pulse"></div>
                     <h3 className="font-bold text-sm">DG Alpha Assistant</h3>
                   </div>
-                  <button onClick={() => setIsChatOpen(false)} className="text-gray-400 hover:text-white">
-                    <X className="w-4 h-4" />
+                  <button onClick={() => setIsChatOpen(false)} className="text-gray-400 hover:text-white p-1">
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
                 
-                <div className="h-80 overflow-y-auto p-4 space-y-4 bg-black/50">
+                {/* Messages Area */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-black/50">
                    {chatHistory.map((msg, i) => (
                      <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                        <div className={`max-w-[80%] rounded-xl p-3 text-sm ${
+                        <div className={`max-w-[85%] rounded-xl p-3 text-sm ${
                           msg.role === 'user' 
                             ? 'bg-[#333] text-white rounded-tr-none' 
                             : 'bg-[#D2F445]/10 text-gray-200 border border-[#D2F445]/20 rounded-tl-none'
@@ -902,20 +892,21 @@ export default function App() {
                    )}
                 </div>
 
-                <form onSubmit={handleChatSubmit} className="p-3 bg-[#1a1a1a] border-t border-[#222] flex gap-2">
+                {/* Input Area */}
+                <form onSubmit={handleChatSubmit} className="p-3 bg-[#1a1a1a] border-t border-[#222] flex gap-2 pb-safe-area">
                   <input 
                     type="text" 
                     value={chatQuery}
                     onChange={(e) => setChatQuery(e.target.value)}
                     placeholder="Ask about your returns..."
-                    className="flex-1 bg-black border border-[#333] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#D2F445]"
+                    className="flex-1 bg-black border border-[#333] rounded-lg px-3 py-3 text-base sm:text-sm text-white focus:outline-none focus:border-[#D2F445] placeholder:text-gray-600"
                   />
                   <button 
                     type="submit"
                     disabled={isChatLoading || !chatQuery.trim()}
-                    className="bg-[#D2F445] text-black p-2 rounded-lg hover:bg-[#c2e33d] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#D2F445] text-black p-3 rounded-lg hover:bg-[#c2e33d] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-5 h-5" />
                   </button>
                 </form>
              </div>
