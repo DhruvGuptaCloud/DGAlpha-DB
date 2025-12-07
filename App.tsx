@@ -31,7 +31,7 @@ import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <div className={`bg-[#111111] border border-[#222] rounded-2xl p-6 relative overflow-hidden ${className}`}>
+  <div className={`bg-[#111111] border border-[#222] rounded-2xl p-4 sm:p-6 relative overflow-hidden ${className}`}>
     {children}
   </div>
 );
@@ -332,17 +332,18 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#D2F445] selection:text-black pb-12 relative">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#D2F445] selection:text-black pb-24 relative">
       {/* Top Navigation Bar */}
       <nav className="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-[#D2F445] rounded-lg flex items-center justify-center">
                   <Activity className="text-black w-5 h-5" />
                 </div>
-                <span className="font-bold text-xl tracking-tight">DG<span className="text-[#D2F445]">Alpha</span></span>
+                <span className="font-bold text-xl tracking-tight hidden sm:inline">DG<span className="text-[#D2F445]">Alpha</span></span>
+                <span className="font-bold text-xl tracking-tight sm:hidden">DG<span className="text-[#D2F445]">A</span></span>
               </div>
               
               <div className="hidden md:flex items-center gap-4">
@@ -353,13 +354,14 @@ export default function App() {
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               <button 
                 onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                className="hidden md:flex bg-[#222] hover:bg-[#333] text-white px-4 py-1.5 rounded-full text-xs font-medium border border-[#D2F445] transition-colors items-center gap-2"
+                className="flex bg-[#222] hover:bg-[#333] text-white px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-medium border border-[#D2F445] transition-colors items-center gap-2"
               >
                 <UserPlus className="w-3 h-3 text-[#D2F445]" />
-                I want DG Indicator
+                <span className="hidden sm:inline">I want DG Indicator</span>
+                <span className="sm:hidden">Get Access</span>
               </button>
 
               <div className="hidden sm:flex bg-[#111] border border-[#222] rounded-full px-4 py-1.5 items-center gap-2 text-sm text-gray-400">
@@ -373,12 +375,12 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 space-y-6">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-1">Neuland Laboratories</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Neuland Laboratories</h1>
             <p className="text-gray-400 flex items-center gap-2 text-sm">
               <span className="bg-[#D2F445]/20 text-[#D2F445] px-2 py-0.5 rounded text-xs border border-[#D2F445]/20">PHARMA</span>
               System: DG Alpha v2.0
@@ -387,7 +389,7 @@ export default function App() {
           <div className="flex gap-3">
              <button 
               onClick={handleGenerateReport}
-              className="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-lg text-sm font-medium border border-[#333] transition-colors flex items-center gap-2 group"
+              className="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-lg text-sm font-medium border border-[#333] transition-colors flex items-center gap-2 group w-full sm:w-auto justify-center"
             >
               <Sparkles className="w-4 h-4 text-[#D2F445] group-hover:rotate-12 transition-transform" />
               AI Insight Report
@@ -396,66 +398,67 @@ export default function App() {
         </div>
 
         {/* Hero Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-          <Card className="bg-gradient-to-br from-[#111] to-[#161616]">
+        {/* Optimized for Mobile: 2 columns instead of 1 stack */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+          <Card className="col-span-2 lg:col-span-1 bg-gradient-to-br from-[#111] to-[#161616]">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-[#D2F445]/10 rounded-lg">
                 <Wallet className="w-5 h-5 text-[#D2F445]" />
               </div>
             </div>
             <p className="text-gray-400 text-sm font-medium">Total Free Holding Value</p>
-            <h2 className="text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
             <div className="mt-4 h-1 w-full bg-[#222] rounded-full overflow-hidden">
               <div className="h-full bg-[#D2F445] w-[85%]"></div>
             </div>
           </Card>
 
-          <Card>
+          <Card className="col-span-1">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-green-500/10 rounded-lg">
                 <TrendingUp className="w-5 h-5 text-green-500" />
               </div>
-              <Badge type="success">High Perf</Badge>
+              <Badge type="success">High</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Total ROI</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
-            <p className="text-xs text-gray-500 mt-2">Over {investmentMetrics.time}</p>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Total ROI</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
+            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Over {investmentMetrics.time}</p>
           </Card>
 
-          <Card>
+          <Card className="col-span-1">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-blue-500/10 rounded-lg">
                 <PieChart className="w-5 h-5 text-blue-500" />
               </div>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Annualised Yield</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
-            <p className="text-xs text-gray-500 mt-2">Ratio: {investmentMetrics.ratio}</p>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Yield (Ann.)</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
+            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Ratio: {investmentMetrics.ratio}</p>
           </Card>
 
-          <Card>
+          <Card className="col-span-1">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-red-500/10 rounded-lg">
                 <Activity className="w-5 h-5 text-red-500" />
               </div>
-              <Badge type="danger">Risk Low</Badge>
+              <Badge type="danger">Low</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Max Drawdown</p>
-            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
-            <p className="text-xs text-gray-500 mt-2">Historical Max</p>
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Max Drawdown</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
+            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Historical Max</p>
           </Card>
 
-          <Card>
+          <Card className="col-span-1">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-purple-500/10 rounded-lg">
                 <DollarSign className="w-5 h-5 text-purple-500" />
               </div>
               <Badge type="neutral">Passive</Badge>
             </div>
-            <p className="text-gray-400 text-sm font-medium">Dividend Income</p>
-            <h2 className="text-2xl font-bold text-white mt-1">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
-            <p className="text-xs text-gray-500 mt-2">
-              <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Invested (3L)
+            <p className="text-gray-400 text-xs sm:text-sm font-medium">Dividend Inc.</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.dividendsCashflow/1000).toFixed(1)}k</h2>
+            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">
+              <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Inv.
             </p>
           </Card>
         </div>
@@ -474,18 +477,21 @@ export default function App() {
             </div>
           </Card>
 
-           <Card className="w-full">
-             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-4">
+           <Card className="w-full hidden sm:block">
+             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-[#D2F445]" />
                   Trade-wise Profit
                 </h3>
-                <div className="flex items-center gap-2 px-3 py-1 bg-[#222] rounded-full border border-[#333]">
+                <div className="flex items-center gap-2 px-3 py-1 bg-[#222] rounded-full border border-[#333] w-fit">
                    <Target className="w-3 h-3 text-[#D2F445]" />
                    <span className="text-xs text-gray-300">Accuracy: <span className="text-white font-bold">{accuracy.wins}/{accuracy.total}</span> ({accuracy.percent}%)</span>
                 </div>
-                <button 
+              </div>
+              
+              <div className="flex items-center justify-between sm:justify-end gap-4">
+                 <button 
                   onClick={handleTradeAnalysis}
                   className="p-1.5 rounded-lg bg-[#222] hover:bg-[#333] border border-[#333] transition-colors group flex items-center gap-1.5 px-3"
                   title="Analyze Trading Patterns"
@@ -493,17 +499,17 @@ export default function App() {
                     <Sparkles className="w-3.5 h-3.5 text-[#D2F445] group-hover:rotate-12 transition-transform" />
                     <span className="text-xs font-medium text-gray-300 group-hover:text-white">Analyze Patterns</span>
                 </button>
-              </div>
-              
-              <div className="flex gap-2 text-xs">
-                 <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-[#D2F445]"></div>
-                    <span className="text-gray-400">Profit</span>
-                 </div>
-                 <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
-                    <span className="text-gray-400">Loss</span>
-                 </div>
+                
+                <div className="flex gap-2 text-xs">
+                   <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-[#D2F445]"></div>
+                      <span className="text-gray-400">Profit</span>
+                   </div>
+                   <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
+                      <span className="text-gray-400">Loss</span>
+                   </div>
+                </div>
               </div>
             </div>
             <div className="w-full">
@@ -523,7 +529,7 @@ export default function App() {
               </div>
               
               <div className="overflow-hidden rounded-xl border border-[#222]">
-                <table className="w-full text-sm text-left">
+                <table className="w-full text-xs sm:text-sm text-left">
                   <tbody className="divide-y divide-[#222]">
                     {[
                       { label: "Free Stocks Accumulated", value: investmentMetrics.totalQtyFree, sub: "Qty" },
@@ -534,10 +540,10 @@ export default function App() {
                       { label: "Annual ROI / Max DD Ratio", value: investmentMetrics.ratio, sub: "Efficiency" },
                     ].map((row, idx) => (
                       <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors group">
-                        <td className="px-4 py-4 text-gray-400 font-medium">{row.label}</td>
-                        <td className="px-4 py-4 text-right">
+                        <td className="px-3 sm:px-4 py-3 sm:py-4 text-gray-400 font-medium">{row.label}</td>
+                        <td className="px-3 sm:px-4 py-3 sm:py-4 text-right">
                           <div className="font-bold text-white">{row.value}</div>
-                          <div className="text-xs text-gray-600 group-hover:text-[#D2F445] transition-colors">{row.sub}</div>
+                          <div className="text-[10px] sm:text-xs text-gray-600 group-hover:text-[#D2F445] transition-colors">{row.sub}</div>
                         </td>
                       </tr>
                     ))}
@@ -554,40 +560,40 @@ export default function App() {
                 </h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left whitespace-nowrap">
+                <table className="w-full text-xs sm:text-sm text-left whitespace-nowrap">
                   <thead className="bg-[#1a1a1a] text-gray-400 font-medium">
                     <tr>
-                      <th className="px-4 py-3 rounded-l-lg">Entry Date</th>
-                      <th className="px-4 py-3">Entry Price</th>
-                      <th className="px-4 py-3">Qty</th>
-                      <th className="px-4 py-3">Doubled On</th>
-                      <th className="px-4 py-3 text-[#D2F445]">Free Qty</th>
-                      <th className="px-4 py-3 text-right">Current Val</th>
-                      <th className="px-4 py-3 rounded-r-lg">Invested Time</th>
+                      <th className="px-3 sm:px-4 py-3 rounded-l-lg">Entry Date</th>
+                      <th className="px-3 sm:px-4 py-3">Entry Price</th>
+                      <th className="px-3 sm:px-4 py-3">Qty</th>
+                      <th className="px-3 sm:px-4 py-3">Doubled On</th>
+                      <th className="px-3 sm:px-4 py-3 text-[#D2F445]">Free Qty</th>
+                      <th className="px-3 sm:px-4 py-3 text-right">Current Val</th>
+                      <th className="px-3 sm:px-4 py-3 rounded-r-lg">Invested Time</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#222]">
                     {pnlData.map((row, idx) => (
                       <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors">
-                        <td className="px-4 py-3 text-gray-300">{row.date}</td>
-                        <td className="px-4 py-3 text-gray-300">₹ {row.entry}</td>
-                        <td className="px-4 py-3 text-gray-500">{row.qty}</td>
-                        <td className="px-4 py-3 text-gray-300">
-                          {row.doubleDate} <span className="text-xs text-gray-600">(@ {row.doublePrice})</span>
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">{row.date}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">₹ {row.entry}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-500">{row.qty}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-300">
+                          {row.doubleDate} <span className="text-[10px] sm:text-xs text-gray-600">(@ {row.doublePrice})</span>
                         </td>
-                        <td className="px-4 py-3 font-bold text-[#D2F445]">{row.freeQty}</td>
-                        <td className="px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-gray-400">{row.time}</td>
+                        <td className="px-3 sm:px-4 py-3 font-bold text-[#D2F445]">{row.freeQty}</td>
+                        <td className="px-3 sm:px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
+                        <td className="px-3 sm:px-4 py-3 text-gray-400">{row.time}</td>
                       </tr>
                     ))}
                     <tr className="bg-[#D2F445]/5 border-t border-[#D2F445]/20 font-bold">
-                      <td className="px-4 py-4 text-white">Total</td>
-                      <td className="px-4 py-4"></td>
-                      <td className="px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
-                      <td className="px-4 py-4"></td>
-                      <td className="px-4 py-4 text-[#D2F445]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
-                      <td className="px-4 py-4 text-right text-[#D2F445]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
-                      <td className="px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-white">Total</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
+                      <td className="px-3 sm:px-4 py-4 text-[#D2F445]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
+                      <td className="px-3 sm:px-4 py-4 text-right text-[#D2F445]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
+                      <td className="px-3 sm:px-4 py-4"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -643,7 +649,7 @@ export default function App() {
                       ></div>
                       <span className="absolute -top-8 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">₹{div.amount}</span>
                     </div>
-                    <span className="text-xs text-gray-500 font-medium">{div.year}</span>
+                    <span className="text-[10px] sm:text-xs text-gray-500 font-medium">{div.year}</span>
                   </div>
                 ))}
               </div>
@@ -702,7 +708,7 @@ export default function App() {
         {isReportModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsReportModalOpen(false)}></div>
-            <div className="relative bg-[#111] border border-[#333] w-full max-w-2xl rounded-2xl p-6 shadow-2xl shadow-[#D2F445]/10">
+            <div className="relative bg-[#111] border border-[#333] w-full max-w-2xl rounded-2xl p-4 sm:p-6 shadow-2xl shadow-[#D2F445]/10 max-h-[90vh] overflow-y-auto">
               <button 
                 onClick={() => setIsReportModalOpen(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
@@ -744,7 +750,7 @@ export default function App() {
         {isLeadModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsLeadModalOpen(false)}></div>
-            <div className="relative bg-[#111] border border-[#D2F445]/30 w-full max-w-md rounded-2xl p-8 shadow-2xl shadow-[#D2F445]/10">
+            <div className="relative bg-[#111] border border-[#D2F445]/30 w-full max-w-md rounded-2xl p-5 sm:p-8 shadow-2xl shadow-[#D2F445]/10 max-h-[90vh] overflow-y-auto">
               <button 
                 onClick={() => setIsLeadModalOpen(false)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-white"
@@ -861,7 +867,11 @@ export default function App() {
         )}
 
         {/* Floating Chat Button */}
-        <div className="fixed bottom-6 right-6 z-40">
+        <div className={`fixed z-50 transition-all duration-300 ${
+          isChatOpen 
+            ? 'bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-auto' 
+            : 'bottom-6 right-6 w-auto'
+        }`}>
            {!isChatOpen ? (
              <button 
                onClick={() => setIsChatOpen(true)}
@@ -870,7 +880,7 @@ export default function App() {
                <MessageSquare className="w-6 h-6" />
              </button>
            ) : (
-             <div className="bg-[#111] border border-[#222] rounded-2xl w-80 sm:w-96 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+             <div className="bg-[#111] border border-[#222] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300 w-full sm:w-96">
                 <div className="bg-[#1a1a1a] p-4 flex items-center justify-between border-b border-[#222]">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-[#D2F445] animate-pulse"></div>
@@ -881,7 +891,7 @@ export default function App() {
                   </button>
                 </div>
                 
-                <div className="h-80 overflow-y-auto p-4 space-y-4 bg-black/50">
+                <div className="h-[50vh] sm:h-80 overflow-y-auto p-4 space-y-4 bg-black/50">
                    {chatHistory.map((msg, i) => (
                      <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] rounded-xl p-3 text-sm ${
