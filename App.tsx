@@ -474,7 +474,7 @@ export default function App() {
             </div>
           </Card>
 
-           <Card className="w-full">
+           <Card className="w-full hidden sm:block">
              <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
