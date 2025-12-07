@@ -31,16 +31,16 @@ import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <div className={`bg-[#001219]/60 backdrop-blur-md border border-[#00A6FB]/20 rounded-2xl p-4 sm:p-6 relative overflow-hidden transition-all hover:border-[#00A6FB]/40 ${className}`}>
+  <div className={`bg-[#111111] border border-[#222] rounded-2xl p-6 relative overflow-hidden ${className}`}>
     {children}
   </div>
 );
 
 const Badge: React.FC<{ children: React.ReactNode; type?: "success" | "danger" | "neutral" }> = ({ children, type = "success" }) => {
   const styles = {
-    success: "text-[#9EF01A] bg-[#9EF01A]/10 border border-[#9EF01A]/20",
-    danger: "text-red-400 bg-red-400/10 border border-red-400/20",
-    neutral: "text-[#00A6FB] bg-[#00A6FB]/10 border border-[#00A6FB]/20"
+    success: "text-[#D2F445] bg-[#D2F445]/10",
+    danger: "text-red-400 bg-red-400/10",
+    neutral: "text-gray-400 bg-gray-400/10"
   };
   return (
     <span className={`px-2 py-1 rounded-md text-xs font-medium ${styles[type]}`}>
@@ -332,133 +332,130 @@ export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#003554] via-[#020617] to-black text-white font-sans selection:bg-[#9EF01A] selection:text-[#003554] pb-24 relative">
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#D2F445] selection:text-black pb-12 relative">
       {/* Top Navigation Bar */}
-      <nav className="border-b border-white/5 bg-[#001219]/40 backdrop-blur-lg sticky top-0 z-50">
+      <nav className="border-b border-white/10 bg-black/50 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#9EF01A] rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(158,240,26,0.3)]">
-                  <Activity className="text-[#003554] w-5 h-5" />
+                <div className="w-8 h-8 bg-[#D2F445] rounded-lg flex items-center justify-center">
+                  <Activity className="text-black w-5 h-5" />
                 </div>
-                <span className="font-bold text-xl tracking-tight hidden sm:inline text-white">DG<span className="text-[#9EF01A]">Alpha</span></span>
-                <span className="font-bold text-xl tracking-tight sm:hidden text-white">DG<span className="text-[#9EF01A]">A</span></span>
+                <span className="font-bold text-xl tracking-tight">DG<span className="text-[#D2F445]">Alpha</span></span>
               </div>
               
               <div className="hidden md:flex items-center gap-4">
-                 <div className="h-5 w-px bg-[#00A6FB]/20"></div>
-                 <span className="text-[#00A6FB] text-[10px] font-bold tracking-[0.2em] uppercase opacity-90">
+                 <div className="h-5 w-px bg-[#333]"></div>
+                 <span className="text-[#D2F445] text-[10px] font-bold tracking-[0.2em] uppercase opacity-80">
                   PROCESS DRIVES PERFORMANCE
                  </span>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-4">
               <button 
                 onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                className="flex bg-[#9EF01A] hover:bg-[#8ade16] text-[#003554] px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-xs font-bold border border-[#9EF01A] transition-all hover:shadow-[0_0_20px_rgba(158,240,26,0.4)] items-center gap-2"
+                className="hidden md:flex bg-[#222] hover:bg-[#333] text-white px-4 py-1.5 rounded-full text-xs font-medium border border-[#D2F445] transition-colors items-center gap-2"
               >
-                <UserPlus className="w-3 h-3 text-[#003554]" />
-                <span className="hidden sm:inline">I want DG Indicator</span>
-                <span className="sm:hidden">Get Access</span>
+                <UserPlus className="w-3 h-3 text-[#D2F445]" />
+                I want DG Indicator
               </button>
 
-              <div className="hidden sm:flex bg-[#001524] border border-[#00A6FB]/20 rounded-full px-4 py-1.5 items-center gap-2 text-sm text-gray-400 focus-within:border-[#00A6FB] transition-colors">
-                <Search className="w-4 h-4 text-[#00A6FB]" />
-                <input type="text" placeholder="Search ticker..." className="bg-transparent border-none outline-none w-24 placeholder:text-gray-600 text-white" />
+              <div className="hidden sm:flex bg-[#111] border border-[#222] rounded-full px-4 py-1.5 items-center gap-2 text-sm text-gray-400">
+                <Search className="w-4 h-4" />
+                <input type="text" placeholder="Search ticker..." className="bg-transparent border-none outline-none w-24 placeholder:text-gray-600" />
               </div>
-              <button className="p-2 text-[#00A6FB] hover:text-[#9EF01A] transition-colors"><Bell className="w-5 h-5" /></button>
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#9EF01A] to-[#00A6FB] ring-2 ring-[#001524]"></div>
+              <button className="p-2 text-gray-400 hover:text-white"><Bell className="w-5 h-5" /></button>
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#D2F445] to-green-600"></div>
             </div>
           </div>
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8 space-y-6">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">Neuland Laboratories</h1>
+            <h1 className="text-3xl font-bold text-white mb-1">Neuland Laboratories</h1>
             <p className="text-gray-400 flex items-center gap-2 text-sm">
-              <span className="bg-[#00A6FB]/10 text-[#00A6FB] px-2 py-0.5 rounded text-xs border border-[#00A6FB]/20 font-medium">PHARMA</span>
-              <span className="text-[#94a3b8]">System:</span> <span className="text-white">DG Alpha v2.0</span>
+              <span className="bg-[#D2F445]/20 text-[#D2F445] px-2 py-0.5 rounded text-xs border border-[#D2F445]/20">PHARMA</span>
+              System: DG Alpha v2.0
             </p>
           </div>
           <div className="flex gap-3">
              <button 
               onClick={handleGenerateReport}
-              className="bg-[#001524] hover:bg-[#003554] text-[#00A6FB] px-4 py-2 rounded-lg text-sm font-medium border border-[#00A6FB]/30 transition-all flex items-center gap-2 group w-full sm:w-auto justify-center hover:border-[#00A6FB]"
+              className="bg-[#1a1a1a] hover:bg-[#222] text-white px-4 py-2 rounded-lg text-sm font-medium border border-[#333] transition-colors flex items-center gap-2 group"
             >
-              <Sparkles className="w-4 h-4 text-[#9EF01A] group-hover:rotate-12 transition-transform" />
+              <Sparkles className="w-4 h-4 text-[#D2F445] group-hover:rotate-12 transition-transform" />
               AI Insight Report
             </button>
           </div>
         </div>
 
         {/* Hero Stats Cards */}
-        {/* Optimized for Mobile: 2 columns instead of 1 stack */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-          <Card className="col-span-2 lg:col-span-1 bg-gradient-to-br from-[#003554] to-[#001524] border-[#00A6FB]/30">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <Card className="bg-gradient-to-br from-[#111] to-[#161616]">
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#9EF01A]/10 rounded-lg">
-                <Wallet className="w-5 h-5 text-[#9EF01A]" />
+              <div className="p-2 bg-[#D2F445]/10 rounded-lg">
+                <Wallet className="w-5 h-5 text-[#D2F445]" />
               </div>
             </div>
-            <p className="text-[#94a3b8] text-sm font-medium">Total Free Holding Value</p>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
-            <div className="mt-4 h-1 w-full bg-[#001524] rounded-full overflow-hidden">
-              <div className="h-full bg-[#9EF01A] w-[85%] shadow-[0_0_10px_rgba(158,240,26,0.5)]"></div>
+            <p className="text-gray-400 text-sm font-medium">Total Free Holding Value</p>
+            <h2 className="text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
+            <div className="mt-4 h-1 w-full bg-[#222] rounded-full overflow-hidden">
+              <div className="h-full bg-[#D2F445] w-[85%]"></div>
             </div>
           </Card>
 
-          <Card className="col-span-1">
+          <Card>
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#9EF01A]/10 rounded-lg">
-                <TrendingUp className="w-5 h-5 text-[#9EF01A]" />
+              <div className="p-2 bg-green-500/10 rounded-lg">
+                <TrendingUp className="w-5 h-5 text-green-500" />
               </div>
-              <Badge type="success">High</Badge>
+              <Badge type="success">High Perf</Badge>
             </div>
-            <p className="text-[#94a3b8] text-xs sm:text-sm font-medium">Total ROI</p>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Over {investmentMetrics.time}</p>
+            <p className="text-gray-400 text-sm font-medium">Total ROI</p>
+            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.roi}</h2>
+            <p className="text-xs text-gray-500 mt-2">Over {investmentMetrics.time}</p>
           </Card>
 
-          <Card className="col-span-1">
+          <Card>
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#00A6FB]/10 rounded-lg">
-                <PieChart className="w-5 h-5 text-[#00A6FB]" />
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <PieChart className="w-5 h-5 text-blue-500" />
               </div>
             </div>
-            <p className="text-[#94a3b8] text-xs sm:text-sm font-medium">Yield (Ann.)</p>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Ratio: {investmentMetrics.ratio}</p>
+            <p className="text-gray-400 text-sm font-medium">Annualised Yield</p>
+            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.annualizedYield}</h2>
+            <p className="text-xs text-gray-500 mt-2">Ratio: {investmentMetrics.ratio}</p>
           </Card>
 
-          <Card className="col-span-1">
+          <Card>
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-red-500/10 rounded-lg">
                 <Activity className="w-5 h-5 text-red-500" />
               </div>
-              <Badge type="danger">Low</Badge>
+              <Badge type="danger">Risk Low</Badge>
             </div>
-            <p className="text-[#94a3b8] text-xs sm:text-sm font-medium">Max Drawdown</p>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">Historical Max</p>
+            <p className="text-gray-400 text-sm font-medium">Max Drawdown</p>
+            <h2 className="text-2xl font-bold text-white mt-1">{investmentMetrics.maxDD}</h2>
+            <p className="text-xs text-gray-500 mt-2">Historical Max</p>
           </Card>
 
-          <Card className="col-span-1">
+          <Card>
             <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#00A6FB]/10 rounded-lg">
-                <DollarSign className="w-5 h-5 text-[#00A6FB]" />
+              <div className="p-2 bg-purple-500/10 rounded-lg">
+                <DollarSign className="w-5 h-5 text-purple-500" />
               </div>
               <Badge type="neutral">Passive</Badge>
             </div>
-            <p className="text-[#94a3b8] text-xs sm:text-sm font-medium">Dividend Inc.</p>
-            <h2 className="text-xl sm:text-2xl font-bold text-white mt-1">₹ {(investmentMetrics.dividendsCashflow/1000).toFixed(1)}k</h2>
-            <p className="text-[10px] sm:text-xs text-gray-500 mt-2">
-              <span className="text-[#00A6FB] font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Inv.
+            <p className="text-gray-400 text-sm font-medium">Dividend Income</p>
+            <h2 className="text-2xl font-bold text-white mt-1">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
+            <p className="text-xs text-gray-500 mt-2">
+              <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Invested (3L)
             </p>
           </Card>
         </div>
@@ -468,7 +465,7 @@ export default function App() {
           <Card className="w-full">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                <LineChart className="w-5 h-5 text-[#9EF01A]" />
+                <LineChart className="w-5 h-5 text-[#D2F445]" />
                 Total Account Value Growth
               </h3>
             </div>
@@ -477,39 +474,36 @@ export default function App() {
             </div>
           </Card>
 
-           <Card className="w-full hidden sm:block">
-             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+           <Card className="w-full">
+             <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#9EF01A]" />
+                  <BarChart3 className="w-5 h-5 text-[#D2F445]" />
                   Trade-wise Profit
                 </h3>
-                <div className="flex items-center gap-2 px-3 py-1 bg-[#001524] rounded-full border border-[#00A6FB]/30 w-fit">
-                   <Target className="w-3 h-3 text-[#9EF01A]" />
-                   <span className="text-xs text-[#94a3b8]">Accuracy: <span className="text-white font-bold">{accuracy.wins}/{accuracy.total}</span> ({accuracy.percent}%)</span>
+                <div className="flex items-center gap-2 px-3 py-1 bg-[#222] rounded-full border border-[#333]">
+                   <Target className="w-3 h-3 text-[#D2F445]" />
+                   <span className="text-xs text-gray-300">Accuracy: <span className="text-white font-bold">{accuracy.wins}/{accuracy.total}</span> ({accuracy.percent}%)</span>
                 </div>
-              </div>
-              
-              <div className="flex items-center justify-between sm:justify-end gap-4">
-                 <button 
+                <button 
                   onClick={handleTradeAnalysis}
-                  className="p-1.5 rounded-lg bg-[#001524] hover:bg-[#003554] border border-[#00A6FB]/30 transition-colors group flex items-center gap-1.5 px-3"
+                  className="p-1.5 rounded-lg bg-[#222] hover:bg-[#333] border border-[#333] transition-colors group flex items-center gap-1.5 px-3"
                   title="Analyze Trading Patterns"
                 >
-                    <Sparkles className="w-3.5 h-3.5 text-[#9EF01A] group-hover:rotate-12 transition-transform" />
-                    <span className="text-xs font-medium text-[#94a3b8] group-hover:text-white">Analyze Patterns</span>
+                    <Sparkles className="w-3.5 h-3.5 text-[#D2F445] group-hover:rotate-12 transition-transform" />
+                    <span className="text-xs font-medium text-gray-300 group-hover:text-white">Analyze Patterns</span>
                 </button>
-                
-                <div className="flex gap-2 text-xs">
-                   <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-[#9EF01A]"></div>
-                      <span className="text-[#94a3b8]">Profit</span>
-                   </div>
-                   <div className="flex items-center gap-1">
-                      <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
-                      <span className="text-[#94a3b8]">Loss</span>
-                   </div>
-                </div>
+              </div>
+              
+              <div className="flex gap-2 text-xs">
+                 <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-[#D2F445]"></div>
+                    <span className="text-gray-400">Profit</span>
+                 </div>
+                 <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 rounded-full bg-[#ef4444]"></div>
+                    <span className="text-gray-400">Loss</span>
+                 </div>
               </div>
             </div>
             <div className="w-full">
@@ -520,17 +514,17 @@ export default function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="border-[#00A6FB]/20">
+            <Card className="border-[#333]">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <Layers className="w-5 h-5 text-[#9EF01A]" />
+                  <Layers className="w-5 h-5 text-[#D2F445]" />
                   Core Investment Metrics
                 </h3>
               </div>
               
-              <div className="overflow-hidden rounded-xl border border-[#00A6FB]/10">
-                <table className="w-full text-xs sm:text-sm text-left">
-                  <tbody className="divide-y divide-[#00A6FB]/10">
+              <div className="overflow-hidden rounded-xl border border-[#222]">
+                <table className="w-full text-sm text-left">
+                  <tbody className="divide-y divide-[#222]">
                     {[
                       { label: "Free Stocks Accumulated", value: investmentMetrics.totalQtyFree, sub: "Qty" },
                       { label: "Market Value of Retained Shares", value: `₹ ${investmentMetrics.marketValueRetained.toLocaleString()}`, sub: "Current" },
@@ -539,11 +533,11 @@ export default function App() {
                       { label: "Investment Duration", value: investmentMetrics.time, sub: "Years" },
                       { label: "Annual ROI / Max DD Ratio", value: investmentMetrics.ratio, sub: "Efficiency" },
                     ].map((row, idx) => (
-                      <tr key={idx} className="hover:bg-[#003554]/30 transition-colors group">
-                        <td className="px-3 sm:px-4 py-3 sm:py-4 text-[#94a3b8] font-medium">{row.label}</td>
-                        <td className="px-3 sm:px-4 py-3 sm:py-4 text-right">
+                      <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors group">
+                        <td className="px-4 py-4 text-gray-400 font-medium">{row.label}</td>
+                        <td className="px-4 py-4 text-right">
                           <div className="font-bold text-white">{row.value}</div>
-                          <div className="text-[10px] sm:text-xs text-[#64748b] group-hover:text-[#9EF01A] transition-colors">{row.sub}</div>
+                          <div className="text-xs text-gray-600 group-hover:text-[#D2F445] transition-colors">{row.sub}</div>
                         </td>
                       </tr>
                     ))}
@@ -555,45 +549,45 @@ export default function App() {
             <Card className="overflow-x-auto">
                <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#9EF01A]" />
+                  <BarChart3 className="w-5 h-5 text-[#D2F445]" />
                   Profit & Loss Analysis
                 </h3>
               </div>
               <div className="overflow-x-auto">
-                <table className="w-full text-xs sm:text-sm text-left whitespace-nowrap">
-                  <thead className="bg-[#001524] text-[#94a3b8] font-medium">
+                <table className="w-full text-sm text-left whitespace-nowrap">
+                  <thead className="bg-[#1a1a1a] text-gray-400 font-medium">
                     <tr>
-                      <th className="px-3 sm:px-4 py-3 rounded-l-lg">Entry Date</th>
-                      <th className="px-3 sm:px-4 py-3">Entry Price</th>
-                      <th className="px-3 sm:px-4 py-3">Qty</th>
-                      <th className="px-3 sm:px-4 py-3">Doubled On</th>
-                      <th className="px-3 sm:px-4 py-3 text-[#9EF01A]">Free Qty</th>
-                      <th className="px-3 sm:px-4 py-3 text-right">Current Val</th>
-                      <th className="px-3 sm:px-4 py-3 rounded-r-lg">Invested Time</th>
+                      <th className="px-4 py-3 rounded-l-lg">Entry Date</th>
+                      <th className="px-4 py-3">Entry Price</th>
+                      <th className="px-4 py-3">Qty</th>
+                      <th className="px-4 py-3">Doubled On</th>
+                      <th className="px-4 py-3 text-[#D2F445]">Free Qty</th>
+                      <th className="px-4 py-3 text-right">Current Val</th>
+                      <th className="px-4 py-3 rounded-r-lg">Invested Time</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#00A6FB]/10">
+                  <tbody className="divide-y divide-[#222]">
                     {pnlData.map((row, idx) => (
-                      <tr key={idx} className="hover:bg-[#003554]/30 transition-colors">
-                        <td className="px-3 sm:px-4 py-3 text-gray-300">{row.date}</td>
-                        <td className="px-3 sm:px-4 py-3 text-gray-300">₹ {row.entry}</td>
-                        <td className="px-3 sm:px-4 py-3 text-gray-500">{row.qty}</td>
-                        <td className="px-3 sm:px-4 py-3 text-gray-300">
-                          {row.doubleDate} <span className="text-[10px] sm:text-xs text-gray-600">(@ {row.doublePrice})</span>
+                      <tr key={idx} className="hover:bg-[#1a1a1a] transition-colors">
+                        <td className="px-4 py-3 text-gray-300">{row.date}</td>
+                        <td className="px-4 py-3 text-gray-300">₹ {row.entry}</td>
+                        <td className="px-4 py-3 text-gray-500">{row.qty}</td>
+                        <td className="px-4 py-3 text-gray-300">
+                          {row.doubleDate} <span className="text-xs text-gray-600">(@ {row.doublePrice})</span>
                         </td>
-                        <td className="px-3 sm:px-4 py-3 font-bold text-[#9EF01A]">{row.freeQty}</td>
-                        <td className="px-3 sm:px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
-                        <td className="px-3 sm:px-4 py-3 text-gray-400">{row.time}</td>
+                        <td className="px-4 py-3 font-bold text-[#D2F445]">{row.freeQty}</td>
+                        <td className="px-4 py-3 text-right text-white font-medium">₹ {row.currVal.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-gray-400">{row.time}</td>
                       </tr>
                     ))}
-                    <tr className="bg-[#9EF01A]/5 border-t border-[#9EF01A]/20 font-bold">
-                      <td className="px-3 sm:px-4 py-4 text-white">Total</td>
-                      <td className="px-3 sm:px-4 py-4"></td>
-                      <td className="px-3 sm:px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
-                      <td className="px-3 sm:px-4 py-4"></td>
-                      <td className="px-3 sm:px-4 py-4 text-[#9EF01A]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
-                      <td className="px-3 sm:px-4 py-4 text-right text-[#9EF01A]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
-                      <td className="px-3 sm:px-4 py-4"></td>
+                    <tr className="bg-[#D2F445]/5 border-t border-[#D2F445]/20 font-bold">
+                      <td className="px-4 py-4 text-white">Total</td>
+                      <td className="px-4 py-4"></td>
+                      <td className="px-4 py-4 text-white">{pnlData.reduce((acc, curr) => acc + curr.qty, 0)}</td>
+                      <td className="px-4 py-4"></td>
+                      <td className="px-4 py-4 text-[#D2F445]">{pnlData.reduce((acc, curr) => acc + curr.freeQty, 0)}</td>
+                      <td className="px-4 py-4 text-right text-[#D2F445]">₹ {pnlData.reduce((acc, curr) => acc + curr.currVal, 0).toLocaleString()}</td>
+                      <td className="px-4 py-4"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -602,54 +596,54 @@ export default function App() {
           </div>
 
           <div className="space-y-6">
-            <Card className="bg-gradient-to-br from-[#9EF01A]/10 to-[#001524] border-[#9EF01A]/20">
+            <Card className="bg-gradient-to-br from-[#D2F445]/20 to-black border-[#D2F445]/30">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#9EF01A] flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(158,240,26,0.3)]">
-                  <span className="text-[#003554] font-bold">VK</span>
+                <div className="w-10 h-10 rounded-full bg-[#D2F445] flex items-center justify-center shrink-0">
+                  <span className="text-black font-bold">VK</span>
                 </div>
                 <div>
                   <h4 className="font-bold text-white">Vijay Kedia Position</h4>
-                  <p className="text-xs text-[#94a3b8] mt-1">Institutional Tracking</p>
+                  <p className="text-xs text-gray-400 mt-1">Institutional Tracking</p>
                 </div>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2">
-                 <div className="bg-[#001524]/60 p-2 rounded border border-[#00A6FB]/20">
-                    <div className="text-[10px] text-[#94a3b8]">Wealth Multiplier</div>
-                    <div className="text-lg font-bold text-[#9EF01A]">17.5x</div>
+                 <div className="bg-black/40 p-2 rounded">
+                    <div className="text-[10px] text-gray-400">Wealth Multiplier</div>
+                    <div className="text-lg font-bold text-[#D2F445]">17.5x</div>
                  </div>
-                 <div className="bg-[#001524]/60 p-2 rounded border border-[#00A6FB]/20">
-                    <div className="text-[10px] text-[#94a3b8]">Gain %</div>
+                 <div className="bg-black/40 p-2 rounded">
+                    <div className="text-[10px] text-gray-400">Gain %</div>
                     <div className="text-lg font-bold text-white">1747.5%</div>
                  </div>
               </div>
-              <div className="mt-3 pt-3 border-t border-[#00A6FB]/20 grid grid-cols-2 gap-4">
+              <div className="mt-3 pt-3 border-t border-white/10 grid grid-cols-2 gap-4">
                 <div>
-                   <div className="text-[10px] text-[#94a3b8]">Initial Value</div>
+                   <div className="text-[10px] text-gray-500">Initial Value</div>
                    <div className="text-sm font-bold text-white">₹ 11.9 Cr</div>
                 </div>
                 <div className="text-right">
-                   <div className="text-[10px] text-[#94a3b8]">Current Value</div>
-                   <div className="text-sm font-bold text-[#9EF01A]">₹ 219.86 Cr</div>
+                   <div className="text-[10px] text-gray-500">Current Value</div>
+                   <div className="text-sm font-bold text-[#D2F445]">₹ 219.86 Cr</div>
                 </div>
               </div>
             </Card>
             
-            <Card className="bg-[#001524]/60">
+            <Card className="bg-[#161616]">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-white">Dividends</h3>
-                <span className="text-xs text-[#64748b]">2020 - 2025</span>
+                <span className="text-xs text-gray-500">2020 - 2025</span>
               </div>
               <div className="flex items-end justify-between h-48 gap-2">
                 {dividends.map((div, i) => (
                   <div key={i} className="flex flex-col items-center gap-2 w-full group cursor-pointer">
                     <div className="relative w-full flex justify-center">
                        <div 
-                        className="w-full bg-[#003554] hover:bg-[#9EF01A] rounded-t-sm transition-all duration-300 relative group-hover:shadow-[0_0_15px_rgba(158,240,26,0.3)]"
+                        className="w-full bg-[#333] hover:bg-[#D2F445] rounded-t-sm transition-all duration-300 relative group-hover:shadow-[0_0_15px_rgba(210,244,69,0.3)]"
                         style={{ height: `${(div.amount / 15) * 100}px` }}
                       ></div>
                       <span className="absolute -top-8 text-xs font-bold text-white opacity-0 group-hover:opacity-100 transition-opacity">₹{div.amount}</span>
                     </div>
-                    <span className="text-[10px] sm:text-xs text-[#64748b] font-medium">{div.year}</span>
+                    <span className="text-xs text-gray-500 font-medium">{div.year}</span>
                   </div>
                 ))}
               </div>
@@ -659,21 +653,21 @@ export default function App() {
               <h3 className="text-lg font-semibold text-white mb-4">Cashflow Impact</h3>
               <div className="space-y-4">
                 {cashflowData.map((cf, idx) => (
-                  <div key={idx} className="bg-[#001524]/80 p-3 rounded-lg border border-[#00A6FB]/10 flex justify-between items-center">
+                  <div key={idx} className="bg-[#0f0f0f] p-3 rounded-lg border border-[#222] flex justify-between items-center">
                     <div>
-                      <div className="text-xs text-[#94a3b8] mb-0.5">
-                        <span className="text-[#64748b]">Entry:</span> {cf.entry} <span className="mx-1 text-[#64748b]">→</span> <span className="text-[#64748b]">Exit:</span> {cf.exit}
+                      <div className="text-xs text-gray-400 mb-0.5">
+                        <span className="text-gray-500">Entry:</span> {cf.entry} <span className="mx-1 text-gray-600">→</span> <span className="text-gray-500">Exit:</span> {cf.exit}
                       </div>
                       <div className="text-sm font-medium text-white">Qty: {cf.qty}</div>
                     </div>
                     <div className="text-right">
                        <div className="text-red-500 font-bold text-sm">₹ {cf.flow}</div>
-                       <div className="text-[10px] text-[#64748b]">{cf.time}</div>
+                       <div className="text-[10px] text-gray-600">{cf.time}</div>
                     </div>
                   </div>
                 ))}
-                <div className="mt-4 pt-4 border-t border-[#00A6FB]/20 flex justify-between items-center">
-                    <span className="text-sm text-[#94a3b8]">Total Negative Cashflow</span>
+                <div className="mt-4 pt-4 border-t border-[#222] flex justify-between items-center">
+                    <span className="text-sm text-gray-400">Total Negative Cashflow</span>
                     <span className="text-red-500 font-bold">₹ -29,964</span>
                 </div>
               </div>
@@ -681,22 +675,22 @@ export default function App() {
           </div>
         </div>
 
-        <div className="mt-12 pt-10 border-t border-[#00A6FB]/20">
+        <div className="mt-12 pt-10 border-t border-[#222]">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-white mb-3">Why You Should Use This System</h2>
-            <p className="text-[#94a3b8] max-w-2xl mx-auto">
+            <p className="text-gray-400 max-w-2xl mx-auto">
               A complete ecosystem designed to replace guesswork with precision and transform your investing journey.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyUseSystem.map((item, idx) => (
-              <Card key={idx} className="bg-[#001524]/40 hover:bg-[#003554]/60 transition-colors group border-[#00A6FB]/20 hover:border-[#9EF01A]/50">
-                <div className="mb-4 p-3 rounded-xl bg-[#001524] w-fit text-[#00A6FB] group-hover:text-[#9EF01A] group-hover:bg-[#9EF01A]/10 transition-colors border border-[#00A6FB]/20">
+              <Card key={idx} className="bg-[#111] hover:bg-[#161616] transition-colors group border-[#222] hover:border-[#D2F445]/30">
+                <div className="mb-4 p-3 rounded-xl bg-[#222] w-fit text-gray-400 group-hover:text-[#D2F445] group-hover:bg-[#D2F445]/10 transition-colors">
                   <item.icon className="w-6 h-6" />
                 </div>
                 <h3 className="font-bold text-lg text-white mb-2 leading-tight">{item.title}</h3>
-                <p className="text-sm text-[#94a3b8] leading-relaxed">
+                <p className="text-sm text-gray-500 leading-relaxed">
                   {item.desc}
                 </p>
               </Card>
@@ -707,26 +701,26 @@ export default function App() {
         {/* AI Report Modal */}
         {isReportModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-            <div className="absolute inset-0 bg-[#000508]/80 backdrop-blur-md" onClick={() => setIsReportModalOpen(false)}></div>
-            <div className="relative bg-[#001219] border border-[#00A6FB]/30 w-full max-w-2xl rounded-2xl p-4 sm:p-6 shadow-2xl shadow-[#9EF01A]/5 max-h-[90vh] overflow-y-auto">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsReportModalOpen(false)}></div>
+            <div className="relative bg-[#111] border border-[#333] w-full max-w-2xl rounded-2xl p-6 shadow-2xl shadow-[#D2F445]/10">
               <button 
                 onClick={() => setIsReportModalOpen(false)}
-                className="absolute top-4 right-4 text-[#64748b] hover:text-white"
+                className="absolute top-4 right-4 text-gray-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
               
-              <div className="flex items-center gap-2 mb-6 border-b border-[#00A6FB]/20 pb-4">
-                <Sparkles className="w-6 h-6 text-[#9EF01A]" />
+              <div className="flex items-center gap-2 mb-6 border-b border-[#222] pb-4">
+                <Sparkles className="w-6 h-6 text-[#D2F445]" />
                 <h2 className="text-xl font-bold text-white">
                     {reportType === 'executive' ? 'Executive Performance Summary' : 'AI Trade Pattern Analysis'}
                 </h2>
               </div>
               
-              <div className="min-h-[300px] text-[#cbd5e1] leading-relaxed whitespace-pre-wrap font-light">
+              <div className="min-h-[300px] text-gray-300 leading-relaxed whitespace-pre-wrap font-light">
                 {isGeneratingReport ? (
-                  <div className="flex flex-col items-center justify-center h-64 gap-3 text-[#94a3b8]">
-                    <Loader2 className="w-8 h-8 animate-spin text-[#9EF01A]" />
+                  <div className="flex flex-col items-center justify-center h-64 gap-3 text-gray-500">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#D2F445]" />
                     <p>{reportType === 'executive' ? 'Analyzing P&L structure...' : 'Evaluating win/loss patterns...'}</p>
                   </div>
                 ) : (
@@ -749,11 +743,11 @@ export default function App() {
         {/* Lead Capture Modal */}
         {isLeadModalOpen && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-            <div className="absolute inset-0 bg-[#000508]/80 backdrop-blur-md" onClick={() => setIsLeadModalOpen(false)}></div>
-            <div className="relative bg-[#001219] border border-[#9EF01A]/30 w-full max-w-md rounded-2xl p-5 sm:p-8 shadow-2xl shadow-[#9EF01A]/10 max-h-[90vh] overflow-y-auto">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsLeadModalOpen(false)}></div>
+            <div className="relative bg-[#111] border border-[#D2F445]/30 w-full max-w-md rounded-2xl p-8 shadow-2xl shadow-[#D2F445]/10">
               <button 
                 onClick={() => setIsLeadModalOpen(false)}
-                className="absolute top-4 right-4 text-[#64748b] hover:text-white"
+                className="absolute top-4 right-4 text-gray-400 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -761,40 +755,40 @@ export default function App() {
               {!isLeadSubmitted ? (
                 <>
                   <div className="mb-6">
-                    <div className="w-12 h-12 rounded-full bg-[#9EF01A]/10 flex items-center justify-center mb-4">
-                      <UserPlus className="w-6 h-6 text-[#9EF01A]" />
+                    <div className="w-12 h-12 rounded-full bg-[#D2F445]/10 flex items-center justify-center mb-4">
+                      <UserPlus className="w-6 h-6 text-[#D2F445]" />
                     </div>
                     <h2 className="text-2xl font-bold text-white mb-2">Get DG Indicator</h2>
-                    <p className="text-[#94a3b8] text-sm">Please fill in your details to access the exclusive indicator. Our team will contact you shortly.</p>
+                    <p className="text-gray-400 text-sm">Please fill in your details to access the exclusive indicator. Our team will contact you shortly.</p>
                   </div>
 
                   <form onSubmit={handleLeadSubmit} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-medium text-[#94a3b8] mb-1">Full Name</label>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Full Name</label>
                       <input 
                         required
                         type="text" 
                         value={leadForm.name}
                         onChange={(e) => setLeadForm({...leadForm, name: e.target.value})}
-                        className="w-full bg-[#001524] border border-[#00A6FB]/20 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#9EF01A] transition-colors placeholder:text-[#334155]"
+                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#D2F445] transition-colors"
                         placeholder="Rahul Sharma"
                       />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-[#94a3b8] mb-1">City</label>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">City</label>
                         <input 
                           required
                           type="text" 
                           value={leadForm.city}
                           onChange={(e) => setLeadForm({...leadForm, city: e.target.value})}
-                          className="w-full bg-[#001524] border border-[#00A6FB]/20 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#9EF01A] transition-colors placeholder:text-[#334155]"
+                          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#D2F445] transition-colors"
                           placeholder="Mumbai"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-[#94a3b8] mb-1">Age</label>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">Age</label>
                         <input 
                           required
                           type="number" 
@@ -802,18 +796,18 @@ export default function App() {
                           max="100"
                           value={leadForm.age}
                           onChange={(e) => setLeadForm({...leadForm, age: e.target.value})}
-                          className="w-full bg-[#001524] border border-[#00A6FB]/20 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#9EF01A] transition-colors placeholder:text-[#334155]"
+                          className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#D2F445] transition-colors"
                           placeholder="30"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-[#94a3b8] mb-1">Portfolio Size</label>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Portfolio Size</label>
                       <select 
                         value={leadForm.portfolio}
                         onChange={(e) => setLeadForm({...leadForm, portfolio: e.target.value})}
-                        className="w-full bg-[#001524] border border-[#00A6FB]/20 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#9EF01A] transition-colors"
+                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#D2F445] transition-colors"
                       >
                         <option>Above 1 Lakh</option>
                         <option>1L - 10L</option>
@@ -823,7 +817,7 @@ export default function App() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-[#94a3b8] mb-1">Phone Number</label>
+                      <label className="block text-xs font-medium text-gray-400 mb-1">Phone Number</label>
                       <input 
                         required
                         type="tel" 
@@ -832,7 +826,7 @@ export default function App() {
                           const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                           setLeadForm({...leadForm, phone: val});
                         }}
-                        className="w-full bg-[#001524] border border-[#00A6FB]/20 rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#9EF01A] transition-colors placeholder:text-[#334155]"
+                        className="w-full bg-[#1a1a1a] border border-[#333] rounded-lg px-3 py-2.5 text-white focus:outline-none focus:border-[#D2F445] transition-colors"
                         placeholder="9876543210"
                         maxLength={10}
                       />
@@ -841,7 +835,7 @@ export default function App() {
                     <button 
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-[#9EF01A] hover:bg-[#8ade16] text-[#003554] font-bold py-3 rounded-lg transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(158,240,26,0.3)] hover:shadow-[0_0_25px_rgba(158,240,26,0.5)]"
+                      className="w-full bg-[#D2F445] hover:bg-[#c2e33d] text-black font-bold py-3 rounded-lg transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Request'}
                     </button>
@@ -849,14 +843,14 @@ export default function App() {
                 </>
               ) : (
                 <div className="text-center py-10">
-                  <div className="w-16 h-16 bg-[#9EF01A]/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle2 className="w-8 h-8 text-[#9EF01A]" />
+                  <div className="w-16 h-16 bg-[#D2F445]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle2 className="w-8 h-8 text-[#D2F445]" />
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-2">Request Received!</h3>
-                  <p className="text-[#94a3b8]">Thank you for your interest. We will contact you shortly regarding your query.</p>
+                  <p className="text-gray-400">Thank you for your interest. We will contact you shortly regarding your query.</p>
                   <button 
                     onClick={() => setIsLeadModalOpen(false)}
-                    className="mt-8 text-[#9EF01A] hover:text-white text-sm font-medium transition-colors"
+                    className="mt-8 text-[#D2F445] hover:text-white text-sm font-medium transition-colors"
                   >
                     Close Window
                   </button>
@@ -867,37 +861,33 @@ export default function App() {
         )}
 
         {/* Floating Chat Button */}
-        <div className={`fixed z-50 transition-all duration-300 ${
-          isChatOpen 
-            ? 'bottom-4 right-4 left-4 sm:left-auto sm:bottom-6 sm:right-6 sm:w-auto' 
-            : 'bottom-6 right-6 w-auto'
-        }`}>
+        <div className="fixed bottom-6 right-6 z-40">
            {!isChatOpen ? (
              <button 
                onClick={() => setIsChatOpen(true)}
-               className="bg-[#00A6FB] hover:bg-[#0095e0] text-white w-14 h-14 rounded-full shadow-lg shadow-[#00A6FB]/20 flex items-center justify-center transition-all hover:scale-105"
+               className="bg-[#D2F445] hover:bg-[#c2e33d] text-black w-14 h-14 rounded-full shadow-lg shadow-[#D2F445]/20 flex items-center justify-center transition-all hover:scale-105"
              >
                <MessageSquare className="w-6 h-6" />
              </button>
            ) : (
-             <div className="bg-[#001219]/95 backdrop-blur-xl border border-[#00A6FB]/30 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300 w-full sm:w-96">
-                <div className="bg-[#001524] p-4 flex items-center justify-between border-b border-[#00A6FB]/20">
+             <div className="bg-[#111] border border-[#222] rounded-2xl w-80 sm:w-96 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
+                <div className="bg-[#1a1a1a] p-4 flex items-center justify-between border-b border-[#222]">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[#9EF01A] animate-pulse"></div>
-                    <h3 className="font-bold text-sm text-white">DG Alpha Assistant</h3>
+                    <div className="w-2 h-2 rounded-full bg-[#D2F445] animate-pulse"></div>
+                    <h3 className="font-bold text-sm">DG Alpha Assistant</h3>
                   </div>
-                  <button onClick={() => setIsChatOpen(false)} className="text-[#64748b] hover:text-white">
+                  <button onClick={() => setIsChatOpen(false)} className="text-gray-400 hover:text-white">
                     <X className="w-4 h-4" />
                   </button>
                 </div>
                 
-                <div className="h-[50vh] sm:h-80 overflow-y-auto p-4 space-y-4 bg-black/40">
+                <div className="h-80 overflow-y-auto p-4 space-y-4 bg-black/50">
                    {chatHistory.map((msg, i) => (
                      <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] rounded-xl p-3 text-sm ${
                           msg.role === 'user' 
-                            ? 'bg-[#003554] text-white rounded-tr-none border border-[#00A6FB]/30' 
-                            : 'bg-[#9EF01A]/10 text-gray-200 border border-[#9EF01A]/20 rounded-tl-none'
+                            ? 'bg-[#333] text-white rounded-tr-none' 
+                            : 'bg-[#D2F445]/10 text-gray-200 border border-[#D2F445]/20 rounded-tl-none'
                         }`}>
                           {msg.text}
                         </div>
@@ -905,25 +895,25 @@ export default function App() {
                    ))}
                    {isChatLoading && (
                      <div className="flex justify-start">
-                        <div className="bg-[#9EF01A]/10 p-3 rounded-xl rounded-tl-none">
-                           <Loader2 className="w-4 h-4 animate-spin text-[#9EF01A]" />
+                        <div className="bg-[#D2F445]/10 p-3 rounded-xl rounded-tl-none">
+                           <Loader2 className="w-4 h-4 animate-spin text-[#D2F445]" />
                         </div>
                      </div>
                    )}
                 </div>
 
-                <form onSubmit={handleChatSubmit} className="p-3 bg-[#001524] border-t border-[#00A6FB]/20 flex gap-2">
+                <form onSubmit={handleChatSubmit} className="p-3 bg-[#1a1a1a] border-t border-[#222] flex gap-2">
                   <input 
                     type="text" 
                     value={chatQuery}
                     onChange={(e) => setChatQuery(e.target.value)}
                     placeholder="Ask about your returns..."
-                    className="flex-1 bg-[#001219] border border-[#00A6FB]/20 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#9EF01A] placeholder:text-[#334155]"
+                    className="flex-1 bg-black border border-[#333] rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-[#D2F445]"
                   />
                   <button 
                     type="submit"
                     disabled={isChatLoading || !chatQuery.trim()}
-                    className="bg-[#00A6FB] text-white p-2 rounded-lg hover:bg-[#0095e0] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-[#D2F445] text-black p-2 rounded-lg hover:bg-[#c2e33d] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Send className="w-4 h-4" />
                   </button>
