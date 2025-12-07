@@ -10,7 +10,7 @@ interface AreaChartProps {
   color?: string;
 }
 
-export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#D2F445" }) => {
+export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#9EF01A" }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (!data || data.length === 0) return null;
@@ -36,7 +36,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
           <defs>
             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+              <stop offset="0%" stopColor={color} stopOpacity="0.3" />
               <stop offset="100%" stopColor={color} stopOpacity="0" />
             </linearGradient>
           </defs>
@@ -47,8 +47,8 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
             const y = getY(val);
             return (
               <g key={tick}>
-                <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#222" strokeWidth="1" />
-                <text x={padding.left - 10} y={y + 4} fill="#666" fontSize="10" textAnchor="end">
+                <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#00A6FB" strokeOpacity="0.1" strokeWidth="1" />
+                <text x={padding.left - 10} y={y + 4} fill="#64748b" fontSize="10" textAnchor="end">
                   ₹{(val / 100000).toFixed(1)}L
                 </text>
               </g>
@@ -57,7 +57,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
 
           {/* X-Axis Labels */}
           {data.map((d, i) => (
-            <text key={i} x={getX(i)} y={height - 15} fill="#666" fontSize="10" textAnchor="middle">
+            <text key={i} x={getX(i)} y={height - 15} fill="#64748b" fontSize="10" textAnchor="middle">
               {d.label}
             </text>
           ))}
@@ -88,7 +88,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
                 />
                 
                 {isHovered && (
-                  <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#444" strokeDasharray="4 4" />
+                  <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#00A6FB" strokeDasharray="4 4" strokeOpacity="0.5" />
                 )}
 
                 <circle 
@@ -109,15 +109,15 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
                       width="120" 
                       height="40" 
                       rx="6" 
-                      fill="#1a1a1a" 
-                      stroke="#333" 
+                      fill="#003554" 
+                      stroke="#00A6FB"
                       strokeWidth="1"
                       className="shadow-xl"
                     />
                     <text x={x} y={y - 32} textAnchor="middle" fill={color} fontSize="12" fontWeight="bold">
                       ₹ {d.value.toLocaleString()}
                     </text>
-                    <text x={x} y={y - 18} textAnchor="middle" fill="#888" fontSize="10">
+                    <text x={x} y={y - 18} textAnchor="middle" fill="#94a3b8" fontSize="10">
                       Cumulative Value
                     </text>
                   </g>
@@ -147,7 +147,6 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
   if (!data || data.length === 0) return null;
 
   const height = 300;
-  // Adjusted width to be smaller to ensure font size scales better on mobile when fitting to screen
   const width = 500;
   const padding = { top: 40, right: 15, bottom: 40, left: 45 };
   const graphWidth = width - padding.left - padding.right;
@@ -166,15 +165,15 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
       <div className="w-full h-full relative">
         <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
           
-          <line x1={padding.left} y1={zeroY} x2={width - padding.right} y2={zeroY} stroke="#444" strokeWidth="1" />
+          <line x1={padding.left} y1={zeroY} x2={width - padding.right} y2={zeroY} stroke="#00A6FB" strokeOpacity="0.2" strokeWidth="1" />
 
           {[maxVal, maxVal/2, minVal].map((val, i) => {
               if (val === 0) return null;
               const y = padding.top + graphHeight - ((val - minVal) / totalRange) * graphHeight;
               return (
                 <g key={i}>
-                  <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#222" strokeWidth="1" strokeDasharray="4 4"/>
-                  <text x={padding.left - 10} y={y + 4} fill="#666" fontSize="11" textAnchor="end">
+                  <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#00A6FB" strokeOpacity="0.1" strokeWidth="1" strokeDasharray="4 4"/>
+                  <text x={padding.left - 10} y={y + 4} fill="#64748b" fontSize="11" textAnchor="end">
                     {val >= 100000 || val <= -100000 ? `₹${(val / 100000).toFixed(1)}L` : `₹${(val/1000).toFixed(0)}k`}
                   </text>
                 </g>
@@ -189,6 +188,10 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
             const isHovered = hoveredIndex === i;
             const isPositive = val >= 0;
             const multiplier = (val / 100000).toFixed(1) + 'x';
+            
+            // #9EF01A is Slime Lime, #ef4444 is Red
+            const barColor = isPositive ? "#9EF01A" : "#ef4444";
+            const hoverColor = isPositive ? "#b2fa41" : "#ff6b6b";
 
             return (
               <g 
@@ -202,7 +205,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                   y={y}
                   width={barWidth}
                   height={Math.max(barHeight, 2)}
-                  fill={isHovered ? (isPositive ? "#c2e33d" : "#ff6b6b") : (isPositive ? "#D2F445" : "#ef4444")}
+                  fill={isHovered ? hoverColor : barColor}
                   rx="2"
                   className="transition-all duration-300"
                 />
@@ -210,7 +213,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                 <text 
                   x={x + barWidth / 2} 
                   y={height - 15} 
-                  fill={isHovered ? "#fff" : "#666"} 
+                  fill={isHovered ? "#fff" : "#64748b"} 
                   fontSize="11" 
                   textAnchor="middle"
                   className="transition-colors"
@@ -220,7 +223,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
 
                 {isHovered ? (
                   <g>
-                     <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 15} fill={isPositive ? "#D2F445" : "#ef4444"} fontSize="12" fontWeight="bold" textAnchor="middle">
+                     <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 15} fill={barColor} fontSize="12" fontWeight="bold" textAnchor="middle">
                        {val >= 0 ? `+₹${val.toLocaleString()}` : `-₹${Math.abs(val).toLocaleString()}`}
                      </text>
                   </g>
@@ -228,7 +231,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                   <text 
                     x={x + barWidth / 2} 
                     y={val >= 0 ? y - 6 : y + barHeight + 12} 
-                    fill={isPositive ? "#D2F445" : "#ef4444"} 
+                    fill={barColor} 
                     fontSize="11" 
                     fontWeight="bold" 
                     textAnchor="middle"
