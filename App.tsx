@@ -125,6 +125,7 @@ interface SuperstarEntry {
   "Portfoilo Value (CR)": number;
   "Stake Value (CR)": number;
   "% allocation": number;
+  "Latest Qtr Data": string | null;
 }
 
 const formatPercent = (val: any) => {
@@ -1364,6 +1365,7 @@ export default function App() {
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Investor Name</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock Name</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Latest Holding %</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Latest Qtr</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Portfolio Val (Cr)</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Stake Val (Cr)</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">% Allocation</th>
@@ -1378,6 +1380,7 @@ export default function App() {
                                         const portValue = row["Portfoilo Value (CR)"];
                                         const stakeValue = row["Stake Value (CR)"];
                                         const allocation = parseFloat(row["% allocation"] as any);
+                                        const latestQtr = row["Latest Qtr Data"] ? formatDate(row["Latest Qtr Data"]) : '-';
                                         
                                         let allocColorClass = 'bg-gray-800 text-gray-300 border-gray-700';
                                         if (allocation >= 10) allocColorClass = 'bg-[#D2F445]/20 text-[#D2F445] border-[#D2F445]/30';
@@ -1400,6 +1403,7 @@ export default function App() {
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4 text-right text-gray-400 font-mono">{holding}%</td>
+                                                <td className="px-6 py-4 text-right text-gray-400 font-mono">{latestQtr}</td>
                                                 <td className="px-6 py-4 text-right text-gray-400 font-mono">₹{formatNumber(portValue)}</td>
                                                 <td className="px-6 py-4 text-right text-gray-400 font-mono">₹{formatNumber(stakeValue)}</td>
                                                 <td className="px-6 py-4 text-right">
