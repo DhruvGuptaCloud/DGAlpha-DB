@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Download } from 'lucide-react';
 
 interface ChartDataPoint {
   label: string;
@@ -10,7 +11,7 @@ interface AreaChartProps {
   color?: string;
 }
 
-export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#D2F445" }) => {
+export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "var(--accent)" }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (!data || data.length === 0) return null;
@@ -31,8 +32,32 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
   const points = data.map((d, i) => `${getX(i)},${getY(d.value)}`).join(' ');
   const areaPath = `${points} ${getX(data.length - 1)},${height - padding.bottom} ${padding.left},${height - padding.bottom}`;
 
+  const handleExport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const headers = ['Label', 'Value'];
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n" 
+      + data.map(d => `"${d.label}",${d.value}`).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "chart_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="w-full h-full min-h-[300px] select-none">
+    <div className="w-full h-full min-h-[300px] select-none relative group/chart">
+      <button 
+        onClick={handleExport}
+        className="absolute top-2 right-2 p-1.5 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-md text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/50 transition-all opacity-0 group-hover/chart:opacity-100 z-20"
+        title="Export Data to CSV"
+      >
+        <Download className="w-3.5 h-3.5" />
+      </button>
+
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
         <defs>
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -47,8 +72,8 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
           const y = getY(val);
           return (
             <g key={tick}>
-              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#222" strokeWidth="1" />
-              <text x={padding.left - 10} y={y + 4} fill="#666" fontSize="10" textAnchor="end">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" />
+              <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="10" textAnchor="end">
                 ₹{(val / 100000).toFixed(1)}L
               </text>
             </g>
@@ -58,7 +83,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
         {/* X-Axis Labels */}
         {data.map((d, i) => (
           // Adjusted y position to be centered within the new padding area
-          <text key={i} x={getX(i)} y={height - 20} fill="#666" fontSize="10" textAnchor="middle">
+          <text key={i} x={getX(i)} y={height - 20} fill="var(--text-muted)" fontSize="10" textAnchor="middle">
             {d.label}
           </text>
         ))}
@@ -89,14 +114,14 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
               />
               
               {isHovered && (
-                <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#444" strokeDasharray="4 4" />
+                <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="var(--text-muted)" strokeDasharray="4 4" />
               )}
 
               <circle 
                 cx={x} 
                 cy={y} 
                 r={isHovered ? 6 : 4} 
-                fill="#000" 
+                fill="var(--bg-main)" 
                 stroke={color} 
                 strokeWidth={isHovered ? 3 : 2} 
                 className="transition-all duration-200"
@@ -110,15 +135,15 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
                     width="120" 
                     height="40" 
                     rx="6" 
-                    fill="#1a1a1a" 
-                    stroke="#333" 
+                    fill="var(--bg-surface)" 
+                    stroke="var(--border-primary)" 
                     strokeWidth="1"
                     className="shadow-xl"
                   />
                   <text x={x} y={y - 32} textAnchor="middle" fill={color} fontSize="12" fontWeight="bold">
                     ₹ {d.value.toLocaleString()}
                   </text>
-                  <text x={x} y={y - 18} textAnchor="middle" fill="#888" fontSize="10">
+                  <text x={x} y={y - 18} textAnchor="middle" fill="var(--text-muted)" fontSize="10">
                     Cumulative Value
                   </text>
                 </g>
@@ -161,19 +186,43 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
 
   const barWidth = (graphWidth / data.length) * 0.6;
 
+  const handleExport = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const headers = ['Label', 'Value', 'Type'];
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers.join(",") + "\n" 
+      + data.map(d => `"${d.label}",${d.value},${d.type || ''}`).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "trade_data.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="w-full h-full min-h-[300px] select-none">
+    <div className="w-full h-full min-h-[300px] select-none relative group/chart">
+      <button 
+        onClick={handleExport}
+        className="absolute top-2 right-2 p-1.5 bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-md text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/50 transition-all opacity-0 group-hover/chart:opacity-100 z-20"
+        title="Export Data to CSV"
+      >
+        <Download className="w-3.5 h-3.5" />
+      </button>
+
       <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
         
-        <line x1={padding.left} y1={zeroY} x2={width - padding.right} y2={zeroY} stroke="#444" strokeWidth="1" />
+        <line x1={padding.left} y1={zeroY} x2={width - padding.right} y2={zeroY} stroke="var(--text-muted)" strokeWidth="1" />
 
         {[maxVal, maxVal/2, minVal].map((val, i) => {
             if (val === 0) return null;
             const y = padding.top + graphHeight - ((val - minVal) / totalRange) * graphHeight;
             return (
               <g key={i}>
-                <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="#222" strokeWidth="1" strokeDasharray="4 4"/>
-                <text x={padding.left - 10} y={y + 4} fill="#666" fontSize="10" textAnchor="end">
+                <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" strokeDasharray="4 4"/>
+                <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="10" textAnchor="end">
                   {val >= 100000 || val <= -100000 ? `₹${(val / 100000).toFixed(1)}L` : `₹${(val/1000).toFixed(0)}k`}
                 </text>
               </g>
@@ -201,7 +250,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                 y={y}
                 width={barWidth}
                 height={Math.max(barHeight, 2)}
-                fill={isHovered ? (isPositive ? "#c2e33d" : "#ff6b6b") : (isPositive ? "#D2F445" : "#ef4444")}
+                fill={isHovered ? (isPositive ? "var(--accent-hover)" : "#ff6b6b") : (isPositive ? "var(--accent)" : "#ef4444")}
                 rx="2"
                 className="transition-all duration-300"
               />
@@ -210,7 +259,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                 x={x + barWidth / 2} 
                 // Adjusted label y position to fit within the increased padding
                 y={height - 20} 
-                fill={isHovered ? "#fff" : "#666"} 
+                fill={isHovered ? "var(--text-main)" : "var(--text-muted)"} 
                 fontSize="10" 
                 textAnchor="middle"
                 className="transition-colors"
@@ -220,7 +269,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
 
               {isHovered ? (
                 <g>
-                   <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 15} fill={isPositive ? "#D2F445" : "#ef4444"} fontSize="12" fontWeight="bold" textAnchor="middle">
+                   <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 15} fill={isPositive ? "var(--accent)" : "#ef4444"} fontSize="12" fontWeight="bold" textAnchor="middle">
                      {val >= 0 ? `+₹${val.toLocaleString()}` : `-₹${Math.abs(val).toLocaleString()}`}
                    </text>
                 </g>
@@ -228,7 +277,7 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                 <text 
                   x={x + barWidth / 2} 
                   y={val >= 0 ? y - 6 : y + barHeight + 12} 
-                  fill={isPositive ? "#D2F445" : "#ef4444"} 
+                  fill={isPositive ? "var(--accent)" : "#ef4444"} 
                   fontSize="10" 
                   fontWeight="bold" 
                   textAnchor="middle"

@@ -7,26 +7,68 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body {
-        background-color: #000;
-        color: #fff;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+      :root {
+        --bg-main: #000000;
+        --bg-sidebar: #050505;
+        --bg-card: #111111;
+        --bg-surface: #1a1a1a; /* Used for inputs, hovers, secondary */
+        --bg-hover: #222222;
+        --border-primary: #222222;
+        --border-secondary: #333333;
+        --text-main: #ffffff;
+        --text-muted: #9ca3af; /* gray-400 */
+        --text-dim: #6b7280; /* gray-500 */
+        --chart-grid: #222222;
+        --chart-text: #666666;
+        
+        /* Accent Colors - Neon for Dark Mode */
+        --accent: #D2F445;
+        --accent-rgb: 210, 244, 69;
+        --accent-hover: #c2e33d;
       }
-      /* Custom scrollbar for dark theme */
+
+      :root.light {
+        --bg-main: #f3f4f6;
+        --bg-sidebar: #ffffff;
+        --bg-card: #ffffff;
+        --bg-surface: #f9fafb;
+        --bg-hover: #e5e7eb;
+        --border-primary: #e5e7eb;
+        --border-secondary: #d1d5db;
+        --text-main: #111827;
+        --text-muted: #4b5563;
+        --text-dim: #9ca3af;
+        --chart-grid: #e5e7eb;
+        --chart-text: #6b7280;
+
+        /* Accent Colors - Dark Green for Light Mode */
+        --accent: #008000;
+        --accent-rgb: 0, 128, 0;
+        --accent-hover: #006400;
+      }
+
+      body {
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #111;
+        background: var(--bg-card);
       }
       ::-webkit-scrollbar-thumb {
-        background: #333;
+        background: var(--border-secondary);
         border-radius: 4px;
-        border: 1px solid #000;
+        border: 1px solid var(--bg-main);
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #444;
+        background: var(--text-muted);
       }
     </style>
   <script type="importmap">
