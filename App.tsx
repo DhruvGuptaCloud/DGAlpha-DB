@@ -53,6 +53,25 @@ const Badge: React.FC<{ children: React.ReactNode; type?: "success" | "danger" |
   );
 };
 
+const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: React.ReactNode; children: React.ReactNode }> = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-[#111] border border-[#222] rounded-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col shadow-2xl animate-in zoom-in-95 duration-200 relative">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-[#222] bg-[#111] sticky top-0 z-10">
+          <div className="text-xl font-bold text-white">{title}</div>
+          <button onClick={onClose} className="p-2 hover:bg-[#222] rounded-lg transition-colors text-gray-400 hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-4 sm:p-6 overflow-y-auto custom-scrollbar text-gray-300 leading-relaxed">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface SidebarItemProps {
   icon: React.ElementType;
   label: string;
@@ -595,7 +614,7 @@ export default function App() {
                     </div>
                     <div>
                        <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight tracking-tight mb-2">
-                          I started with <span className="text-[#D2F445] font-black font-mono text-3xl sm:text-4xl">₹3 lakhs</span> and grew it to <span className="text-[#D2F445] font-black font-mono text-3xl sm:text-4xl">₹54.76 lakhs</span>, turning my money into <span className="text-[#D2F445] font-black font-mono text-3xl sm:text-4xl">18.25x without any Risk</span>
+                          I started with <span className="text-[#D2F445] font-black font-mono">₹3 lakhs</span> and grew it to <span className="text-[#D2F445] font-black font-mono">₹54.76 lakhs</span>, turning my money into <span className="text-[#D2F445] font-black font-mono">18.25x without any Risk</span>
                        </h2>
                     </div>
                  </div>
@@ -1223,6 +1242,138 @@ export default function App() {
              </div>
            )}
         </div>
+
+      {/* AI Report Modal */}
+      <Modal 
+        isOpen={isReportModalOpen} 
+        onClose={() => setIsReportModalOpen(false)}
+        title={
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[#D2F445]" />
+            <span>AI Insight Report</span>
+          </div>
+        }
+      >
+        {isGeneratingReport ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 text-[#D2F445] animate-spin mb-4" />
+            <p className="text-gray-400 animate-pulse">Analyzing market data...</p>
+          </div>
+        ) : (
+          <div className="prose prose-invert max-w-none">
+            <div className="whitespace-pre-wrap">{reportContent}</div>
+            
+            <div className="mt-8 pt-6 border-t border-[#222] flex justify-end">
+               <button 
+                onClick={() => setIsReportModalOpen(false)}
+                className="px-4 py-2 bg-[#222] hover:bg-[#333] text-white rounded-lg text-sm font-medium transition-colors"
+               >
+                 Close Report
+               </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Lead Generation Modal */}
+      <Modal
+        isOpen={isLeadModalOpen}
+        onClose={() => setIsLeadModalOpen(false)}
+        title="Get DG Indicator Access"
+      >
+        {isLeadSubmitted ? (
+          <div className="text-center py-8">
+            <div className="w-16 h-16 bg-[#D2F445]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+               <CheckCircle2 className="w-8 h-8 text-[#D2F445]" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Request Submitted!</h3>
+            <p className="text-gray-400">Our team will contact you shortly to set up your indicator access.</p>
+            <button 
+              onClick={() => setIsLeadModalOpen(false)}
+              className="mt-6 px-6 py-2 bg-[#D2F445] text-black font-bold rounded-lg hover:bg-[#c2e33d] transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleLeadSubmit} className="space-y-4">
+             <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Full Name</label>
+                <input 
+                  required
+                  type="text" 
+                  value={leadForm.name}
+                  onChange={e => setLeadForm({...leadForm, name: e.target.value})}
+                  className="w-full bg-black border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#D2F445] focus:outline-none"
+                  placeholder="Enter your name"
+                />
+             </div>
+             <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">City</label>
+                  <input 
+                    required
+                    type="text" 
+                    value={leadForm.city}
+                    onChange={e => setLeadForm({...leadForm, city: e.target.value})}
+                    className="w-full bg-black border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#D2F445] focus:outline-none"
+                    placeholder="City"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">Age</label>
+                  <input 
+                    required
+                    type="number" 
+                    value={leadForm.age}
+                    onChange={e => setLeadForm({...leadForm, age: e.target.value})}
+                    className="w-full bg-black border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#D2F445] focus:outline-none"
+                    placeholder="Age"
+                  />
+                </div>
+             </div>
+             <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Phone Number</label>
+                <input 
+                  required
+                  type="tel" 
+                  value={leadForm.phone}
+                  onChange={e => setLeadForm({...leadForm, phone: e.target.value})}
+                  className="w-full bg-black border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#D2F445] focus:outline-none"
+                  placeholder="+91 XXXXX XXXXX"
+                />
+             </div>
+             <div>
+                <label className="block text-sm font-medium text-gray-400 mb-1">Portfolio Size</label>
+                <select 
+                  value={leadForm.portfolio}
+                  onChange={e => setLeadForm({...leadForm, portfolio: e.target.value})}
+                  className="w-full bg-black border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#D2F445] focus:outline-none appearance-none"
+                >
+                   <option>Above 1 Lakh</option>
+                   <option>Above 5 Lakhs</option>
+                   <option>Above 10 Lakhs</option>
+                   <option>Above 50 Lakhs</option>
+                </select>
+             </div>
+             
+             <button 
+               type="submit"
+               disabled={isSubmitting}
+               className="w-full bg-[#D2F445] hover:bg-[#c2e33d] text-black font-bold py-3 rounded-lg transition-all mt-4 flex items-center justify-center gap-2 disabled:opacity-50"
+             >
+               {isSubmitting ? (
+                 <>
+                   <Loader2 className="w-4 h-4 animate-spin" />
+                   Submitting...
+                 </>
+               ) : (
+                 'Request Access'
+               )}
+             </button>
+          </form>
+        )}
+      </Modal>
 
       </main>
     </div>
