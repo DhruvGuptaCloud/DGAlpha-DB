@@ -17,7 +17,8 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
 
   const height = 300;
   const width = 800;
-  const padding = { top: 40, right: 40, bottom: 40, left: 60 };
+  // Increased bottom padding to 60 to allow labels to be clearly visible
+  const padding = { top: 40, right: 40, bottom: 60, left: 60 };
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
 
@@ -56,7 +57,8 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "#
 
         {/* X-Axis Labels */}
         {data.map((d, i) => (
-          <text key={i} x={getX(i)} y={height - 15} fill="#666" fontSize="10" textAnchor="middle">
+          // Adjusted y position to be centered within the new padding area
+          <text key={i} x={getX(i)} y={height - 20} fill="#666" fontSize="10" textAnchor="middle">
             {d.label}
           </text>
         ))}
@@ -146,7 +148,8 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
 
   const height = 300;
   const width = 800;
-  const padding = { top: 40, right: 20, bottom: 40, left: 60 };
+  // Increased bottom padding to 60 to resolve visibility issues for bottom axis labels
+  const padding = { top: 40, right: 20, bottom: 60, left: 60 };
   const graphWidth = width - padding.left - padding.right;
   const graphHeight = height - padding.top - padding.bottom;
   
@@ -205,7 +208,8 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
               
               <text 
                 x={x + barWidth / 2} 
-                y={height - 15} 
+                // Adjusted label y position to fit within the increased padding
+                y={height - 20} 
                 fill={isHovered ? "#fff" : "#666"} 
                 fontSize="10" 
                 textAnchor="middle"
