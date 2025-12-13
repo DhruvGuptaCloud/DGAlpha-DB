@@ -27,7 +27,10 @@ import {
   BarChart2,
   User,
   RefreshCw,
-  BookOpen
+  BookOpen,
+  Search,
+  AlertCircle,
+  Inbox
 } from 'lucide-react';
 import { generateAnalysis } from './services/geminiService';
 import { supabase } from './services/supabaseClient';
@@ -115,6 +118,15 @@ interface BuybackData {
   smallShareholderCategoryAcceptanceRatio: number;
 }
 
+interface SuperstarEntry {
+  "INVESTOR NAME": string;
+  "STOCK NAME": string;
+  "Latest Holding Percentage": number;
+  "Portfoilo Value (CR)": number;
+  "Stake Value (CR)": number;
+  "% allocation": number;
+}
+
 const formatPercent = (val: any) => {
   if (val === null || val === undefined || val === '') return '-';
   if (typeof val === 'string' && val.includes('%')) return val;
@@ -186,6 +198,11 @@ export default function App() {
   const [isBuybackLoading, setIsBuybackLoading] = useState(false);
   const [isPastBuybackLoading, setIsPastBuybackLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string>('');
+
+  // Superstar Tracker State
+  const [superstarData, setSuperstarData] = useState<SuperstarEntry[]>([]);
+  const [isSuperstarLoading, setIsSuperstarLoading] = useState(false);
+  const [superstarSearch, setSuperstarSearch] = useState('');
 
   // --- Data ---
   const investmentMetrics = {
@@ -334,6 +351,36 @@ export default function App() {
     }
   }, [activeTab]);
 
+  // Fetch Superstar Data
+  const fetchSuperstarData = async () => {
+    setIsSuperstarLoading(true);
+    try {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbxzmxwSdnLdzDvTU4f1AGOe43bkuj5PRPzsZDrZNbVt2CXH7GivURHuQgwzSnyg5LOdgQ/exec');
+      if (!response.ok) throw new Error('Network response was not ok');
+      const data = await response.json();
+      setSuperstarData(data);
+    } catch (error) {
+      console.error('Error fetching superstar data:', error);
+    } finally {
+      setIsSuperstarLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'superstar-tracker' && superstarData.length === 0) {
+      fetchSuperstarData();
+    }
+  }, [activeTab]);
+  
+  const filteredSuperstarData = useMemo(() => {
+    const query = superstarSearch.toLowerCase();
+    return superstarData.filter(row => {
+      const investor = (row["INVESTOR NAME"] || '').toLowerCase();
+      const stock = (row["STOCK NAME"] || '').toLowerCase();
+      return investor.includes(query) || stock.includes(query);
+    });
+  }, [superstarData, superstarSearch]);
+
 
   // --- Gemini Handler Wrappers ---
   const handleGenerateReport = async () => {
@@ -446,6 +493,80 @@ export default function App() {
       Format neatly with bullet points.
     `;
 
+    const result = await generateAnalysis(prompt);
+    setReportContent(result);
+    setIsGeneratingReport(false);
+  };
+
+  // Superstar AI Handlers
+  const handleSuperstarInsightReport = async () => {
+    setIsReportModalOpen(true);
+    setReportContent('');
+    setIsGeneratingReport(true);
+    
+    const dataToAnalyze = filteredSuperstarData.length > 0 ? filteredSuperstarData.slice(0, 15) : superstarData.slice(0, 15);
+    
+    const context = dataToAnalyze.map(item => ({
+        investor: item["INVESTOR NAME"],
+        stock: item["STOCK NAME"],
+        allocation: item["% allocation"]
+    }));
+
+    const prompt = `
+        You are a senior portfolio analyst. Analyze the following portfolio data from top Indian "Superstar" investors.
+        
+        Data: ${JSON.stringify(context)}
+        
+        Please provide a brief, high-impact insight report covering:
+        1. **Sector Themes:** What industries are they betting on?
+        2. **Consensus:** Are multiple investors holding the same stocks?
+        3. **Risk Profile:** Based on allocation percentages, is this an aggressive or defensive set?
+        
+        Format the output in clean Markdown with bold headers. Keep it under 200 words.
+    `;
+    
+    const result = await generateAnalysis(prompt);
+    setReportContent(result);
+    setIsGeneratingReport(false);
+  };
+
+  const handleStockSpecificAi = async (stockName: string, investorName: string) => {
+    setIsReportModalOpen(true);
+    setReportContent('');
+    setIsGeneratingReport(true);
+    
+    const prompt = `
+        You are a stock market expert.
+        The investor "${investorName}" holds the stock "${stockName}".
+        
+        1. Briefly explain what "${stockName}" does (Business Model) in one sentence.
+        2. Why might a superstar investor like ${investorName} hold this? (Growth factors, value play, or turnaround).
+        
+        Keep it punchy, insightful and under 100 words.
+    `;
+    
+    const result = await generateAnalysis(prompt);
+    setReportContent(result);
+    setIsGeneratingReport(false);
+  };
+
+  const handleGetDgIndicator = async () => {
+    setIsReportModalOpen(true);
+    setReportContent('');
+    setIsGeneratingReport(true);
+    
+    const prompt = `
+        Generate a simulated "DG Indicator" market status report.
+        Assume a Bullish but cautious market sentiment for Indian Midcaps/Smallcaps.
+        
+        Output structure:
+        - **Market Mood:** (Fear/Greed/Neutral)
+        - **DG Alpha Signal:** (Buy on Dips / Hold Cash / Aggressive Buy)
+        - **Key Watch:** One sentence advice.
+        
+        Use emojis. Keep it very short.
+    `;
+    
     const result = await generateAnalysis(prompt);
     setReportContent(result);
     setIsGeneratingReport(false);
@@ -965,9 +1086,9 @@ export default function App() {
               <div className="flex gap-3">
                  <button 
                   onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                  className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#333] text-white rounded-lg hover:border-[#D2F445] hover:text-[#D2F445] transition-all group font-semibold text-xs"
+                  className="bg-[#222] hover:bg-[#333] text-white px-4 py-2 rounded-lg text-sm font-medium border border-[#D2F445] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(210,244,69,0.1)]"
                  >
-                   <Zap className="w-3.5 h-3.5" />
+                   <UserPlus className="w-4 h-4 text-[#D2F445]" />
                    Get DG Indicator
                  </button>
                  <button 
@@ -1167,14 +1288,144 @@ export default function App() {
 
           </div>
         ) : activeTab === 'superstar-tracker' ? (
-          <div className="flex flex-col items-center justify-center h-[80vh] text-center">
-             <div className="p-6 bg-[#111] rounded-full mb-6 border border-[#222] shadow-[0_0_30px_rgba(210,244,69,0.1)] animate-in zoom-in duration-500">
-               <User className="w-16 h-16 text-[#D2F445]" />
-             </div>
-             <h2 className="text-3xl font-bold text-white mb-2">Superstar Tracker</h2>
-             <p className="text-gray-400 max-w-md">
-               Track top investors and their portfolios. Coming soon!
-             </p>
+          <div className="animate-in fade-in duration-500 h-[calc(100vh-80px)] flex flex-col">
+            {/* Header Section */}
+            <div className="flex-shrink-0 mb-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white mb-2">Superstar Tracker</h1>
+                        <div className="flex items-center gap-2">
+                            <span className="bg-[#D2F445] text-black text-xs font-bold px-2 py-0.5 rounded">LIVE</span>
+                            <p className="text-gray-400 text-sm">Portfolio Dashboard</p>
+                        </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <button 
+                            onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
+                            className="bg-[#222] hover:bg-[#333] text-white px-4 py-2 rounded-lg text-sm font-medium border border-[#D2F445] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(210,244,69,0.1)]"
+                        >
+                            <UserPlus className="w-4 h-4 text-[#D2F445]" />
+                            Get DG Indicator
+                        </button>
+                        <button 
+                            onClick={handleSuperstarInsightReport}
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#333] text-gray-300 hover:text-white hover:border-gray-500 rounded-lg text-sm font-medium transition-all group"
+                        >
+                            <Sparkles className="w-4 h-4 text-[#D2F445] group-hover:animate-pulse" />
+                            AI Insight Report
+                        </button>
+                    </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative w-full max-w-md">
+                    <input 
+                        type="text" 
+                        value={superstarSearch}
+                        onChange={(e) => setSuperstarSearch(e.target.value)}
+                        placeholder="Search Investor or Stock..." 
+                        className="w-full pl-11 pr-4 py-3 bg-[#111] border border-[#333] rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#D2F445] focus:ring-1 focus:ring-[#D2F445] transition-all"
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Search className="w-5 h-5 text-gray-500" />
+                    </div>
+                </div>
+            </div>
+
+            {/* Table Container */}
+            <div className="flex-1 overflow-hidden bg-[#111] border border-[#222] rounded-2xl shadow-xl flex flex-col min-h-0">
+                {isSuperstarLoading ? (
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                        <Loader2 className="w-10 h-10 text-[#D2F445] animate-spin mb-4" />
+                        <p className="text-gray-400 animate-pulse">Fetching superstar portfolios...</p>
+                    </div>
+                ) : filteredSuperstarData.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-gray-500 p-10">
+                         {superstarData.length === 0 ? (
+                           <div className="flex flex-col items-center gap-2 text-red-400">
+                              <AlertCircle className="w-8 h-8" />
+                              <p>Failed to load data or service unavailable.</p>
+                              <button onClick={fetchSuperstarData} className="text-sm underline hover:text-white">Retry</button>
+                           </div>
+                         ) : (
+                           <>
+                             <Inbox className="w-10 h-10 mb-2 opacity-50" />
+                             <p>No matching records found.</p>
+                           </>
+                         )}
+                    </div>
+                ) : (
+                    <>
+                        <div className="flex-1 overflow-auto custom-scrollbar">
+                            <table className="w-full text-left whitespace-nowrap">
+                                <thead className="sticky top-0 z-10 bg-[#161616] shadow-sm">
+                                    <tr className="border-b border-[#222]">
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Investor Name</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock Name</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Latest Holding %</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Portfolio Val (Cr)</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Stake Val (Cr)</th>
+                                        <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">% Allocation</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[#222]">
+                                    {filteredSuperstarData.map((row, idx) => {
+                                        const investor = row["INVESTOR NAME"] || '-';
+                                        const stock = row["STOCK NAME"] || '-';
+                                        const holdingRaw = row["Latest Holding Percentage"];
+                                        const holding = holdingRaw !== null ? (parseFloat(holdingRaw.toString()) * 100).toFixed(2) : '-';
+                                        const portValue = row["Portfoilo Value (CR)"];
+                                        const stakeValue = row["Stake Value (CR)"];
+                                        const allocation = parseFloat(row["% allocation"] as any);
+                                        
+                                        let allocColorClass = 'bg-gray-800 text-gray-300 border-gray-700';
+                                        if (allocation >= 10) allocColorClass = 'bg-[#D2F445]/20 text-[#D2F445] border-[#D2F445]/30';
+                                        else if (allocation >= 5) allocColorClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                                        else if (allocation >= 2) allocColorClass = 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
+
+                                        return (
+                                            <tr key={idx} className="group hover:bg-white/5 transition-colors duration-200">
+                                                <td className="px-6 py-4 font-medium text-gray-200 group-hover:text-[#D2F445] transition-colors">{investor}</td>
+                                                <td className="px-6 py-4 text-gray-300">
+                                                    <div className="flex items-center gap-2">
+                                                        {stock}
+                                                        <button 
+                                                            onClick={() => handleStockSpecificAi(stock, investor)}
+                                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[#D2F445] hover:text-black rounded text-[#D2F445]"
+                                                            title="Ask AI about this stock"
+                                                        >
+                                                            <Sparkles className="w-3 h-3" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td className="px-6 py-4 text-right text-gray-400 font-mono">{holding}%</td>
+                                                <td className="px-6 py-4 text-right text-gray-400 font-mono">₹{formatNumber(portValue)}</td>
+                                                <td className="px-6 py-4 text-right text-gray-400 font-mono">₹{formatNumber(stakeValue)}</td>
+                                                <td className="px-6 py-4 text-right">
+                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium border ${allocColorClass} min-w-[3rem] justify-center`}>
+                                                        {allocation}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="px-6 py-3 border-t border-[#222] bg-black/20 flex justify-between items-center text-xs text-gray-500 flex-shrink-0">
+                            <span>{filteredSuperstarData.length} records found</span>
+                            <span className="flex items-center gap-1">
+                                <div className="w-2 h-2 rounded-full bg-[#D2F445] animate-pulse"></div>
+                                Live Data
+                            </span>
+                        </div>
+                    </>
+                )}
+            </div>
+            
+             {/* Decorative background glow */}
+             <div className="fixed bottom-0 right-0 w-96 h-96 bg-[#D2F445]/5 rounded-full blur-3xl pointer-events-none -z-10 translate-x-1/2 translate-y-1/2"></div>
           </div>
         ) : null}
 
