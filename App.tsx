@@ -33,11 +33,14 @@ import {
   Inbox,
   Download,
   Sun,
-  Moon
+  Moon,
+  LogIn
 } from 'lucide-react';
 import { generateAnalysis } from './services/geminiService';
 import { supabase } from './services/supabaseClient';
 import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
+import { useAuth } from './contexts/AuthContext';
+import { AuthModal } from './components/Auth/AuthModal';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
@@ -170,6 +173,7 @@ const buybackColumns = [
 ];
 
 export default function App() {
+  const { user, openAuthModal, signOut, userProfile, loading } = useAuth();
   const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker'>('dg-alpha');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [reportType, setReportType] = useState<'executive' | 'trade' | 'buyback'>('executive'); 
@@ -213,6 +217,13 @@ export default function App() {
   const [isSuperstarLoading, setIsSuperstarLoading] = useState(false);
   const [superstarSearch, setSuperstarSearch] = useState('');
 
+  // Effect to redirect to home tab if user logs out
+  useEffect(() => {
+    if (!user && !loading) {
+      setActiveTab('dg-alpha');
+    }
+  }, [user, loading]);
+
   // Theme effect
   useEffect(() => {
     if (isDarkMode) {
@@ -225,6 +236,20 @@ export default function App() {
   }, [isDarkMode]);
 
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
+
+  // Protected Route Handler
+  const handleTabChange = (tab: 'dg-alpha' | 'buyback-game' | 'superstar-tracker') => {
+    if (tab === 'dg-alpha') {
+      setActiveTab(tab);
+      return;
+    }
+    
+    if (!user) {
+      openAuthModal('login');
+    } else {
+      setActiveTab(tab);
+    }
+  };
 
   // --- Data ---
   const investmentMetrics = {
@@ -406,6 +431,8 @@ export default function App() {
 
   // --- Gemini Handler Wrappers ---
   const handleGenerateReport = async () => {
+    if (!user) { openAuthModal('login'); return; }
+    
     setReportType('executive');
     setIsReportModalOpen(true);
     setReportContent('');
@@ -443,6 +470,8 @@ export default function App() {
   };
 
   const handleTradeAnalysis = async () => {
+    if (!user) { openAuthModal('login'); return; }
+
     setReportType('trade');
     setIsReportModalOpen(true);
     setReportContent('');
@@ -482,6 +511,8 @@ export default function App() {
   };
 
   const handleBuybackAiReport = async () => {
+    if (!user) { openAuthModal('login'); return; }
+
     setReportType('buyback');
     setIsReportModalOpen(true);
     setReportContent('');
@@ -522,6 +553,8 @@ export default function App() {
 
   // Superstar AI Handlers
   const handleSuperstarInsightReport = async () => {
+    if (!user) { openAuthModal('login'); return; }
+
     setIsReportModalOpen(true);
     setReportContent('');
     setIsGeneratingReport(true);
@@ -553,6 +586,8 @@ export default function App() {
   };
 
   const handleStockSpecificAi = async (stockName: string, investorName: string) => {
+    if (!user) { openAuthModal('login'); return; }
+
     setIsReportModalOpen(true);
     setReportContent('');
     setIsGeneratingReport(true);
@@ -572,31 +607,14 @@ export default function App() {
     setIsGeneratingReport(false);
   };
 
-  const handleGetDgIndicator = async () => {
-    setIsReportModalOpen(true);
-    setReportContent('');
-    setIsGeneratingReport(true);
-    
-    const prompt = `
-        Generate a simulated "DG Indicator" market status report.
-        Assume a Bullish but cautious market sentiment for Indian Midcaps/Smallcaps.
-        
-        Output structure:
-        - **Market Mood:** (Fear/Greed/Neutral)
-        - **DG Alpha Signal:** (Buy on Dips / Hold Cash / Aggressive Buy)
-        - **Key Watch:** One sentence advice.
-        
-        Use emojis. Keep it very short.
-    `;
-    
-    const result = await generateAnalysis(prompt);
-    setReportContent(result);
-    setIsGeneratingReport(false);
-  };
-
   const handleChatSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatQuery.trim()) return;
+
+    if (!user) {
+      openAuthModal('login');
+      return;
+    }
 
     const userMsg = { role: 'user', text: chatQuery };
     setChatHistory(prev => [...prev, userMsg]);
@@ -656,10 +674,20 @@ export default function App() {
     }
   };
 
+  // Prevent rendering until auth is determined
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[var(--bg-main)] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans selection:bg-[var(--accent)] selection:text-black flex transition-colors duration-300">
       
+      <AuthModal />
+
       {/* Sidebar Navigation */}
       <aside className="fixed left-0 top-0 h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] w-16 md:w-64 transition-all duration-300 z-40 flex flex-col">
          {/* Logo Header */}
@@ -676,13 +704,13 @@ export default function App() {
               icon={Gamepad2} 
               label="Buyback Game" 
               isActive={activeTab === 'buyback-game'}
-              onClick={() => setActiveTab('buyback-game')}
+              onClick={() => handleTabChange('buyback-game')}
             />
             <SidebarItem 
               icon={Zap} 
               label="DG Alpha" 
               isActive={activeTab === 'dg-alpha'}
-              onClick={() => setActiveTab('dg-alpha')}
+              onClick={() => handleTabChange('dg-alpha')}
             />
             <SidebarItem 
               icon={BarChart2} 
@@ -698,37 +726,70 @@ export default function App() {
               icon={User} 
               label="Superstar tracker" 
               isActive={activeTab === 'superstar-tracker'}
-              onClick={() => setActiveTab('superstar-tracker')}
+              onClick={() => handleTabChange('superstar-tracker')}
             />
-            <SidebarItem icon={Send} label="Chat with us on telegram" />
-            
-            <button 
-                onClick={toggleTheme}
-                className="w-full flex items-center px-4 py-3 sm:py-4 transition-all group relative text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--accent)] border-r-2 border-transparent"
-            >
-                {isDarkMode ? <Sun className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" /> : <Moon className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />}
-                <span className="hidden md:block ml-3 font-medium text-sm tracking-wide text-left">
-                    {isDarkMode ? "Light Mode" : "Dark Mode"}
-                </span>
-            </button>
+            <SidebarItem 
+              icon={Send} 
+              label="Chat with us on telegram" 
+              onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')}
+            />
          </div>
 
          {/* Footer Items */}
          <div className="pb-4 border-t border-[var(--border-primary)] pt-4 p-6">
-            <button className="flex items-center gap-3 text-[var(--text-muted)] hover:text-red-400 transition-colors w-full text-sm font-medium">
-                <LogOut className="w-5 h-5" />
-                <span className="hidden md:inline">Sign Out</span>
-            </button>
+            {user ? (
+               <button onClick={signOut} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-red-400 transition-colors w-full text-sm font-medium">
+                  <LogOut className="w-5 h-5" />
+                  <span className="hidden md:inline">Sign Out</span>
+               </button>
+            ) : (
+               <button onClick={() => openAuthModal('login')} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors w-full text-sm font-medium">
+                  <LogIn className="w-5 h-5" />
+                  <span className="hidden md:inline">Login</span>
+               </button>
+            )}
          </div>
       </aside>
 
       {/* Main Content Wrapper */}
       <main className="flex-1 ml-16 md:ml-64 p-4 sm:p-6 lg:p-10 pt-6 relative overflow-x-hidden">
 
+        {/* Top Right Header Controls */}
+        <div className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-3 z-50">
+            <button 
+                onClick={toggleTheme}
+                className="p-2 sm:px-3 sm:py-2 bg-[var(--bg-card)] border border-[var(--border-secondary)] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--accent)] transition-all flex items-center gap-2"
+            >
+                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+                <span className="hidden sm:inline text-xs font-medium">
+                    {isDarkMode ? "Light" : "Dark"}
+                </span>
+            </button>
+            
+            {user ? (
+              <div className="flex items-center gap-2 px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-secondary)] rounded-lg">
+                <div className="w-6 h-6 rounded-full bg-[var(--accent)] flex items-center justify-center text-xs font-bold text-black">
+                   {userProfile?.name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+                </div>
+                <span className="hidden sm:block text-xs font-bold text-[var(--text-main)] max-w-[100px] truncate">
+                   {userProfile?.name || user.email?.split('@')[0]}
+                </span>
+              </div>
+            ) : (
+              <button 
+                onClick={() => openAuthModal('login')}
+                className="px-4 py-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-black font-bold rounded-lg text-sm transition-colors shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] flex items-center gap-2"
+              >
+                <LogIn className="w-4 h-4" />
+                Login
+              </button>
+            )}
+        </div>
+
         {activeTab === 'dg-alpha' ? (
           <div className="animate-in fade-in duration-500">
             {/* Header Section */}
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8 pt-6">
               <div>
                 <h1 className="text-3xl font-bold text-[var(--text-main)] mb-2 tracking-tight">Neuland Laboratories</h1>
                 <div className="flex items-center gap-3">
@@ -1107,7 +1168,7 @@ export default function App() {
           </div>
         ) : activeTab === 'buyback-game' ? (
           <div className="space-y-12 animate-in fade-in duration-500 pb-12">
-             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pt-6">
               <div>
                 <h1 className="text-3xl font-bold text-[var(--text-main)] tracking-tight">Buyback Game</h1>
                 <div className="flex items-center gap-3 mt-2">
@@ -1322,7 +1383,7 @@ export default function App() {
         ) : activeTab === 'superstar-tracker' ? (
           <div className="animate-in fade-in duration-500 h-[calc(100vh-80px)] flex flex-col">
             {/* Header Section */}
-            <div className="flex-shrink-0 mb-6">
+            <div className="flex-shrink-0 mb-6 pt-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
                     <div>
                         <h1 className="text-3xl font-bold text-[var(--text-main)] mb-2">Superstar Tracker</h1>

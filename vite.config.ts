@@ -7,6 +7,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, (process as any).cwd(), '');
   return {
     plugins: [react()],
+    server: {
+      port: 3000,
+      strictPort: true, // Forces the app to fail if port 3000 is occupied, rather than switching ports silently
+    },
     define: {
       'process.env.API_KEY': JSON.stringify(env.API_KEY),
       // If you have other process.env variables, add them here
