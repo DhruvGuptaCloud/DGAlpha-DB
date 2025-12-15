@@ -169,7 +169,7 @@ export const SignupForm: React.FC = () => {
         </div>
         <button 
           onClick={() => setAuthView('login')}
-          className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-black font-bold py-3 rounded-lg transition-all mt-6"
+          className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] font-bold py-3 rounded-lg transition-all mt-6"
         >
           Go to Login
         </button>
@@ -339,7 +339,7 @@ export const SignupForm: React.FC = () => {
            )}
            
            {step < 3 ? (
-             <button type="button" onClick={handleNext} className="flex-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-black font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2">
+             <button type="button" onClick={handleNext} className="flex-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2">
                Next <ArrowRight className="w-5 h-5" />
              </button>
            ) : (
@@ -347,7 +347,7 @@ export const SignupForm: React.FC = () => {
                 type="button" 
                 onClick={handleFinalSubmit} 
                 disabled={loading} 
-                className="flex-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-black font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] font-bold py-3 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
              >
                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Complete Registration'}
              </button>

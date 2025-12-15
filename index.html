@@ -25,26 +25,29 @@
         --accent: #D2F445;
         --accent-rgb: 210, 244, 69;
         --accent-hover: #c2e33d;
+        --text-on-accent: #000000; /* Black text on Neon */
       }
 
       :root.light {
-        --bg-main: #f3f4f6;
-        --bg-sidebar: #ffffff;
-        --bg-card: #ffffff;
-        --bg-surface: #f9fafb;
-        --bg-hover: #e5e7eb;
-        --border-primary: #e5e7eb;
-        --border-secondary: #d1d5db;
-        --text-main: #111827;
-        --text-muted: #4b5563;
-        --text-dim: #9ca3af;
-        --chart-grid: #e5e7eb;
-        --chart-text: #6b7280;
+        /* Slate Palette for cleaner, professional light mode */
+        --bg-main: #f8fafc;       /* Slate-50 */
+        --bg-sidebar: #ffffff;    /* White */
+        --bg-card: #ffffff;       /* White */
+        --bg-surface: #f1f5f9;    /* Slate-100 */
+        --bg-hover: #e2e8f0;      /* Slate-200 */
+        --border-primary: #e2e8f0;/* Slate-200 */
+        --border-secondary: #cbd5e1;/* Slate-300 */
+        --text-main: #0f172a;     /* Slate-900 */
+        --text-muted: #64748b;    /* Slate-500 */
+        --text-dim: #94a3b8;      /* Slate-400 */
+        --chart-grid: #e2e8f0;
+        --chart-text: #64748b;
 
-        /* Accent Colors - Dark Green for Light Mode */
-        --accent: #008000;
-        --accent-rgb: 0, 128, 0;
-        --accent-hover: #006400;
+        /* Accent Colors - Emerald for Light Mode */
+        --accent: #059669;        /* Emerald-600 */
+        --accent-rgb: 5, 150, 105;
+        --accent-hover: #047857;  /* Emerald-700 */
+        --text-on-accent: #ffffff; /* White text on Emerald */
       }
 
       body {
