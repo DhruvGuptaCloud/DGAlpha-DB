@@ -103,10 +103,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Listen for changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      // Always update session and user from the event
       setSession(session);
       setUser(session?.user ?? null);
-      
-      // Loading is mostly for initial check, but we ensure it's false here too
       setLoading(false);
 
       if (event === 'SIGNED_IN' && session?.user) {
@@ -114,6 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIsAuthModalOpen(false);
         setErrorMessage(null); // Clear errors on success
       } else if (event === 'SIGNED_OUT') {
+        // Clear local profile state
         setUserProfile(null);
         setUser(null);
         setSession(null);
@@ -149,15 +149,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    // 1. Optimistically clear local state immediately for UI responsiveness
+    setUser(null);
+    setSession(null);
+    setUserProfile(null);
+    setIsAuthModalOpen(false);
+
     try {
-      await supabase.auth.signOut();
-      // State updates are handled by onAuthStateChange('SIGNED_OUT')
+      // 2. Call Supabase to invalidate session
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("Error signing out:", error);
+      }
+      // Note: onAuthStateChange('SIGNED_OUT') will also fire, ensuring synchronization
     } catch (error) {
-      console.error("Error signing out:", error);
-      // Fallback manual clear if API fails
-      setUser(null);
-      setSession(null);
-      setUserProfile(null);
+      console.error("Exception signing out:", error);
     }
   };
 

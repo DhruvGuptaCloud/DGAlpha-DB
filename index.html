@@ -73,6 +73,111 @@
       ::-webkit-scrollbar-thumb:hover {
         background: var(--text-muted);
       }
+
+      /* --- Professional Animations --- */
+      
+      /* Floating Effect */
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+      }
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+      .animate-float-delayed {
+        animation: float 6s ease-in-out infinite;
+        animation-delay: 3s;
+      }
+
+      /* Slow Pulse for Backgrounds */
+      @keyframes pulse-slow {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+      }
+      .animate-pulse-slow {
+        animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+
+      /* Slide Up Entrance */
+      @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-slide-up {
+        animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        opacity: 0; /* Start hidden */
+      }
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+      .delay-500 { animation-delay: 0.5s; }
+
+      /* Shine/Glow Effect */
+      @keyframes shine {
+        0% { background-position: 200% center; }
+        100% { background-position: -200% center; }
+      }
+      .animate-shine {
+        background: linear-gradient(
+          to right,
+          rgba(255,255,255,0) 0%,
+          rgba(255,255,255,0.1) 50%,
+          rgba(255,255,255,0) 100%
+        );
+        background-size: 200% auto;
+        animation: shine 3s linear infinite;
+      }
+
+      /* Background Grid Pattern */
+      .bg-grid-pattern {
+        background-size: 40px 40px;
+        background-image: linear-gradient(to right, var(--border-primary) 1px, transparent 1px),
+                          linear-gradient(to bottom, var(--border-primary) 1px, transparent 1px);
+        mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+      }
+
+      /* Blob Animation */
+      @keyframes blob {
+        0% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(30px, -50px) scale(1.1); }
+        66% { transform: translate(-20px, 20px) scale(0.9); }
+        100% { transform: translate(0px, 0px) scale(1); }
+      }
+      .animate-blob {
+        animation: blob 7s infinite;
+      }
+      .animation-delay-2000 {
+        animation-delay: 2s;
+      }
+      .animation-delay-4000 {
+        animation-delay: 4s;
+      }
+
+      /* Professional Rising Particles Animation */
+      @keyframes rise {
+        0% {
+          bottom: -10%;
+          opacity: 0;
+          transform: translateY(0) translateX(0);
+        }
+        20% {
+          opacity: 0.5;
+        }
+        80% {
+          opacity: 0.5;
+        }
+        100% {
+          bottom: 110%;
+          opacity: 0;
+          transform: translateY(-20px) translateX(10px);
+        }
+      }
+      .animate-rise {
+        position: absolute;
+        animation: rise linear infinite;
+      }
     </style>
   <script type="importmap">
 {

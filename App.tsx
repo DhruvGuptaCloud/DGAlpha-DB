@@ -44,22 +44,23 @@ import { supabase } from './services/supabaseClient';
 import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
 import { useAuth } from './contexts/AuthContext';
 import { AuthModal } from './components/Auth/AuthModal';
+import { LandingPage } from './components/LandingPage';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <div className={`bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl p-4 sm:p-6 relative overflow-hidden ${className}`}>
+  <div className={`bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl sm:rounded-2xl p-4 sm:p-6 relative overflow-hidden transition-all duration-300 hover:shadow-lg ${className}`}>
     {children}
   </div>
 );
 
 const Badge: React.FC<{ children: React.ReactNode; type?: "success" | "danger" | "neutral"; className?: string }> = ({ children, type = "success", className = "" }) => {
   const styles = {
-    success: "text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)]",
-    danger: "text-red-400 bg-red-400/10",
-    neutral: "text-[var(--text-muted)] bg-[var(--bg-surface)]"
+    success: "text-[var(--accent)] bg-[rgba(var(--accent-rgb),0.1)] border border-[var(--accent)]/20",
+    danger: "text-red-400 bg-red-400/10 border border-red-400/20",
+    neutral: "text-[var(--text-muted)] bg-[var(--bg-surface)] border border-[var(--border-secondary)]"
   };
   return (
-    <span className={`px-2 py-1 rounded-md text-xs font-medium ${styles[type]} ${className}`}>
+    <span className={`px-1.5 py-0.5 rounded text-[9px] sm:text-xs font-bold uppercase tracking-wider ${styles[type]} ${className}`}>
       {children}
     </span>
   );
@@ -94,13 +95,13 @@ interface SidebarItemProps {
 const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, onClick }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center px-4 py-3 sm:py-4 transition-all group relative ${
+    className={`w-full flex items-center px-4 py-3 sm:py-4 transition-all duration-200 group relative ${
       isActive 
         ? 'text-[var(--accent)] bg-[var(--bg-surface)] border-r-2 border-[var(--accent)]' 
         : 'text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--accent)] border-r-2 border-transparent'
     }`}
   >
-    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 ${isActive ? 'text-[var(--accent)]' : ''}`} />
+    <Icon className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-[var(--accent)]' : ''}`} />
     <span className={`hidden md:block ml-3 font-medium text-sm tracking-wide text-left ${isActive ? 'text-[var(--text-main)]' : ''}`}>
       {label}
     </span>
@@ -114,13 +115,13 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, 
 const BottomNavItem: React.FC<{ icon: React.ElementType; label: string; isActive?: boolean; onClick?: () => void }> = ({ icon: Icon, label, isActive, onClick }) => (
   <button 
     onClick={onClick}
-    className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-all ${
+    className={`flex-1 flex flex-col items-center justify-center py-2 gap-1 transition-all ${
       isActive 
         ? 'text-[var(--accent)]' 
         : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
     }`}
   >
-    <Icon className={`w-6 h-6 ${isActive ? 'fill-current opacity-20' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
+    <Icon className={`w-5 h-5 ${isActive ? 'fill-current opacity-20' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
     <span className="text-[10px] font-medium truncate max-w-full px-1">{label}</span>
   </button>
 );
@@ -191,6 +192,11 @@ const buybackColumns = [
 
 export default function App() {
   const { user, openAuthModal, signOut, userProfile, loading } = useAuth();
+  
+  // New state to control landing page visibility
+  const [showDemo, setShowDemo] = useState(false);
+  const showLandingPage = !user && !showDemo;
+
   const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker'>('dg-alpha');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
@@ -242,6 +248,9 @@ export default function App() {
   useEffect(() => {
     if (!user && !loading) {
       setActiveTab('dg-alpha');
+      // If user logs out, go back to landing page unless they were already viewing demo
+      // We can leave showDemo as is, or reset it. Let's reset it to show landing page on logout.
+      setShowDemo(false);
     }
   }, [user, loading]);
 
@@ -712,9 +721,25 @@ export default function App() {
     );
   }
 
+  // --- RENDERING LANDING PAGE ---
+  if (showLandingPage) {
+    return (
+      <>
+        <AuthModal />
+        <LandingPage onDemoClick={() => setShowDemo(true)} />
+      </>
+    );
+  }
+
+  // --- RENDERING DASHBOARD ---
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans selection:bg-[var(--accent)] selection:text-black flex transition-colors duration-300 pb-20 md:pb-0">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans selection:bg-[var(--accent)] selection:text-black flex transition-colors duration-300 pb-20 md:pb-0 relative overflow-hidden">
       
+      {/* Dashboard Background Grid */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+         <div className="absolute inset-0 bg-grid-pattern opacity-[0.03]"></div>
+      </div>
+
       <AuthModal />
 
       {/* Mobile Top Bar */}
@@ -870,10 +895,10 @@ export default function App() {
       </div>
 
       {/* Main Content Wrapper */}
-      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-10 pt-20 md:pt-6 relative overflow-x-hidden min-w-0">
+      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-10 pt-20 md:pt-6 relative overflow-x-hidden min-w-0 z-10">
 
         {/* Desktop Top Right Header Controls */}
-        <div className="hidden md:flex absolute top-6 right-6 items-center gap-3 z-50">
+        <div className="hidden md:flex absolute top-6 right-6 items-center gap-3 z-50 animate-in fade-in slide-in-from-top-2 duration-500">
             <button 
                 onClick={toggleTheme}
                 className="px-3 py-2 bg-[var(--bg-card)] border border-[var(--border-secondary)] rounded-lg text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--accent)] transition-all flex items-center gap-2"
@@ -905,13 +930,13 @@ export default function App() {
         </div>
 
         {activeTab === 'dg-alpha' ? (
-          <div className="animate-in fade-in duration-500">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
             {/* Header Section */}
             <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8 pt-2 md:pt-6">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] mb-2 tracking-tight leading-tight">Neuland Laboratories</h1>
                 <div className="flex items-center gap-3">
-                   <span className="px-2 py-0.5 rounded bg-[rgba(var(--accent-rgb),0.2)] text-[var(--accent)] text-xs font-bold border border-[var(--accent)]/30">LIVE</span>
+                   <span className="px-2 py-0.5 rounded bg-[rgba(var(--accent-rgb),0.2)] text-[var(--accent)] text-xs font-bold border border-[var(--accent)]/30 animate-pulse">LIVE</span>
                    <span className="text-[var(--text-muted)] text-sm">Portfolio Dashboard</span>
                 </div>
               </div>
@@ -919,21 +944,21 @@ export default function App() {
               <div className="flex flex-wrap items-center gap-3">
                  <button 
                     onClick={() => setIsCaseStudyModalOpen(true)}
-                    className="bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--border-secondary)] transition-colors flex items-center gap-2 flex-grow sm:flex-grow-0 justify-center"
+                    className="bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--border-secondary)] transition-colors flex items-center gap-2 flex-grow sm:flex-grow-0 justify-center hover:border-[var(--accent)]/50"
                  >
                     <LayoutDashboard className="w-4 h-4 text-[var(--accent)]" />
                     Case Studies
                  </button>
                 <button 
                     onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                    className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-grow sm:flex-grow-0 justify-center"
+                    className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-grow sm:flex-grow-0 justify-center hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)] active:scale-95"
                   >
                     <UserPlus className="w-4 h-4 text-[var(--accent)]" />
                     Get Indicator
                 </button>
                  <button 
                   onClick={handleGenerateReport}
-                  className="bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--border-secondary)] transition-colors flex items-center gap-2 group flex-grow sm:flex-grow-0 justify-center"
+                  className="bg-[var(--bg-surface)] hover:bg-[var(--bg-hover)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--border-secondary)] transition-colors flex items-center gap-2 group flex-grow sm:flex-grow-0 justify-center hover:border-[var(--accent)]/50"
                 >
                   <Sparkles className="w-4 h-4 text-[var(--accent)] group-hover:rotate-12 transition-transform" />
                   AI Report
@@ -942,23 +967,23 @@ export default function App() {
             </div>
 
             {/* Journey Highlight Widget */}
-            <div className="w-full bg-[var(--bg-card)] border border-[var(--border-secondary)] rounded-2xl p-5 sm:p-8 mb-8 shadow-2xl shadow-[rgba(var(--accent-rgb),0.05)] relative overflow-hidden group">
+            <div className="w-full bg-[var(--bg-card)] border border-[var(--border-secondary)] rounded-2xl p-5 sm:p-8 mb-8 shadow-2xl shadow-[rgba(var(--accent-rgb),0.05)] relative overflow-hidden group hover:border-[var(--accent)]/30 transition-all duration-500">
                {/* Decorative background element */}
-               <div className="absolute -top-24 -right-24 w-64 h-64 bg-[rgba(var(--accent-rgb),0.05)] rounded-full blur-3xl pointer-events-none"></div>
+               <div className="absolute -top-24 -right-24 w-64 h-64 bg-[rgba(var(--accent-rgb),0.05)] rounded-full blur-3xl pointer-events-none group-hover:bg-[rgba(var(--accent-rgb),0.1)] transition-colors duration-500"></div>
                
                <div className="relative z-10">
                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-6 sm:mb-8">
-                    <div className="hidden sm:flex w-14 h-14 rounded-xl bg-[var(--accent)] items-center justify-center shrink-0 shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)]">
+                    <div className="hidden sm:flex w-14 h-14 rounded-xl bg-[var(--accent)] items-center justify-center shrink-0 shadow-[0_0_20px_rgba(var(--accent-rgb),0.3)] animate-float">
                        <TrendingUp className="w-8 h-8 text-[var(--text-on-accent)]" />
                     </div>
                     <div>
                        <h2 className="text-xl sm:text-3xl font-bold text-[var(--text-main)] leading-tight tracking-tight mb-2">
-                          I started with <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">18.25x without any Risk</span>
+                          I started with <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">18.25x without any Risk in just 3.6 years</span>
                        </h2>
                     </div>
                  </div>
 
-                 <div className="bg-[var(--bg-surface)]/50 rounded-xl p-4 sm:p-6 border border-[var(--border-secondary)] backdrop-blur-sm">
+                 <div className="bg-[var(--bg-surface)]/50 rounded-xl p-4 sm:p-6 border border-[var(--border-secondary)] backdrop-blur-sm hover:border-[var(--border-secondary)] transition-all">
                     <h3 className="text-base sm:text-lg font-bold text-[var(--text-main)] mb-4 sm:mb-6 flex items-center gap-2 border-b border-[var(--border-secondary)] pb-3">
                       <Sparkles className="w-5 h-5 text-[var(--accent)]" />
                       The "Math" Behind Your Success
@@ -989,66 +1014,66 @@ export default function App() {
             </div>
 
             {/* Hero Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-6">
-              <Card className="col-span-1 sm:col-span-2 lg:col-span-1 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-surface)]">
-                <div className="flex justify-between items-start mb-2 sm:mb-4">
-                  <div className="p-2 bg-[rgba(var(--accent-rgb),0.1)] rounded-lg">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-4 mb-4 sm:mb-6">
+              <Card className="col-span-2 lg:col-span-1 bg-gradient-to-br from-[var(--bg-card)] to-[var(--bg-surface)] !p-4 sm:!p-6 group hover:border-[var(--accent)]/50">
+                <div className="flex justify-between items-start mb-3 sm:mb-4">
+                  <div className="p-1.5 sm:p-2 bg-[rgba(var(--accent-rgb),0.1)] rounded-lg group-hover:scale-110 transition-transform">
                     <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--accent)]" />
                   </div>
                 </div>
-                <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">Total Free Holding Value</p>
+                <p className="text-[var(--text-muted)] text-[10px] sm:text-sm font-medium uppercase tracking-wide">Total Free Holding Value</p>
                 <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] mt-1">₹ {(investmentMetrics.totalValueFree / 100000).toFixed(2)} L</h2>
-                <div className="mt-4 h-1 w-full bg-[var(--border-primary)] rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--accent)] w-[85%]"></div>
+                <div className="mt-3 sm:mt-4 h-1 w-full bg-[var(--border-primary)] rounded-full overflow-hidden">
+                  <div className="h-full bg-[var(--accent)] w-[85%] shadow-[0_0_10px_var(--accent)]"></div>
                 </div>
               </Card>
 
-              <Card>
+              <Card className="col-span-1 !p-3 sm:!p-6 hover:border-green-500/50">
                 <div className="flex justify-between items-start mb-2 sm:mb-4">
-                  <div className="p-2 bg-green-500/10 rounded-lg">
-                    <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  <div className="p-1.5 bg-green-500/10 rounded-lg">
+                    <TrendingUp className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-green-500" />
                   </div>
-                  <Badge type="success">High Perf</Badge>
+                  <span className="text-[9px] sm:text-xs font-bold text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded border border-green-500/20">High Perf</span>
                 </div>
-                <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">Total ROI</p>
-                <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] mt-1">{investmentMetrics.roi}</h2>
-                <p className="text-xs text-[var(--text-dim)] mt-2">Over {investmentMetrics.time}</p>
+                <p className="text-[var(--text-muted)] text-[10px] sm:text-sm font-medium">Total ROI</p>
+                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-main)] mt-0.5">{investmentMetrics.roi}</h2>
+                <p className="text-[10px] sm:text-xs text-[var(--text-dim)] mt-1">Over {investmentMetrics.time}</p>
               </Card>
 
-              <Card>
+              <Card className="col-span-1 !p-3 sm:!p-6 hover:border-blue-500/50">
                 <div className="flex justify-between items-start mb-2 sm:mb-4">
-                  <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+                  <div className="p-1.5 bg-blue-500/10 rounded-lg">
+                    <PieChart className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-blue-500" />
                   </div>
                 </div>
-                <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">Annualised Yield</p>
-                <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] mt-1">{investmentMetrics.annualizedYield}</h2>
-                <p className="text-xs text-[var(--text-dim)] mt-2">ROI/Max DD: {investmentMetrics.ratio}</p>
+                <p className="text-[var(--text-muted)] text-[10px] sm:text-sm font-medium">Annualised Yield</p>
+                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-main)] mt-0.5">{investmentMetrics.annualizedYield}</h2>
+                <p className="text-[10px] sm:text-xs text-[var(--text-dim)] mt-1">ROI/Max DD: {investmentMetrics.ratio}</p>
               </Card>
 
-              <Card>
+              <Card className="col-span-1 !p-3 sm:!p-6 hover:border-red-500/50">
                 <div className="flex justify-between items-start mb-2 sm:mb-4">
-                  <div className="p-2 bg-red-500/10 rounded-lg">
-                    <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
+                  <div className="p-1.5 bg-red-500/10 rounded-lg">
+                    <Activity className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-red-500" />
                   </div>
-                  <Badge type="danger">Risk Low</Badge>
+                  <span className="text-[9px] sm:text-xs font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">Risk Low</span>
                 </div>
-                <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">Max Drawdown</p>
-                <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] mt-1">{investmentMetrics.maxDD}</h2>
-                <p className="text-xs text-[var(--text-dim)] mt-2">Historical Max</p>
+                <p className="text-[var(--text-muted)] text-[10px] sm:text-sm font-medium">Max Drawdown</p>
+                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-main)] mt-0.5">{investmentMetrics.maxDD}</h2>
+                <p className="text-[10px] sm:text-xs text-[var(--text-dim)] mt-1">Historical Max</p>
               </Card>
 
-              <Card>
+              <Card className="col-span-1 !p-3 sm:!p-6 hover:border-purple-500/50">
                 <div className="flex justify-between items-start mb-2 sm:mb-4">
-                  <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
+                  <div className="p-1.5 bg-purple-500/10 rounded-lg">
+                    <DollarSign className="w-3.5 h-3.5 sm:w-5 sm:h-5 text-purple-500" />
                   </div>
-                  <Badge type="neutral">Passive</Badge>
+                  <span className="text-[9px] sm:text-xs font-bold text-[var(--text-muted)] bg-[var(--bg-surface)] px-1.5 py-0.5 rounded border border-[var(--border-secondary)]">Passive</span>
                 </div>
-                <p className="text-[var(--text-muted)] text-xs sm:text-sm font-medium">Dividend Income</p>
-                <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-main)] mt-1">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
-                <p className="text-xs text-[var(--text-dim)] mt-2">
-                  <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Invested (3L)
+                <p className="text-[var(--text-muted)] text-[10px] sm:text-sm font-medium">Dividend Income</p>
+                <h2 className="text-lg sm:text-2xl font-bold text-[var(--text-main)] mt-0.5">₹ {investmentMetrics.dividendsCashflow.toLocaleString()}</h2>
+                <p className="text-[10px] sm:text-xs text-[var(--text-dim)] mt-1">
+                  <span className="text-purple-400 font-bold">{((investmentMetrics.dividendsCashflow / 300000) * 100).toFixed(2)}%</span> of Invested
                 </p>
               </Card>
             </div>
@@ -1191,9 +1216,9 @@ export default function App() {
               </div>
 
               <div className="space-y-6">
-                <Card className="bg-gradient-to-br from-[rgba(var(--accent-rgb),0.2)] to-[var(--bg-main)] border border-[rgba(var(--accent-rgb),0.3)]">
+                <Card className="bg-gradient-to-br from-[rgba(var(--accent-rgb),0.2)] to-[var(--bg-main)] border border-[rgba(var(--accent-rgb),0.3)] hover:shadow-[0_0_20px_rgba(var(--accent-rgb),0.1)]">
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--accent)] flex items-center justify-center shrink-0">
+                    <div className="w-10 h-10 rounded-full bg-[var(--accent)] flex items-center justify-center shrink-0 animate-pulse">
                       <span className="text-[var(--text-on-accent)] font-bold">VK</span>
                     </div>
                     <div>
@@ -1248,7 +1273,7 @@ export default function App() {
                   <h3 className="text-lg font-semibold text-[var(--text-main)] mb-4">Cashflow Impact</h3>
                   <div className="space-y-4">
                     {cashflowData.map((cf, idx) => (
-                      <div key={idx} className="bg-[var(--bg-main)] p-3 rounded-lg border border-[var(--border-primary)] flex justify-between items-center">
+                      <div key={idx} className="bg-[var(--bg-main)] p-3 rounded-lg border border-[var(--border-primary)] flex justify-between items-center hover:bg-[var(--bg-surface)] transition-colors">
                         <div>
                           <div className="text-xs text-[var(--text-muted)] mb-0.5">
                             <span className="text-[var(--text-dim)]">Entry:</span> {cf.entry} <span className="mx-1 text-[var(--text-dim)]">→</span> <span className="text-[var(--text-dim)]">Exit:</span> {cf.exit}
@@ -1280,7 +1305,7 @@ export default function App() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {whyUseSystem.map((item, idx) => (
-                  <Card key={idx} className="bg-[var(--bg-card)] hover:bg-[var(--bg-surface)] transition-colors group border-[var(--border-primary)] hover:border-[var(--accent)]/30">
+                  <Card key={idx} className="bg-[var(--bg-card)] hover:bg-[var(--bg-surface)] transition-colors group border-[var(--border-primary)] hover:border-[var(--accent)]/30 hover:scale-105 duration-300">
                     <div className="mb-4 p-3 rounded-xl bg-[var(--bg-hover)] w-fit text-[var(--text-muted)] group-hover:text-[var(--accent)] group-hover:bg-[rgba(var(--accent-rgb),0.1)] transition-colors">
                       <item.icon className="w-6 h-6" />
                     </div>
@@ -1294,26 +1319,26 @@ export default function App() {
             </div>
           </div>
         ) : activeTab === 'buyback-game' ? (
-          <div className="space-y-12 animate-in fade-in duration-500 pb-12">
+          <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pt-2 md:pt-6">
               <div>
                 <h1 className="text-3xl font-bold text-[var(--text-main)] tracking-tight">Buybacks</h1>
                 <div className="flex items-center gap-3 mt-2">
-                   <span className="bg-[var(--accent)] text-[var(--text-on-accent)] text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider">LIVE MARKET DATA</span>
+                   <span className="bg-[var(--accent)] text-[var(--text-on-accent)] text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider animate-pulse">LIVE MARKET DATA</span>
                    <p className="text-[var(--text-muted)] text-sm">Arbitrage & Special Situations</p>
                 </div>
               </div>
               <div className="flex gap-3 pr-2 sm:pr-0 w-full sm:w-auto">
                  <button 
                   onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                  className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-4 py-2 rounded-lg text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-1 sm:flex-initial justify-center"
+                  className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-4 py-2 rounded-lg text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-1 sm:flex-initial justify-center hover:scale-105"
                  >
                    <UserPlus className="w-4 h-4 text-[var(--accent)]" />
                    Get Indicator
                  </button>
                  <button 
                   onClick={handleBuybackAiReport}
-                  className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--text-on-accent)] border border-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-all font-bold text-xs shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] flex-1 sm:flex-initial justify-center"
+                  className="flex items-center gap-2 px-4 py-2 bg-[var(--accent)] text-[var(--text-on-accent)] border border-[var(--accent)] rounded-lg hover:bg-[var(--accent-hover)] transition-all font-bold text-xs shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] flex-1 sm:flex-initial justify-center hover:scale-105"
                  >
                    <Sparkles className="w-3.5 h-3.5" />
                    AI Insight Report
@@ -1330,13 +1355,13 @@ export default function App() {
                   </div>
                   Active Opportunities
                 </h3>
-                <button onClick={fetchBuybackData} className="text-xs text-[var(--accent)] hover:underline flex items-center gap-1 transition-opacity opacity-80 hover:opacity-100 bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-secondary)]">
-                    <RefreshCw className="w-3 h-3" /> 
+                <button onClick={fetchBuybackData} className="text-xs text-[var(--accent)] hover:underline flex items-center gap-1 transition-opacity opacity-80 hover:opacity-100 bg-[var(--bg-surface)] px-3 py-1.5 rounded-full border border-[var(--border-secondary)] hover:border-[var(--accent)]">
+                    <RefreshCw className={`w-3 h-3 ${isBuybackLoading ? 'animate-spin' : ''}`} /> 
                     <span>{isBuybackLoading ? 'Syncing...' : (lastUpdated ? `Last updated: ${lastUpdated}` : 'Refresh')}</span>
                 </button>
               </div>
               
-              <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl overflow-hidden shadow-2xl">
+              <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl overflow-hidden shadow-2xl hover:border-[var(--accent)]/30 transition-colors duration-500">
                 <div className="relative w-full overflow-x-auto pb-2">
                   {isBuybackLoading ? (
                       <div className="p-16 text-center">
@@ -1484,7 +1509,7 @@ export default function App() {
             
             {/* Footer How To Play */}
             <div className="mt-auto pt-8 border-t border-[var(--border-primary)]">
-                <div className="bg-[var(--bg-card)] rounded-xl p-8 border border-[var(--border-primary)]">
+                <div className="bg-[var(--bg-card)] rounded-xl p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300">
                     <h4 className="text-[var(--text-main)] font-bold text-xl mb-6 flex items-center gap-2">
                         <BookOpen className="w-6 h-6 text-[var(--accent)]" />
                         How to Play this Game
@@ -1508,14 +1533,14 @@ export default function App() {
 
           </div>
         ) : activeTab === 'superstar-tracker' ? (
-          <div className="animate-in fade-in duration-500 h-[calc(100vh-140px)] md:h-[calc(100vh-80px)] flex flex-col">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-[calc(100vh-140px)] md:h-[calc(100vh-80px)] flex flex-col">
             {/* Header Section */}
             <div className="flex-shrink-0 mb-6 pt-2 md:pt-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
                     <div>
                         <h1 className="text-3xl font-bold text-[var(--text-main)] mb-2">Superstar Tracker</h1>
                         <div className="flex items-center gap-2">
-                            <span className="bg-[var(--accent)] text-[var(--text-on-accent)] text-xs font-bold px-2 py-0.5 rounded">LIVE</span>
+                            <span className="bg-[var(--accent)] text-[var(--text-on-accent)] text-xs font-bold px-2 py-0.5 rounded animate-pulse">LIVE</span>
                             <p className="text-[var(--text-muted)] text-sm">Portfolio Dashboard</p>
                         </div>
                     </div>
@@ -1523,14 +1548,14 @@ export default function App() {
                     <div className="flex flex-col sm:flex-row gap-3 pr-2 sm:pr-0 w-full sm:w-auto">
                         <button 
                             onClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }}
-                            className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-4 py-2 rounded-lg text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-1 sm:flex-initial justify-center"
+                            className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-4 py-2 rounded-lg text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-1 sm:flex-initial justify-center hover:scale-105"
                         >
                             <UserPlus className="w-4 h-4 text-[var(--accent)]" />
                             Get DG Indicator
                         </button>
                         <button 
                             onClick={handleSuperstarInsightReport}
-                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-dim)] rounded-lg text-sm font-medium transition-all group flex-1 sm:flex-initial"
+                            className="flex items-center justify-center gap-2 px-4 py-2 bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--text-dim)] rounded-lg text-sm font-medium transition-all group flex-1 sm:flex-initial hover:scale-105"
                         >
                             <Sparkles className="w-4 h-4 text-[var(--accent)] group-hover:animate-pulse" />
                             AI Insight Report
@@ -1624,7 +1649,7 @@ export default function App() {
             </div>
 
             {/* Desktop Table Container */}
-            <div className="hidden md:flex flex-1 overflow-hidden bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-xl flex-col min-h-0">
+            <div className="hidden md:flex flex-1 overflow-hidden bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-xl flex-col min-h-0 hover:border-[var(--accent)]/30 transition-all duration-300">
                 {isSuperstarLoading ? (
                     <div className="flex-1 flex flex-col items-center justify-center">
                         <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin mb-4" />
@@ -1727,7 +1752,7 @@ export default function App() {
             </div>
             
              {/* Decorative background glow */}
-             <div className="fixed bottom-0 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl pointer-events-none -z-10 translate-x-1/2 translate-y-1/2"></div>
+             <div className="fixed bottom-0 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl pointer-events-none -z-10 translate-x-1/2 translate-y-1/2 animate-pulse-slow"></div>
           </div>
         ) : null}
 
@@ -1736,7 +1761,7 @@ export default function App() {
            {!isChatOpen ? (
              <button 
                onClick={() => setIsChatOpen(true)}
-               className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg shadow-[#D2F445]/20 flex items-center justify-center transition-all hover:scale-105 ml-auto"
+               className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg shadow-[#D2F445]/20 flex items-center justify-center transition-all hover:scale-110 active:scale-95 animate-float ml-auto"
              >
                <MessageSquare className="w-6 h-6" />
              </button>
@@ -1756,7 +1781,7 @@ export default function App() {
                 {/* Messages Area */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--bg-main)]/50 custom-scrollbar">
                    {chatHistory.map((msg, i) => (
-                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                         <div className={`max-w-[85%] rounded-xl p-3 text-sm ${
                           msg.role === 'user' 
                             ? 'bg-[#333] text-white rounded-tr-none' 
@@ -1862,7 +1887,7 @@ export default function App() {
             <p className="text-[var(--text-muted)] animate-pulse">Analyzing market data...</p>
           </div>
         ) : (
-          <div className="prose prose-invert max-w-none text-[var(--text-muted)] text-sm sm:text-base">
+          <div className="prose prose-invert max-w-none text-[var(--text-muted)] text-sm sm:text-base animate-in fade-in duration-500">
             <div className="whitespace-pre-wrap">{reportContent}</div>
             
             <div className="mt-8 pt-6 border-t border-[var(--border-primary)] flex justify-end">
@@ -1885,7 +1910,7 @@ export default function App() {
       >
         {isLeadSubmitted ? (
           <div className="text-center py-8">
-            <div className="w-16 h-16 bg-[rgba(var(--accent-rgb),0.1)] rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-[rgba(var(--accent-rgb),0.1)] rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-300">
                <CheckCircle2 className="w-8 h-8 text-[var(--accent)]" />
             </div>
             <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Request Submitted!</h3>
@@ -1898,7 +1923,7 @@ export default function App() {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleLeadSubmit} className="space-y-4">
+          <form onSubmit={handleLeadSubmit} className="space-y-4 animate-in fade-in duration-300">
              <div>
                 <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Full Name</label>
                 <input 
