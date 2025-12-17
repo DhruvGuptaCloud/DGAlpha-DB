@@ -1,13 +1,11 @@
-
 import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateAnalysis = async (prompt: string): Promise<string> => {
   try {
-    // Using gemini-3-flash-preview for basic text analysis tasks as per guidelines
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-2.5-flash',
       contents: prompt,
     });
     return response.text || "Analysis currently unavailable.";
