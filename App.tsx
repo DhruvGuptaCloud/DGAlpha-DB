@@ -792,11 +792,8 @@ export default function App() {
                 </button>
               )}
               
-              <div className="grid grid-cols-2 gap-3">
-                 <button onClick={() => window.open('https://chartink.com/dashboard/406469', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2">
-                    <BarChart2 className="w-4 h-4" /> Market Overview
-                 </button>
-                 <button onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2">
+              <div className="flex flex-col gap-3">
+                 <button onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2 w-full">
                     <Send className="w-4 h-4" /> Telegram Chat
                  </button>
               </div>
@@ -886,6 +883,11 @@ export default function App() {
             label="Superstars" 
             isActive={activeTab === 'superstar-tracker'} 
             onClick={() => handleTabChange('superstar-tracker')} 
+         />
+         <BottomNavItem 
+            icon={BarChart2} 
+            label="Market" 
+            onClick={() => window.open('https://chartink.com/dashboard/406469', '_blank')} 
          />
          <BottomNavItem 
             icon={TrendingUp} 
