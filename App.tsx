@@ -954,7 +954,7 @@ export default function App() {
                     className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-grow sm:flex-grow-0 justify-center hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)] active:scale-95"
                   >
                     <UserPlus className="w-4 h-4 text-[var(--accent)]" />
-                    Get Indicator
+                    Get DG Indicator
                 </button>
                  <button 
                   onClick={handleGenerateReport}
@@ -978,7 +978,7 @@ export default function App() {
                     </div>
                     <div>
                        <h2 className="text-xl sm:text-3xl font-bold text-[var(--text-main)] leading-tight tracking-tight mb-2">
-                          I started with <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono whitespace-nowrap">18.25x without any Risk in just 3.6 years</span>
+                          I started with <span className="text-[var(--accent)] font-black font-mono">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono">18.25x without any Risk in 3.6 Years</span>
                        </h2>
                     </div>
                  </div>
@@ -1079,20 +1079,20 @@ export default function App() {
             </div>
 
             {/* Analytics Widgets Section */}
-            <div className="grid grid-cols-1 gap-6 mb-6">
-              <Card className="w-full">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <Card className="w-full flex flex-col">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold text-[var(--text-main)] flex items-center gap-2">
                     <LineChart className="w-5 h-5 text-[var(--accent)]" />
                     Total Account Value Growth
                   </h3>
                 </div>
-                <div className="w-full h-[250px] sm:h-[300px]">
+                <div className="w-full h-[300px] sm:h-[420px]">
                    <ResponsiveAreaChart data={growthData} />
                 </div>
               </Card>
 
-               <Card className="w-full">
+               <Card className="w-full flex flex-col">
                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                     <h3 className="text-lg font-semibold text-[var(--text-main)] flex items-center gap-2">
@@ -1126,15 +1126,15 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-                <div className="w-full h-[250px] sm:h-[300px]">
+                <div className="w-full h-[300px] sm:h-[420px]">
                    <ResponsiveBarChart data={tradePnL} />
                 </div>
                </Card>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <div className="lg:col-span-2 space-y-6">
-                <Card className="border-[var(--border-secondary)]">
+              <div className="lg:col-span-2 grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <Card className="border-[var(--border-secondary)] h-full">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-[var(--text-main)] flex items-center gap-2">
                       <Layers className="w-5 h-5 text-[var(--accent)]" />
@@ -1154,10 +1154,10 @@ export default function App() {
                           { label: "Annual ROI / Max DD Ratio", value: investmentMetrics.ratio, sub: "Efficiency" },
                         ].map((row, idx) => (
                           <tr key={idx} className="hover:bg-[var(--bg-surface)] transition-colors group">
-                            <td className="px-3 sm:px-4 py-4 text-[var(--text-muted)] font-medium">{row.label}</td>
+                            <td className="px-3 sm:px-4 py-4 text-[var(--text-muted)] font-medium text-xs sm:text-sm">{row.label}</td>
                             <td className="px-3 sm:px-4 py-4 text-right">
-                              <div className="font-bold text-[var(--text-main)]">{row.value}</div>
-                              <div className="text-xs text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors">{row.sub}</div>
+                              <div className="font-bold text-[var(--text-main)] text-xs sm:text-sm">{row.value}</div>
+                              <div className="text-[10px] text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors">{row.sub}</div>
                             </td>
                           </tr>
                         ))}
@@ -1166,7 +1166,7 @@ export default function App() {
                   </div>
                 </Card>
 
-                <Card className="overflow-hidden">
+                <Card className="overflow-hidden h-full">
                    <div className="flex items-center justify-between mb-6">
                     <h3 className="text-lg font-semibold text-[var(--text-main)] flex items-center gap-2">
                       <BarChart3 className="w-5 h-5 text-[var(--accent)]" />
@@ -1174,7 +1174,7 @@ export default function App() {
                     </h3>
                   </div>
                   <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 pb-2">
-                    <table className="w-full text-xs sm:text-sm text-left whitespace-nowrap min-w-[600px]">
+                    <table className="w-full text-xs text-left whitespace-nowrap min-w-[600px]">
                       <thead className="bg-[var(--bg-surface)] text-[var(--text-muted)] font-medium">
                         <tr>
                           <th className="px-3 sm:px-4 py-3 rounded-l-lg">Entry Date</th>
@@ -1258,7 +1258,7 @@ export default function App() {
                       <div key={i} className="flex flex-col items-center gap-2 w-full group cursor-pointer">
                         <div className="relative w-full flex justify-center">
                            <div 
-                            className="w-full bg-[var(--bg-hover)] hover:bg-[var(--accent)] rounded-t-sm transition-all duration-300 relative group-hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]"
+                            className="w-full bg-[rgba(var(--accent-rgb),0.5)] hover:bg-[var(--accent)] rounded-t-sm transition-all duration-300 relative group-hover:shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)]"
                             style={{ height: `${(div.amount / 15) * 100}px` }}
                           ></div>
                           <span className="absolute -top-8 text-xs font-bold text-[var(--text-main)] opacity-0 group-hover:opacity-100 transition-opacity">₹{div.amount}</span>
@@ -1334,7 +1334,7 @@ export default function App() {
                   className="bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] px-4 py-2 rounded-lg text-sm font-medium border border-[var(--accent)] transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(var(--accent-rgb),0.1)] flex-1 sm:flex-initial justify-center hover:scale-105"
                  >
                    <UserPlus className="w-4 h-4 text-[var(--accent)]" />
-                   Get Indicator
+                   Get DG Indicator
                  </button>
                  <button 
                   onClick={handleBuybackAiReport}
@@ -1704,10 +1704,10 @@ export default function App() {
                                             else if (allocation >= 2) allocColorClass = 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
                                             else allocColorClass = 'bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-secondary)]';
                                         } else {
-                                            if (allocation >= 10) allocColorClass = 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold';
-                                            else if (allocation >= 5) allocColorClass = 'bg-sky-100 text-sky-800 border border-sky-300 font-bold';
-                                            else if (allocation >= 2) allocColorClass = 'bg-amber-100 text-amber-800 border border-amber-300 font-bold';
-                                            else allocColorClass = 'bg-slate-100 text-slate-700 border border-slate-200';
+                                            if (allocation >= 10) allocColorClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+                                            else if (allocation >= 5) allocColorClass = 'bg-sky-100 text-sky-800 border-sky-300 font-bold';
+                                            else if (allocation >= 2) allocColorClass = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+                                            else allocColorClass = 'bg-slate-100 text-slate-700 border-slate-200';
                                         }
 
                                         return (
@@ -1785,7 +1785,7 @@ export default function App() {
                         <div className={`max-w-[85%] rounded-xl p-3 text-sm ${
                           msg.role === 'user' 
                             ? 'bg-[#333] text-white rounded-tr-none' 
-                            : 'bg-[rgba(var(--accent-rgb),0.1)] text-[var(--text-muted)] border border-[var(--accent)]/20 rounded-tl-none'
+                            : 'bg-[rgba(var(--accent-rgb),0.1)] text-[var(--text-muted)] border border-[var(--border-accent)]/20 rounded-tl-none'
                         }`}>
                           {msg.text}
                         </div>

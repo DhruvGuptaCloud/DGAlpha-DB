@@ -11,18 +11,16 @@ interface AreaChartProps {
   color?: string;
 }
 
-// Increased base dimensions to reduce text distortion on wide screens
-const CHART_WIDTH = 1200;
-const CHART_HEIGHT = 400;
-
 export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "var(--accent)" }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (!data || data.length === 0) return null;
 
-  const padding = { top: 40, right: 40, bottom: 50, left: 60 };
-  const graphWidth = CHART_WIDTH - padding.left - padding.right;
-  const graphHeight = CHART_HEIGHT - padding.top - padding.bottom;
+  const height = 400;
+  const width = 800;
+  const padding = { top: 40, right: 30, bottom: 60, left: 70 };
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
 
   const maxVal = Math.max(...data.map(d => d.value)) * 1.1;
   const minVal = 0;
@@ -31,7 +29,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
   const getY = (value: number) => padding.top + graphHeight - ((value - minVal) / (maxVal - minVal)) * graphHeight;
 
   const points = data.map((d, i) => `${getX(i)},${getY(d.value)}`).join(' ');
-  const areaPath = `${points} ${getX(data.length - 1)},${CHART_HEIGHT - padding.bottom} ${padding.left},${CHART_HEIGHT - padding.bottom}`;
+  const areaPath = `${points} ${getX(data.length - 1)},${height - padding.bottom} ${padding.left},${height - padding.bottom}`;
 
   const handleExport = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -59,7 +57,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
         <Download className="w-3.5 h-3.5" />
       </button>
 
-      <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="w-full h-full" preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
         <defs>
           <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={color} stopOpacity="0.4" />
@@ -73,8 +71,8 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
           const y = getY(val);
           return (
             <g key={tick}>
-              <line x1={padding.left} y1={y} x2={CHART_WIDTH - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" />
-              <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="12" textAnchor="end">
+              <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" />
+              <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="11" textAnchor="end">
                 ₹{(val / 100000).toFixed(1)}L
               </text>
             </g>
@@ -83,7 +81,7 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
 
         {/* X-Axis Labels */}
         {data.map((d, i) => (
-          <text key={i} x={getX(i)} y={CHART_HEIGHT - 20} fill="var(--text-muted)" fontSize="12" textAnchor="middle">
+          <text key={i} x={getX(i)} y={height - 25} fill="var(--text-muted)" fontSize="11" textAnchor="middle">
             {d.label}
           </text>
         ))}
@@ -97,13 +95,6 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
           const x = getX(i);
           const y = getY(d.value);
           const isHovered = hoveredIndex === i;
-          
-          // Smart Tooltip positioning
-          const isLeftEdge = i < 2;
-          const isRightEdge = i > data.length - 3;
-          let tooltipX = x - 60; // Center default
-          if (isLeftEdge) tooltipX = x + 10;
-          if (isRightEdge) tooltipX = x - 130;
 
           return (
             <g 
@@ -121,13 +112,13 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
               />
               
               {isHovered && (
-                <line x1={x} y1={padding.top} x2={x} y2={CHART_HEIGHT - padding.bottom} stroke="var(--text-muted)" strokeDasharray="4 4" />
+                <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="var(--text-muted)" strokeDasharray="4 4" />
               )}
 
               <circle 
                 cx={x} 
                 cy={y} 
-                r={isHovered ? 6 : 4} 
+                r={isHovered ? 7 : 5} 
                 fill="var(--bg-main)" 
                 stroke={color} 
                 strokeWidth={isHovered ? 3 : 2} 
@@ -137,20 +128,20 @@ export const ResponsiveAreaChart: React.FC<AreaChartProps> = ({ data, color = "v
               {isHovered && (
                 <g>
                   <rect 
-                    x={tooltipX} 
+                    x={x - 70} 
                     y={y - 60} 
-                    width="120" 
-                    height="50" 
+                    width="140" 
+                    height="45" 
                     rx="6" 
-                    fill="var(--bg-card)" 
+                    fill="var(--bg-surface)" 
                     stroke="var(--border-primary)" 
                     strokeWidth="1"
                     className="shadow-xl"
                   />
-                  <text x={tooltipX + 60} y={y - 40} textAnchor="middle" fill={color} fontSize="14" fontWeight="bold">
+                  <text x={x} y={y - 40} textAnchor="middle" fill={color} fontSize="13" fontWeight="bold">
                     ₹ {d.value.toLocaleString()}
                   </text>
-                  <text x={tooltipX + 60} y={y - 22} textAnchor="middle" fill="var(--text-muted)" fontSize="12">
+                  <text x={x} y={y - 25} textAnchor="middle" fill="var(--text-muted)" fontSize="11">
                     Cumulative Value
                   </text>
                 </g>
@@ -178,9 +169,11 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
 
   if (!data || data.length === 0) return null;
 
-  const padding = { top: 40, right: 20, bottom: 50, left: 60 };
-  const graphWidth = CHART_WIDTH - padding.left - padding.right;
-  const graphHeight = CHART_HEIGHT - padding.top - padding.bottom;
+  const height = 400;
+  const width = 800;
+  const padding = { top: 40, right: 30, bottom: 60, left: 70 };
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
   
   const maxVal = Math.max(...data.map(d => d.value)) * 1.2;
   const minVal = Math.min(0, ...data.map(d => d.value)) * 1.2;
@@ -216,19 +209,17 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
         <Download className="w-3.5 h-3.5" />
       </button>
 
-      <svg viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`} className="w-full h-full" preserveAspectRatio="none">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-full" preserveAspectRatio="none">
         
-        {/* Zero Line */}
-        <line x1={padding.left} y1={zeroY} x2={CHART_WIDTH - padding.right} y2={zeroY} stroke="var(--text-muted)" strokeWidth="1" />
+        <line x1={padding.left} y1={zeroY} x2={width - padding.right} y2={zeroY} stroke="var(--text-muted)" strokeWidth="1" />
 
-        {/* Grid Lines */}
         {[maxVal, maxVal/2, minVal].map((val, i) => {
             if (val === 0) return null;
             const y = padding.top + graphHeight - ((val - minVal) / totalRange) * graphHeight;
             return (
               <g key={i}>
-                <line x1={padding.left} y1={y} x2={CHART_WIDTH - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" strokeDasharray="4 4"/>
-                <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="12" textAnchor="end">
+                <line x1={padding.left} y1={y} x2={width - padding.right} y2={y} stroke="var(--chart-grid)" strokeWidth="1" strokeDasharray="4 4"/>
+                <text x={padding.left - 10} y={y + 4} fill="var(--text-muted)" fontSize="10" textAnchor="end">
                   {val >= 100000 || val <= -100000 ? `₹${(val / 100000).toFixed(1)}L` : `₹${(val/1000).toFixed(0)}k`}
                 </text>
               </g>
@@ -257,35 +248,33 @@ export const ResponsiveBarChart: React.FC<BarChartProps> = ({ data }) => {
                 width={barWidth}
                 height={Math.max(barHeight, 2)}
                 fill={isHovered ? (isPositive ? "var(--accent-hover)" : "#ff6b6b") : (isPositive ? "var(--accent)" : "#ef4444")}
-                rx="4"
+                rx="2"
                 className="transition-all duration-300"
               />
               
-              {/* X-Axis Label */}
               <text 
                 x={x + barWidth / 2} 
-                y={CHART_HEIGHT - 20} 
+                y={height - 20} 
                 fill={isHovered ? "var(--text-main)" : "var(--text-muted)"} 
-                fontSize="12" 
+                fontSize="10" 
                 textAnchor="middle"
                 className="transition-colors"
               >
                 {d.label}
               </text>
 
-              {/* Value Label (Top/Bottom of bar) */}
               {isHovered ? (
                 <g>
-                   <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 20} fill={isPositive ? "var(--accent)" : "#ef4444"} fontSize="14" fontWeight="bold" textAnchor="middle">
+                   <text x={x + barWidth / 2} y={val >= 0 ? y - 10 : y + barHeight + 15} fill={isPositive ? "var(--accent)" : "#ef4444"} fontSize="12" fontWeight="bold" textAnchor="middle">
                      {val >= 0 ? `+₹${val.toLocaleString()}` : `-₹${Math.abs(val).toLocaleString()}`}
                    </text>
                 </g>
               ) : (
                 <text 
                   x={x + barWidth / 2} 
-                  y={val >= 0 ? y - 8 : y + barHeight + 16} 
+                  y={val >= 0 ? y - 6 : y + barHeight + 12} 
                   fill={isPositive ? "var(--accent)" : "#ef4444"} 
-                  fontSize="12" 
+                  fontSize="10" 
                   fontWeight="bold" 
                   textAnchor="middle"
                   className="opacity-90"
