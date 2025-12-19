@@ -27,7 +27,7 @@ import {
   BarChart2,
   User,
   RefreshCw,
-  BookOpen,
+  BookOpen, 
   Search,
   AlertCircle,
   Inbox,
@@ -37,7 +37,14 @@ import {
   LogIn,
   LayoutDashboard,
   Menu,
-  MoreHorizontal
+  MoreHorizontal,
+  ArrowUpDown,
+  ChevronUp,
+  ChevronDown,
+  Monitor,
+  Scale,
+  LogOut as ExitIcon,
+  Crown
 } from 'lucide-react';
 import { generateAnalysis } from './services/geminiService';
 import { supabase } from './services/supabaseClient';
@@ -243,6 +250,12 @@ export default function App() {
   const [superstarData, setSuperstarData] = useState<SuperstarEntry[]>([]);
   const [isSuperstarLoading, setIsSuperstarLoading] = useState(false);
   const [superstarSearch, setSuperstarSearch] = useState('');
+  
+  // Superstar Sort State
+  const [superstarSortConfig, setSuperstarSortConfig] = useState<{ key: keyof SuperstarEntry | null, direction: 'asc' | 'desc' }>({
+    key: null,
+    direction: 'asc'
+  });
 
   // Effect to redirect to home tab if user logs out
   useEffect(() => {
@@ -457,14 +470,52 @@ export default function App() {
     }
   }, [activeTab]);
   
+  const handleSuperstarSort = (key: keyof SuperstarEntry) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (superstarSortConfig.key === key && superstarSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSuperstarSortConfig({ key, direction });
+  };
+
   const filteredSuperstarData = useMemo(() => {
     const query = superstarSearch.toLowerCase();
-    return superstarData.filter(row => {
+    let data = superstarData.filter(row => {
       const investor = (row["INVESTOR NAME"] || '').toLowerCase();
       const stock = (row["STOCK NAME"] || '').toLowerCase();
       return investor.includes(query) || stock.includes(query);
     });
-  }, [superstarData, superstarSearch]);
+
+    if (superstarSortConfig.key) {
+      data = [...data].sort((a, b) => {
+        const key = superstarSortConfig.key!;
+        let aVal = a[key];
+        let bVal = b[key];
+
+        // Numeric fields handling
+        if (typeof aVal === 'number' && typeof bVal === 'number') {
+            return superstarSortConfig.direction === 'asc' ? aVal - bVal : bVal - aVal;
+        }
+
+        // Date fields handling (Sept Qtr Holding)
+        if (key === 'Latest Qtr Data') {
+           const aDate = aVal ? new Date(aVal as string).getTime() : 0;
+           const bDate = bVal ? new Date(bVal as string).getTime() : 0;
+           return superstarSortConfig.direction === 'asc' ? aDate - bDate : bDate - aDate;
+        }
+
+        // Default string comparison
+        const aStr = String(aVal || '').toLowerCase();
+        const bStr = String(bVal || '').toLowerCase();
+        
+        if (aStr < bStr) return superstarSortConfig.direction === 'asc' ? -1 : 1;
+        if (aStr > bStr) return superstarSortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+
+    return data;
+  }, [superstarData, superstarSearch, superstarSortConfig]);
 
 
   // --- Gemini Handler Wrappers ---
@@ -808,7 +859,7 @@ export default function App() {
             <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]">
                <Activity className={`w-5 h-5 fill-current text-[var(--text-on-accent)]`} />
             </div>
-            <span className="ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| NCT</span></span>
+            <span className="ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| CNT</span></span>
          </div>
 
          {/* Menu Items */}
@@ -837,7 +888,7 @@ export default function App() {
             />
             <SidebarItem 
               icon={User} 
-              label="Superstar tracker" 
+              label="Superstar Tracker" 
               isActive={activeTab === 'superstar-tracker'}
               onClick={() => handleTabChange('superstar-tracker')}
             />
@@ -857,7 +908,7 @@ export default function App() {
                </button>
             ) : (
                <button onClick={() => openAuthModal('login')} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors w-full text-sm font-medium">
-                  <LogIn className="w-5 h-5" />
+                  <LogIn className="w-4 h-4" />
                   <span>Login</span>
                </button>
             )}
@@ -1535,7 +1586,7 @@ export default function App() {
 
           </div>
         ) : activeTab === 'superstar-tracker' ? (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-[calc(100vh-140px)] md:h-[calc(100vh-80px)] flex flex-col">
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 min-h-[calc(100vh-140px)] flex flex-col pb-12">
             {/* Header Section */}
             <div className="flex-shrink-0 mb-6 pt-2 md:pt-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
@@ -1581,7 +1632,7 @@ export default function App() {
             </div>
 
             {/* Mobile Card View */}
-            <div className="md:hidden flex-1 overflow-y-auto pb-20 space-y-4">
+            <div className="md:hidden space-y-4 mb-8">
                 {isSuperstarLoading ? (
                     <div className="flex flex-col items-center justify-center py-10">
                         <Loader2 className="w-8 h-8 text-[var(--accent)] animate-spin mb-4" />
@@ -1624,16 +1675,16 @@ export default function App() {
                                 </div>
                                 <div className="grid grid-cols-2 gap-3 text-xs border-t border-[var(--border-primary)] pt-3">
                                     <div>
-                                        <span className="block text-[var(--text-dim)]">Holding %</span>
-                                        <span className="font-mono text-[var(--text-main)]">{holding}%</span>
+                                        <span className="block text-[var(--text-dim)]">Sept Qtr Holding</span>
+                                        <span className="font-mono text-[var(--text-muted)]">{latestQtr}</span>
                                     </div>
                                     <div className="text-right">
                                         <span className="block text-[var(--text-dim)]">Portfolio Val</span>
                                         <span className="font-mono text-[var(--text-main)]">₹{formatNumber(portValue)} Cr</span>
                                     </div>
                                     <div>
-                                        <span className="block text-[var(--text-dim)]">Latest Qtr</span>
-                                        <span className="font-mono text-[var(--text-muted)]">{latestQtr}</span>
+                                        <span className="block text-[var(--text-dim)]">Holding %</span>
+                                        <span className="font-mono text-[var(--text-main)]">{holding}%</span>
                                     </div>
                                     <div className="text-right flex justify-end items-end">
                                         <button 
@@ -1651,14 +1702,14 @@ export default function App() {
             </div>
 
             {/* Desktop Table Container */}
-            <div className="hidden md:flex flex-1 overflow-hidden bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-xl flex-col min-h-0 hover:border-[var(--accent)]/30 transition-all duration-300">
+            <div className="hidden md:flex bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-xl flex-col min-h-0 hover:border-[var(--accent)]/30 transition-all duration-300 overflow-hidden mb-8">
                 {isSuperstarLoading ? (
-                    <div className="flex-1 flex flex-col items-center justify-center">
+                    <div className="flex-1 flex flex-col items-center justify-center py-20">
                         <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin mb-4" />
                         <p className="text-[var(--text-muted)] animate-pulse">Fetching superstar portfolios...</p>
                     </div>
                 ) : filteredSuperstarData.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-[var(--text-dim)] p-10">
+                    <div className="flex-1 flex flex-col items-center justify-center text-[var(--text-dim)] p-20">
                          {superstarData.length === 0 ? (
                            <div className="flex flex-col items-center gap-2 text-red-400">
                               <AlertCircle className="w-8 h-8" />
@@ -1674,17 +1725,73 @@ export default function App() {
                     </div>
                 ) : (
                     <>
-                        <div className="flex-1 overflow-auto custom-scrollbar">
-                            <table className="w-full text-left whitespace-nowrap">
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <table className="w-full text-left whitespace-nowrap table-fixed">
                                 <thead className="sticky top-0 z-10 bg-[var(--bg-surface)] shadow-sm">
                                     <tr className="border-b border-[var(--border-primary)]">
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider">Investor Name</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider">Stock Name</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right">Latest Holding %</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right">Latest Qtr</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right">Portfolio Val (Cr)</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right">Stake Val (Cr)</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right">% Allocation</th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('INVESTOR NAME')}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            Investor Name
+                                            <SortIcon columnKey="INVESTOR NAME" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('STOCK NAME')}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            Stock Name
+                                            <SortIcon columnKey="STOCK NAME" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('Latest Holding Percentage')}
+                                        >
+                                          <div className="flex items-center justify-end gap-2">
+                                            Latest Holding %
+                                            <SortIcon columnKey="Latest Holding Percentage" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('Latest Qtr Data')}
+                                        >
+                                          <div className="flex items-center justify-end gap-2">
+                                            Sept Qtr Holding
+                                            <SortIcon columnKey="Latest Qtr Data" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('Portfoilo Value (CR)')}
+                                        >
+                                          <div className="flex items-center justify-end gap-2">
+                                            Portfolio Val (Cr)
+                                            <SortIcon columnKey="Portfoilo Value (CR)" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('Stake Value (CR)')}
+                                        >
+                                          <div className="flex items-center justify-end gap-2">
+                                            Stake Val (Cr)
+                                            <SortIcon columnKey="Stake Value (CR)" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
+                                        <th 
+                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
+                                          onClick={() => handleSuperstarSort('% allocation')}
+                                        >
+                                          <div className="flex items-center justify-end gap-2">
+                                            % Allocation
+                                            <SortIcon columnKey="% allocation" currentSort={superstarSortConfig} />
+                                          </div>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-[var(--border-primary)]">
@@ -1714,13 +1821,13 @@ export default function App() {
 
                                         return (
                                             <tr key={idx} className="group hover:bg-[var(--bg-hover)] transition-colors duration-200">
-                                                <td className="px-6 py-4 font-medium text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors">{investor}</td>
-                                                <td className="px-6 py-4 text-[var(--text-muted)]">
+                                                <td className="px-6 py-4 font-medium text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors overflow-hidden text-ellipsis whitespace-nowrap">{investor}</td>
+                                                <td className="px-6 py-4 text-[var(--text-muted)] overflow-hidden text-ellipsis whitespace-nowrap">
                                                     <div className="flex items-center gap-2">
                                                         {stock}
                                                         <button 
                                                             onClick={() => handleStockSpecificAi(stock, investor)}
-                                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[var(--accent)] hover:text-black rounded text-[var(--accent)]"
+                                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[var(--accent)] hover:text-black rounded text-[var(--accent)] shrink-0"
                                                             title="Ask AI about this stock"
                                                         >
                                                             <Sparkles className="w-3 h-3" />
@@ -1751,6 +1858,195 @@ export default function App() {
                         </div>
                     </>
                 )}
+            </div>
+
+            {/* Footer 1: How to Screen Superstar Stocks */}
+            <div className="mt-8 pt-8 border-t border-[var(--border-primary)] flex-shrink-0">
+                <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-lg">
+                    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-8 flex items-center gap-3">
+                        <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--accent)]" />
+                        How to Screen Superstar Stocks
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-sm sm:text-base text-[var(--text-muted)]">
+                        <div className="space-y-4">
+                            <div className="flex gap-4">
+                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">1</div>
+                                <p className="pt-0.5">Screen all stocks held by selected superstars</p>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">2</div>
+                                <div>
+                                    <p className="pt-0.5 mb-2 font-bold text-[var(--text-main)]">Identify:</p>
+                                    <ul className="list-disc list-inside pl-2 space-y-1 text-[var(--text-dim)]">
+                                        <li>Newly added stocks</li>
+                                        <li>Existing (older) holdings</li>
+                                        <li>Stocks removed from their portfolios</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="flex gap-4">
+                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">3</div>
+                                <p className="pt-0.5">Add all active stocks (new + existing) to the TradingView watchlist & remove stocks no longer held</p>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">4</div>
+                                <p className="pt-0.5">Apply DG Alpha System on all watchlist stocks & monitor for signal generation</p>
+                            </div>
+                            <div className="flex gap-4">
+                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">5</div>
+                                <p className="pt-0.5 text-[var(--text-main)] font-medium">Follow DG Alpha System rules for <span className="text-[var(--accent)] font-bold">Entry and Exit</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer 2: How to Play – DG Alpha Investment Series */}
+            <div className="mt-8 pt-8 flex-shrink-0">
+                <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-xl">
+                    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-10 flex items-center gap-3">
+                        <Zap className="w-8 h-8 sm:w-9 sm:h-9 text-[var(--accent)] animate-pulse" />
+                        How to Play – DG Alpha Investment Series
+                    </h4>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 text-sm sm:text-base text-[var(--text-muted)]">
+                        {/* Column 1: Setup & Rules */}
+                        <div className="space-y-8">
+                            {/* System Setup */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <Monitor className="w-5 h-5 text-[var(--accent)]" /> System Setup
+                                </h5>
+                                <ul className="space-y-3 ml-2">
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <p>Use <span className="text-[var(--text-main)] font-bold">Weekly</span> time frame</p>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <p>Use <span className="text-[var(--text-main)] font-bold">Line chart only</span> (no candlesticks)</p>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <div>
+                                            <p className="mb-2">Apply indicators:</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Alpha</span>
+                                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Vega Gama</span>
+                                            </div>
+                                            <p className="text-xs mt-1.5 text-[var(--text-dim)]">(green = bullish, red = bearish)</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {/* Entry Rules */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <LogIn className="w-5 h-5 text-[var(--accent)]" /> Entry Rules (ALL must be satisfied)
+                                </h5>
+                                <ol className="space-y-3 ml-2 list-decimal list-inside">
+                                    <li className="pl-2">DG Vega Gama line 1 should be <span className="text-[var(--accent)] font-bold">above</span> dotted line</li>
+                                    <li className="pl-2">DG Alpha (price action) is <span className="text-green-400 font-bold">green</span></li>
+                                    <li className="pl-2">Identify a <span className="text-[var(--text-main)] font-bold">curve/jerk</span> in price</li>
+                                    <li className="pl-2">Draw a reference line at the curve peak</li>
+                                    <li className="pl-2 text-[var(--text-main)] font-bold">Enter immediately when price crosses above reference line</li>
+                                    <p className="text-xs italic text-[var(--text-dim)] mt-0.5 ml-6">(no candle-close wait required)</p>
+                                </ol>
+                            </div>
+
+                            {/* Capital Rules */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <Scale className="w-5 h-5 text-[var(--accent)]" /> Capital Rules
+                                </h5>
+                                <ul className="space-y-3 ml-2">
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <p>Divide total capital into <span className="text-[var(--text-main)] font-bold">10 equal parts</span></p>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <p>Invest only <span className="text-[var(--accent)] font-bold">1/10th capital</span> per stock</p>
+                                    </li>
+                                    <li className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                                        <p>Trade <span className="text-[var(--text-main)] font-bold">cash equity only</span></p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* Column 2: Risk, Wealth, Philosophy */}
+                        <div className="space-y-8">
+                            {/* Exit & Risk Management */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <ExitIcon className="w-5 h-5 text-red-400" /> Exit & Risk Management Rules
+                                </h5>
+                                <div className="space-y-4 ml-2">
+                                    <div className="p-3 rounded-lg bg-[rgba(var(--accent-rgb),0.03)] border border-[rgba(var(--accent-rgb),0.08)]">
+                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Break-even rule:</p>
+                                        <p className="text-sm">After <span className="text-green-400 font-bold">+5% move</span>, place GTT at entry</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-red-900/5 border border-red-500/10">
+                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Stop-loss rule:</p>
+                                        <p className="text-sm">Exit if <span className="text-red-400 font-bold">weekly close</span> falls below reference line</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-blue-900/5 border border-blue-500/10">
+                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Loss recovery rule:</p>
+                                        <p className="text-sm">Small loss is <span className="text-blue-400 font-bold">recovered</span> in next winning trade</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Wealth Creation Rule */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <Crown className="w-5 h-5 text-[var(--accent)]" /> Wealth Creation Rule (Core Logic)
+                                </h5>
+                                <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--accent)]/50 shadow-md relative">
+                                    <p className="font-bold text-[var(--text-main)] text-lg mb-3">When stock price doubles (100%):</p>
+                                    <ul className="space-y-2">
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Exit 50%</span> quantity</span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Recover full capital</span></span>
+                                        </li>
+                                        <li className="flex items-center gap-2">
+                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                                            <span className="text-sm">Remaining 50% becomes a <span className="text-[var(--accent)] font-bold">“Free Stock”</span></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Core Philosophy */}
+                            <div>
+                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                                   <BrainCircuit className="w-5 h-5 text-[var(--accent)]" /> Core Philosophy
+                                </h5>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {[
+                                        "Focus on asset accumulation",
+                                        "Recycle capital, minimal risk",
+                                        "Grows through free stocks",
+                                        "Compounding long-term wealth"
+                                    ].map((text, i) => (
+                                        <div key={i} className="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-primary)] text-sm font-medium hover:border-[var(--accent)]/30 transition-colors">
+                                            {text}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
              {/* Decorative background glow */}
@@ -1857,9 +2153,9 @@ export default function App() {
                     </td>
                     <td className="px-4 py-3 text-sm text-[var(--text-muted)] text-center border-r border-[var(--border-primary)]">{study.launchedOn}</td>
                     <td className="px-4 py-3 text-sm text-[var(--text-main)] text-center border-r border-[var(--border-primary)] font-bold">{study.trades}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--accent)] text-right border-r border-[var(--border-primary)] font-mono font-bold">{study.roi.toFixed(1)}</td>
+                    <td className="px-4 py-3 text-sm text-[var(--accent)] text-right border-r border border-[var(--border-primary)] font-mono font-bold">{study.roi.toFixed(1)}</td>
                     <td className="px-4 py-3 text-sm text-[var(--text-muted)] text-center border-r border-[var(--border-primary)]">{study.time}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-main)] text-right border-r border-[var(--border-primary)] font-mono font-bold">{study.annualRoi.toFixed(1)}</td>
+                    <td className="px-4 py-3 text-sm text-[var(--text-main)] text-right border-r border border-[var(--border-primary)] font-mono font-bold">{study.annualRoi.toFixed(1)}</td>
                     <td className="px-4 py-3 text-sm text-red-400 text-center border-r border-[var(--border-primary)]">{study.maxDd}</td>
                     <td className="px-4 py-3 text-sm text-[var(--text-main)] text-right font-mono font-bold">{study.rr.toFixed(1)}</td>
                  </tr>
@@ -2008,3 +2304,13 @@ export default function App() {
     </div>
   );
 }
+
+const SortIcon: React.FC<{ 
+  columnKey: keyof SuperstarEntry, 
+  currentSort: { key: keyof SuperstarEntry | null, direction: 'asc' | 'desc' } 
+}> = ({ columnKey, currentSort }) => {
+  if (currentSort.key !== columnKey) return <ArrowUpDown className="w-3.5 h-3.5 opacity-30 group-hover:opacity-100" />;
+  return currentSort.direction === 'asc' 
+    ? <ChevronUp className="w-3.5 h-3.5 text-[var(--accent)]" /> 
+    : <ChevronDown className="w-3.5 h-3.5 text-[var(--accent)]" />;
+};
