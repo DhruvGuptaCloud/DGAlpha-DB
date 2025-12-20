@@ -133,6 +133,152 @@ const BottomNavItem: React.FC<{ icon: React.ElementType; label: string; isActive
   </button>
 );
 
+// Guide Component to reuse across tabs
+const DGAlphaInvestmentSeriesGuide: React.FC = () => (
+  <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-xl">
+    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-10 flex items-center gap-3">
+        <Zap className="w-8 h-8 sm:w-9 sm:h-9 text-[var(--accent)] animate-pulse" />
+        How to Play – DG Alpha Investment Series
+    </h4>
+    
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 text-sm sm:text-base text-[var(--text-muted)]">
+        {/* Column 1: Setup & Rules */}
+        <div className="space-y-8">
+            {/* System Setup */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <Monitor className="w-5 h-5 text-[var(--accent)]" /> System Setup
+                </h5>
+                <ul className="space-y-3 ml-2">
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <p>Use <span className="text-[var(--text-main)] font-bold">Weekly</span> time frame</p>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <p>Use <span className="text-[var(--text-main)] font-bold">Line chart only</span> (no candlesticks)</p>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <div>
+                            <p className="mb-2">Apply indicators:</p>
+                            <div className="flex flex-wrap gap-2">
+                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Alpha</span>
+                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Vega Gama</span>
+                            </div>
+                            <p className="text-xs mt-1.5 text-[var(--text-dim)]">(green = bullish, red = bearish)</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            {/* Entry Rules */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <LogIn className="w-5 h-5 text-[var(--accent)]" /> Entry Rules (ALL must be satisfied)
+                </h5>
+                <ol className="space-y-3 ml-2 list-decimal list-inside">
+                    <li className="pl-2">DG Vega Gama line 1 should be <span className="text-[var(--accent)] font-bold">above</span> dotted line</li>
+                    <li className="pl-2">DG Alpha (price action) is <span className="text-green-400 font-bold">green</span></li>
+                    <li className="pl-2">Identify a <span className="text-[var(--text-main)] font-bold">curve/jerk</span> in price</li>
+                    <li className="pl-2">Draw a reference line at the curve peak</li>
+                    <li className="pl-2 text-[var(--text-main)] font-bold">Enter immediately when price crosses above reference line</li>
+                    <p className="text-xs italic text-[var(--text-dim)] mt-0.5 ml-6">(no candle-close wait required)</p>
+                </ol>
+            </div>
+
+            {/* Capital Rules */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <Scale className="w-5 h-5 text-[var(--accent)]" /> Capital Rules
+                </h5>
+                <ul className="space-y-3 ml-2">
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <p>Divide total capital into <span className="text-[var(--text-main)] font-bold">10 equal parts</span></p>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <p>Invest only <span className="text-[var(--accent)] font-bold">1/10th capital</span> per stock</p>
+                    </li>
+                    <li className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
+                        <p>Trade <span className="text-[var(--text-main)] font-bold">cash equity only</span></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        {/* Column 2: Risk, Wealth, Philosophy */}
+        <div className="space-y-8">
+            {/* Exit & Risk Management */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <ExitIcon className="w-5 h-5 text-red-400" /> Exit & Risk Management Rules
+                </h5>
+                <div className="space-y-4 ml-2">
+                    <div className="p-3 rounded-lg bg-[rgba(var(--accent-rgb),0.03)] border border-[rgba(var(--accent-rgb),0.08)]">
+                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Break-even rule:</p>
+                        <p className="text-sm">After <span className="text-green-400 font-bold">+5% move</span>, place GTT at entry</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-red-900/5 border border-red-500/10">
+                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Stop-loss rule:</p>
+                        <p className="text-sm">Exit if <span className="text-red-400 font-bold">weekly close</span> falls below reference line</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-blue-900/5 border border-blue-500/10">
+                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Loss recovery rule:</p>
+                        <p className="text-sm">Small loss is <span className="text-blue-400 font-bold">recovered</span> in next winning trade</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Wealth Creation Rule */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <Crown className="w-5 h-5 text-[var(--accent)]" /> Wealth Creation Rule (Core Logic)
+                </h5>
+                <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--accent)]/50 shadow-md relative">
+                    <p className="font-bold text-[var(--text-main)] text-lg mb-3">When stock price doubles (100%):</p>
+                    <ul className="space-y-2">
+                        <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Exit 50%</span> quantity</span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Recover full capital</span></span>
+                        </li>
+                        <li className="flex items-center gap-2">
+                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
+                            <span className="text-sm">Remaining 50% becomes a <span className="text-[var(--accent)] font-bold">“Free Stock”</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {/* Core Philosophy */}
+            <div>
+                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
+                    <BrainCircuit className="w-5 h-5 text-[var(--accent)]" /> Core Philosophy
+                </h5>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                        "Focus on asset accumulation",
+                        "Recycle capital, minimal risk",
+                        "Grows through free stocks",
+                        "Compounding long-term wealth"
+                    ].map((text, i) => (
+                        <div key={i} className="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-primary)] text-sm font-medium hover:border-[var(--accent)]/30 transition-colors">
+                            {text}
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+);
+
 interface BuybackData {
   stock: string;
   buyback: number;
@@ -908,7 +1054,7 @@ export default function App() {
                </button>
             ) : (
                <button onClick={() => openAuthModal('login')} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors w-full text-sm font-medium">
-                  <LogIn className="w-4 h-4" />
+                  <LogIn className="w-5 h-5" />
                   <span>Login</span>
                </button>
             )}
@@ -1369,6 +1515,11 @@ export default function App() {
                   </Card>
                 ))}
               </div>
+            </div>
+
+            {/* Instruction Footer for DG Alpha Tab */}
+            <div className="mt-16 pt-8 border-t border-[var(--border-primary)]">
+               <DGAlphaInvestmentSeriesGuide />
             </div>
           </div>
         ) : activeTab === 'buyback-game' ? (
@@ -1905,148 +2056,7 @@ export default function App() {
 
             {/* Footer 2: How to Play – DG Alpha Investment Series */}
             <div className="mt-8 pt-8 flex-shrink-0">
-                <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-xl">
-                    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-10 flex items-center gap-3">
-                        <Zap className="w-8 h-8 sm:w-9 sm:h-9 text-[var(--accent)] animate-pulse" />
-                        How to Play – DG Alpha Investment Series
-                    </h4>
-                    
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 text-sm sm:text-base text-[var(--text-muted)]">
-                        {/* Column 1: Setup & Rules */}
-                        <div className="space-y-8">
-                            {/* System Setup */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <Monitor className="w-5 h-5 text-[var(--accent)]" /> System Setup
-                                </h5>
-                                <ul className="space-y-3 ml-2">
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <p>Use <span className="text-[var(--text-main)] font-bold">Weekly</span> time frame</p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <p>Use <span className="text-[var(--text-main)] font-bold">Line chart only</span> (no candlesticks)</p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <div>
-                                            <p className="mb-2">Apply indicators:</p>
-                                            <div className="flex flex-wrap gap-2">
-                                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Alpha</span>
-                                                <span className="px-2 py-0.5 rounded-md bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--accent)] font-bold text-xs">DG Vega Gama</span>
-                                            </div>
-                                            <p className="text-xs mt-1.5 text-[var(--text-dim)]">(green = bullish, red = bearish)</p>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            {/* Entry Rules */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <LogIn className="w-5 h-5 text-[var(--accent)]" /> Entry Rules (ALL must be satisfied)
-                                </h5>
-                                <ol className="space-y-3 ml-2 list-decimal list-inside">
-                                    <li className="pl-2">DG Vega Gama line 1 should be <span className="text-[var(--accent)] font-bold">above</span> dotted line</li>
-                                    <li className="pl-2">DG Alpha (price action) is <span className="text-green-400 font-bold">green</span></li>
-                                    <li className="pl-2">Identify a <span className="text-[var(--text-main)] font-bold">curve/jerk</span> in price</li>
-                                    <li className="pl-2">Draw a reference line at the curve peak</li>
-                                    <li className="pl-2 text-[var(--text-main)] font-bold">Enter immediately when price crosses above reference line</li>
-                                    <p className="text-xs italic text-[var(--text-dim)] mt-0.5 ml-6">(no candle-close wait required)</p>
-                                </ol>
-                            </div>
-
-                            {/* Capital Rules */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <Scale className="w-5 h-5 text-[var(--accent)]" /> Capital Rules
-                                </h5>
-                                <ul className="space-y-3 ml-2">
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <p>Divide total capital into <span className="text-[var(--text-main)] font-bold">10 equal parts</span></p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <p>Invest only <span className="text-[var(--accent)] font-bold">1/10th capital</span> per stock</p>
-                                    </li>
-                                    <li className="flex items-start gap-3">
-                                        <div className="w-2 h-2 rounded-full bg-[var(--accent)] mt-2 shrink-0"></div>
-                                        <p>Trade <span className="text-[var(--text-main)] font-bold">cash equity only</span></p>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Column 2: Risk, Wealth, Philosophy */}
-                        <div className="space-y-8">
-                            {/* Exit & Risk Management */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <ExitIcon className="w-5 h-5 text-red-400" /> Exit & Risk Management Rules
-                                </h5>
-                                <div className="space-y-4 ml-2">
-                                    <div className="p-3 rounded-lg bg-[rgba(var(--accent-rgb),0.03)] border border-[rgba(var(--accent-rgb),0.08)]">
-                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Break-even rule:</p>
-                                        <p className="text-sm">After <span className="text-green-400 font-bold">+5% move</span>, place GTT at entry</p>
-                                    </div>
-                                    <div className="p-3 rounded-lg bg-red-900/5 border border-red-500/10">
-                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Stop-loss rule:</p>
-                                        <p className="text-sm">Exit if <span className="text-red-400 font-bold">weekly close</span> falls below reference line</p>
-                                    </div>
-                                    <div className="p-3 rounded-lg bg-blue-900/5 border border-blue-500/10">
-                                        <p className="font-bold text-[var(--text-main)] text-sm mb-0.5">Loss recovery rule:</p>
-                                        <p className="text-sm">Small loss is <span className="text-blue-400 font-bold">recovered</span> in next winning trade</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Wealth Creation Rule */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <Crown className="w-5 h-5 text-[var(--accent)]" /> Wealth Creation Rule (Core Logic)
-                                </h5>
-                                <div className="p-5 rounded-xl bg-[var(--bg-surface)] border border-[var(--accent)]/50 shadow-md relative">
-                                    <p className="font-bold text-[var(--text-main)] text-lg mb-3">When stock price doubles (100%):</p>
-                                    <ul className="space-y-2">
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Exit 50%</span> quantity</span>
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                                            <span className="text-sm"><span className="text-[var(--text-main)] font-bold">Recover full capital</span></span>
-                                        </li>
-                                        <li className="flex items-center gap-2">
-                                            <CheckCircle2 className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                                            <span className="text-sm">Remaining 50% becomes a <span className="text-[var(--accent)] font-bold">“Free Stock”</span></span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            {/* Core Philosophy */}
-                            <div>
-                                <h5 className="text-[var(--text-main)] font-extrabold text-lg sm:text-xl mb-4 flex items-center gap-3">
-                                   <BrainCircuit className="w-5 h-5 text-[var(--accent)]" /> Core Philosophy
-                                </h5>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {[
-                                        "Focus on asset accumulation",
-                                        "Recycle capital, minimal risk",
-                                        "Grows through free stocks",
-                                        "Compounding long-term wealth"
-                                    ].map((text, i) => (
-                                        <div key={i} className="p-3 rounded-lg bg-[var(--bg-surface)] border border-[var(--border-primary)] text-sm font-medium hover:border-[var(--accent)]/30 transition-colors">
-                                            {text}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+               <DGAlphaInvestmentSeriesGuide />
             </div>
             
              {/* Decorative background glow */}
