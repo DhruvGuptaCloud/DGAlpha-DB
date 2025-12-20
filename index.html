@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,43 +12,40 @@
         --bg-main: #000000;
         --bg-sidebar: #050505;
         --bg-card: #111111;
-        --bg-surface: #1a1a1a; /* Used for inputs, hovers, secondary */
+        --bg-surface: #1a1a1a;
         --bg-hover: #222222;
         --border-primary: #222222;
         --border-secondary: #333333;
         --text-main: #ffffff;
-        --text-muted: #9ca3af; /* gray-400 */
-        --text-dim: #6b7280; /* gray-500 */
+        --text-muted: #9ca3af;
+        --text-dim: #6b7280;
         --chart-grid: #222222;
         --chart-text: #666666;
         
-        /* Accent Colors - Neon for Dark Mode */
         --accent: #D2F445;
         --accent-rgb: 210, 244, 69;
         --accent-hover: #c2e33d;
-        --text-on-accent: #000000; /* Black text on Neon */
+        --text-on-accent: #000000;
       }
 
       :root.light {
-        /* Slate Palette for cleaner, professional light mode */
-        --bg-main: #f8fafc;       /* Slate-50 */
-        --bg-sidebar: #ffffff;    /* White */
-        --bg-card: #ffffff;       /* White */
-        --bg-surface: #f1f5f9;    /* Slate-100 */
-        --bg-hover: #e2e8f0;      /* Slate-200 */
-        --border-primary: #e2e8f0;/* Slate-200 */
-        --border-secondary: #cbd5e1;/* Slate-300 */
-        --text-main: #0f172a;     /* Slate-900 */
-        --text-muted: #64748b;    /* Slate-500 */
-        --text-dim: #94a3b8;      /* Slate-400 */
+        --bg-main: #f8fafc;
+        --bg-sidebar: #ffffff;
+        --bg-card: #ffffff;
+        --bg-surface: #f1f5f9;
+        --bg-hover: #e2e8f0;
+        --border-primary: #e2e8f0;
+        --border-secondary: #cbd5e1;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --text-dim: #94a3b8;
         --chart-grid: #e2e8f0;
         --chart-text: #64748b;
 
-        /* Accent Colors - Emerald for Light Mode */
-        --accent: #059669;        /* Emerald-600 */
+        --accent: #059669;
         --accent-rgb: 5, 150, 105;
-        --accent-hover: #047857;  /* Emerald-700 */
-        --text-on-accent: #ffffff; /* White text on Emerald */
+        --accent-hover: #047857;
+        --text-on-accent: #ffffff;
       }
 
       body {
@@ -55,9 +53,9 @@
         color: var(--text-main);
         font-family: 'Plus Jakarta Sans', sans-serif;
         transition: background-color 0.3s ease, color 0.3s ease;
+        margin: 0;
       }
       
-      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
@@ -74,9 +72,6 @@
         background: var(--text-muted);
       }
 
-      /* --- Professional Animations --- */
-      
-      /* Floating Effect */
       @keyframes float {
         0% { transform: translateY(0px); }
         50% { transform: translateY(-10px); }
@@ -85,12 +80,7 @@
       .animate-float {
         animation: float 6s ease-in-out infinite;
       }
-      .animate-float-delayed {
-        animation: float 6s ease-in-out infinite;
-        animation-delay: 3s;
-      }
 
-      /* Slow Pulse for Backgrounds */
       @keyframes pulse-slow {
         0%, 100% { opacity: 0.4; transform: scale(1); }
         50% { opacity: 0.6; transform: scale(1.05); }
@@ -99,21 +89,15 @@
         animation: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
       }
 
-      /* Slide Up Entrance */
       @keyframes slideUpFade {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
       .animate-slide-up {
         animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0; /* Start hidden */
+        opacity: 0;
       }
-      .delay-100 { animation-delay: 0.1s; }
-      .delay-200 { animation-delay: 0.2s; }
-      .delay-300 { animation-delay: 0.3s; }
-      .delay-500 { animation-delay: 0.5s; }
 
-      /* Shine/Glow Effect */
       @keyframes shine {
         0% { background-position: 200% center; }
         100% { background-position: -200% center; }
@@ -129,7 +113,6 @@
         animation: shine 3s linear infinite;
       }
 
-      /* Background Grid Pattern */
       .bg-grid-pattern {
         background-size: 40px 40px;
         background-image: linear-gradient(to right, var(--border-primary) 1px, transparent 1px),
@@ -138,7 +121,6 @@
         -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
       }
 
-      /* Blob Animation */
       @keyframes blob {
         0% { transform: translate(0px, 0px) scale(1); }
         33% { transform: translate(30px, -50px) scale(1.1); }
@@ -148,26 +130,15 @@
       .animate-blob {
         animation: blob 7s infinite;
       }
-      .animation-delay-2000 {
-        animation-delay: 2s;
-      }
-      .animation-delay-4000 {
-        animation-delay: 4s;
-      }
 
-      /* Professional Rising Particles Animation */
       @keyframes rise {
         0% {
           bottom: -10%;
           opacity: 0;
           transform: translateY(0) translateX(0);
         }
-        20% {
-          opacity: 0.5;
-        }
-        80% {
-          opacity: 0.5;
-        }
+        20% { opacity: 0.5; }
+        80% { opacity: 0.5; }
         100% {
           bottom: 110%;
           opacity: 0;
@@ -179,21 +150,23 @@
         animation: rise linear infinite;
       }
     </style>
-  <script type="importmap">
+    <script type="importmap">
 {
   "imports": {
     "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
     "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
     "@supabase/supabase-js": "https://aistudiocdn.com/@supabase/supabase-js@^2.86.2",
-    "vite": "https://aistudiocdn.com/vite@^7.2.6",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
+    "vite": "https://esm.sh/vite@^7.3.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
-</head>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

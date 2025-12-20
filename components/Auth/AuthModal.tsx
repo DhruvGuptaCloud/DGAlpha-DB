@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { X, Activity, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -7,7 +8,14 @@ import { ResetPasswordForm } from './ResetPasswordForm';
 import { UpdatePasswordForm } from './UpdatePasswordForm';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthModalOpen, closeAuthModal, authView, errorMessage, setErrorMessage } = useAuth();
+  const { isAuthModalOpen, closeAuthModal, authView, errorMessage, setErrorMessage, user } = useAuth();
+
+  // Safety fallback: if user is logged in, close the modal
+  useEffect(() => {
+    if (user && isAuthModalOpen) {
+      closeAuthModal();
+    }
+  }, [user, isAuthModalOpen, closeAuthModal]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {

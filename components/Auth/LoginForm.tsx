@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import { Loader2, AlertCircle, Mail, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../../services/supabaseClient';
 import { useAuth } from '../../contexts/AuthContext';
 
 export const LoginForm: React.FC = () => {
-  const { setAuthView } = useAuth();
+  const { setAuthView, closeAuthModal } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,13 +21,17 @@ export const LoginForm: React.FC = () => {
     setNeedsVerification(false);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
-      // AuthContext handles the state update via onAuthStateChange
+      
+      // Explicitly close the modal on success
+      if (data.session) {
+        closeAuthModal();
+      }
     } catch (err: any) {
       if (err.message && (err.message.includes('Email not confirmed') || err.message.includes('Email not verified'))) {
         setNeedsVerification(true);
@@ -53,7 +58,6 @@ export const LoginForm: React.FC = () => {
       
       alert(`Verification email resent to ${email}! Please check your inbox and spam folder.`);
       
-      // Start cooldown timer (60 seconds)
       setResendCooldown(60);
       const interval = setInterval(() => {
         setResendCooldown(prev => {

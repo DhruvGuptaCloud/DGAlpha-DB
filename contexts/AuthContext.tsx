@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { Session, User } from '@supabase/supabase-js';
@@ -30,7 +31,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [authView, setAuthView] = useState<'login' | 'signup' | 'forgot_password' | 'update_password'>('login');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
-  // Ref to track if we are currently handling a URL error to prevent auto-closing via auth state changes
   const isHandlingUrlError = useRef(false);
 
   const fetchProfile = async (userId: string) => {
@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
       
       if (error) {
-        console.error('Error fetching profile:', error);
+        console.warn('Profile not found or fetch error:', error.message);
       } else {
         setUserProfile(data);
       }
@@ -52,17 +52,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
-    // Check URL for error parameters (e.g. expired links)
     const checkUrlErrors = () => {
       const hash = window.location.hash;
-      // Check for common error parameters in the hash
       if (hash && (hash.includes('error=') || hash.includes('error_code='))) {
         const params = new URLSearchParams(hash.substring(1));
         const errorDescription = params.get('error_description');
         const errorCode = params.get('error_code');
         const error = params.get('error');
         
-        // Handle OTP expired, access denied, or general invalid links
         if (
           errorCode === 'otp_expired' || 
           error === 'access_denied' ||
@@ -72,10 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           isHandlingUrlError.current = true;
           const friendlyMessage = errorDescription?.replace(/\+/g, ' ') || "Link expired or invalid. Please request a new one.";
           setErrorMessage(friendlyMessage);
-          setAuthView('forgot_password'); // Redirect to forgot password so they can request new one immediately
+          setAuthView('forgot_password');
           setIsAuthModalOpen(true);
-          
-          // Clear hash to prevent repeated errors on reload
           window.history.replaceState(null, '', window.location.pathname);
         }
       }
@@ -83,53 +78,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     checkUrlErrors();
 
-    // Get initial session
     const initSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        setSession(session);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await fetchProfile(session.user.id);
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        if (currentSession?.user) {
+          fetchProfile(currentSession.user.id);
         }
       } catch (error) {
         console.error("Error initializing session:", error);
       } finally {
+        // Ensure loading is false even if fetch fails
         setLoading(false);
       }
     };
 
     initSession();
 
-    // Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      // Always update session and user from the event
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-
-      if (event === 'SIGNED_IN' && session?.user) {
-        await fetchProfile(session.user.id);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+      
+      if (event === 'SIGNED_IN') {
         setIsAuthModalOpen(false);
-        setErrorMessage(null); // Clear errors on success
+        setErrorMessage(null);
+        if (currentSession?.user) {
+          fetchProfile(currentSession.user.id);
+        }
       } else if (event === 'SIGNED_OUT') {
-        // Clear local profile state
         setUserProfile(null);
         setUser(null);
         setSession(null);
-        
-        // Only close the modal if we are NOT currently displaying a URL-based error (like link expired)
         if (!isHandlingUrlError.current) {
            setIsAuthModalOpen(false);
         }
-        
-        // Reset the ref for future interactions
         isHandlingUrlError.current = false;
       } else if (event === 'PASSWORD_RECOVERY') {
         setAuthView('update_password');
         setIsAuthModalOpen(true);
         setErrorMessage(null);
       }
+      
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -138,30 +131,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const openAuthModal = (view: 'login' | 'signup' = 'login') => {
     setAuthView(view);
     setIsAuthModalOpen(true);
-    setErrorMessage(null); // Clear error when manually opening
+    setErrorMessage(null);
   };
 
   const closeAuthModal = () => {
     setIsAuthModalOpen(false);
-    setAuthView('login'); // Reset to default
+    setAuthView('login');
     setErrorMessage(null);
     isHandlingUrlError.current = false;
   };
 
   const signOut = async () => {
-    // 1. Optimistically clear local state immediately for UI responsiveness
     setUser(null);
     setSession(null);
     setUserProfile(null);
     setIsAuthModalOpen(false);
 
     try {
-      // 2. Call Supabase to invalidate session
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error("Error signing out:", error);
-      }
-      // Note: onAuthStateChange('SIGNED_OUT') will also fire, ensuring synchronization
+      await supabase.auth.signOut();
     } catch (error) {
       console.error("Exception signing out:", error);
     }
