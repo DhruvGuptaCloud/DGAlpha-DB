@@ -447,7 +447,7 @@ export default function App() {
     dividendsCashflow: 13496.5,
     totalValueFree: 5476072.5,
     maxInvested: "3 L (3 Parallel Tracks)",
-    time: "3.6 Yr",
+    time: "3.5 Yr",
     roi: "1825%",
     annualizedYield: "507.04%",
     maxDD: "2.99%",
@@ -1177,7 +1177,7 @@ export default function App() {
                     </div>
                     <div>
                        <h2 className="text-xl sm:text-3xl font-bold text-[var(--text-main)] leading-tight tracking-tight mb-2">
-                          I started with <span className="text-[var(--accent)] font-black font-mono">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono">18.25x without any Risk in 3.6 Years</span>
+                          I started with <span className="text-[var(--accent)] font-black font-mono">₹3 lakhs</span> and grew it to <span className="text-[var(--accent)] font-black font-mono">₹54.76 lakhs</span>, turning my money into <span className="text-[var(--accent)] font-black font-mono">18.25x without any Risk in 3.5 Years</span>
                        </h2>
                     </div>
                  </div>
