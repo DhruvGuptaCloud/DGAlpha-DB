@@ -498,6 +498,12 @@ export default function App() {
     }
   };
 
+  const handleLogoClick = () => {
+    setShowDemo(false);
+    setActiveTab('dg-alpha');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // --- Data ---
   const investmentMetrics = {
     totalQtyFree: 323,
@@ -1028,7 +1034,7 @@ export default function App() {
 
       {/* Mobile Top Bar */}
       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-[var(--bg-sidebar)] border-b border-[var(--border-primary)] flex items-center justify-between px-4 z-40">
-         <div className="flex items-center gap-2">
+         <div onClick={handleLogoClick} className="flex items-center gap-2 cursor-pointer">
             <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]">
                <Activity className={`w-5 h-5 fill-current text-[var(--text-on-accent)]`} />
             </div>
@@ -1106,7 +1112,7 @@ export default function App() {
       {/* Sidebar Navigation (Desktop) */}
       <aside className="hidden md:flex fixed left-0 top-0 h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] md:w-20 lg:w-64 transition-all duration-300 z-40 flex-col">
          {/* Logo Header */}
-         <div className="h-20 flex items-center md:justify-center lg:justify-start md:px-0 lg:px-6 border-b border-[var(--border-primary)]">
+         <div onClick={handleLogoClick} className="h-20 flex items-center md:justify-center lg:justify-start md:px-0 lg:px-6 border-b border-[var(--border-primary)] cursor-pointer hover:bg-[var(--bg-surface)] transition-colors">
             <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]">
                <Activity className={`w-5 h-5 fill-current text-[var(--text-on-accent)]`} />
             </div>
