@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { 
   TrendingUp, 
@@ -24,7 +25,7 @@ import {
   CheckCircle2,
   Repeat,
   LogOut,
-  BarChart2,
+  BarChart2, 
   User,
   RefreshCw,
   BookOpen, 
@@ -45,7 +46,15 @@ import {
   Scale,
   LogOut as ExitIcon,
   Crown,
-  Bot
+  Bot,
+  Command,
+  Briefcase,
+  MapPin,
+  Globe,
+  Mail,
+  Clock,
+  ChevronRight,
+  ChevronRight as ChevronRightIcon
 } from 'lucide-react';
 import { generateAnalysis } from './services/geminiService';
 import { supabase } from './services/supabaseClient';
@@ -54,6 +63,7 @@ import { useAuth } from './contexts/AuthContext';
 import { AuthModal } from './components/Auth/AuthModal';
 import { LandingPage } from './components/LandingPage';
 import NiftyPrediction from './components/NiftyPrediction';
+import { CommandCenter } from './components/CommandCenter';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
@@ -124,15 +134,50 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, 
 const BottomNavItem: React.FC<{ icon: React.ElementType; label: string; isActive?: boolean; onClick?: () => void }> = ({ icon: Icon, label, isActive, onClick }) => (
   <button 
     onClick={onClick}
-    className={`flex-1 flex flex-col items-center justify-center py-2 gap-1 transition-all ${
+    className={`flex-1 min-w-0 flex flex-col items-center justify-center py-2 gap-1 transition-all ${
       isActive 
         ? 'text-[var(--accent)]' 
         : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'
     }`}
   >
     <Icon className={`w-5 h-5 ${isActive ? 'fill-current opacity-20' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
-    <span className="text-[10px] font-medium truncate max-w-full px-1">{label}</span>
+    <span className="text-[10px] font-medium truncate w-full text-center px-0.5">{label}</span>
   </button>
+);
+
+const SuperstarScreeningGuide: React.FC = () => (
+  <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-xl">
+    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-8 flex items-center gap-3">
+        <BookOpen className="w-8 h-8 text-[var(--accent)]" />
+        How to Screen Superstar Stocks
+    </h4>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+        <div className="space-y-8">
+            <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">1</div>
+                <p className="font-medium text-[var(--text-main)] text-base">Screen all stocks held by selected superstars</p>
+            </div>
+            
+            <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">2</div>
+                <p className="font-medium text-[var(--text-main)] text-base">Identify newly added vs removed stocks</p>
+            </div>
+        </div>
+
+        <div className="space-y-8">
+            <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">3</div>
+                <p className="font-medium text-[var(--text-main)] text-base">Apply DG Alpha System to watchlist stocks</p>
+            </div>
+
+            <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] flex items-center justify-center font-bold text-lg shrink-0 shadow-sm">4</div>
+                <p className="font-medium text-[var(--text-main)] text-base">Follow Entry and Exit rules precisely</p>
+            </div>
+        </div>
+    </div>
+  </div>
 );
 
 // Guide Component to reuse across tabs
@@ -352,7 +397,7 @@ export default function App() {
   const [showDemo, setShowDemo] = useState(false);
   const showLandingPage = !user && !showDemo;
 
-  const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction'>('dg-alpha');
+  const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction' | 'command-center' | 'careers'>('dg-alpha');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
   const [reportType, setReportType] = useState<'executive' | 'trade' | 'buyback'>('executive'); 
@@ -377,6 +422,17 @@ export default function App() {
     age: '',
     portfolio: 'Above 1 Lakh',
     phone: ''
+  });
+
+  // Job Application States
+  const [isAppModalOpen, setIsAppModalOpen] = useState(false);
+  const [isAppSubmitted, setIsAppSubmitted] = useState(false);
+  const [isAppSubmitting, setIsAppSubmitting] = useState(false);
+  const [appForm, setAppForm] = useState({
+    name: '',
+    phone: '',
+    college: '',
+    age: ''
   });
   
   // Chat States
@@ -429,7 +485,7 @@ export default function App() {
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   // Protected Route Handler
-  const handleTabChange = (tab: 'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction') => {
+  const handleTabChange = (tab: 'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction' | 'command-center' | 'careers') => {
     if (tab === 'dg-alpha') {
       setActiveTab(tab);
       return;
@@ -911,6 +967,35 @@ export default function App() {
     }
   };
 
+  const handleAppSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAppSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('job_applications')
+        .insert([
+          {
+            name: appForm.name,
+            phone: appForm.phone,
+            college: appForm.college,
+            age: appForm.age ? parseInt(appForm.age) : null,
+            position: 'Internship: Software Developer and Market Enthusiast',
+            submitted_at: new Date().toISOString()
+          }
+        ]);
+
+      if (error) throw error;
+      
+      setIsAppSubmitted(true);
+    } catch (error: any) {
+      console.error('Detailed Supabase Error:', error);
+      alert(`Submission failed: ${error.message || JSON.stringify(error)}`);
+    } finally {
+      setIsAppSubmitting(false);
+    }
+  };
+
   // Prevent rendering until auth is determined
   if (loading) {
     return (
@@ -995,6 +1080,21 @@ export default function App() {
                  <button onClick={() => window.open('https://chartink.com/dashboard/406469', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2 w-full">
                     <BarChart2 className="w-4 h-4" /> Market Overview
                  </button>
+                 
+                 {/* NEW BUTTONS ADDED HERE */}
+                 <button 
+                    onClick={() => { handleTabChange('command-center'); setIsMobileMenuOpen(false); }} 
+                    className={`p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium hover:text-[var(--text-main)] flex items-center gap-2 w-full ${activeTab === 'command-center' ? 'text-[var(--accent)] border-[var(--accent)]' : 'text-[var(--text-muted)]'}`}
+                 >
+                    <Command className="w-4 h-4" /> Tools Center
+                 </button>
+                 <button 
+                    onClick={() => { handleTabChange('careers'); setIsMobileMenuOpen(false); }} 
+                    className={`p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium hover:text-[var(--text-main)] flex items-center gap-2 w-full ${activeTab === 'careers' ? 'text-[var(--accent)] border-[var(--accent)]' : 'text-[var(--text-muted)]'}`}
+                 >
+                    <Briefcase className="w-4 h-4" /> Careers
+                 </button>
+
                  <button onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2 w-full">
                     <Send className="w-4 h-4" /> Telegram Chat
                  </button>
@@ -1010,7 +1110,7 @@ export default function App() {
             <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]">
                <Activity className={`w-5 h-5 fill-current text-[var(--text-on-accent)]`} />
             </div>
-            <span className="hidden lg:block ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| CNT</span></span>
+            <span className="hidden lg:block ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| NCT</span></span>
          </div>
 
          {/* Menu Items */}
@@ -1050,6 +1150,18 @@ export default function App() {
               onClick={() => handleTabChange('nifty-fii-prediction')}
             />
             <SidebarItem 
+              icon={Command} 
+              label="Tools Center" 
+              isActive={activeTab === 'command-center'}
+              onClick={() => handleTabChange('command-center')}
+            />
+            <SidebarItem 
+              icon={Briefcase} 
+              label="Careers" 
+              isActive={activeTab === 'careers'}
+              onClick={() => handleTabChange('careers')}
+            />
+            <SidebarItem 
               icon={Send} 
               label="Chat with us on telegram" 
               onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')}
@@ -1073,7 +1185,7 @@ export default function App() {
       </aside>
 
       {/* Bottom Navigation (Mobile) */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] border-t border-[var(--border-primary)] z-50 flex items-center justify-around px-2 pb-safe-area shadow-[0_-5px_20px_rgba(0,0,0,0.3)] h-16 sm:h-20">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--bg-card)] border-t border-[var(--border-primary)] z-50 flex items-center justify-between px-2 pb-safe-area shadow-[0_-5px_20px_rgba(0,0,0,0.3)] h-16 sm:h-20">
          <BottomNavItem 
             icon={Zap} 
             label="DG Alpha" 
@@ -1098,6 +1210,7 @@ export default function App() {
             isActive={activeTab === 'nifty-fii-prediction'} 
             onClick={() => handleTabChange('nifty-fii-prediction')} 
          />
+         {/* Command Center and Careers removed from here as requested */}
          <BottomNavItem 
             icon={TrendingUp} 
             label="Swing" 
@@ -1960,9 +2073,126 @@ export default function App() {
                     )}
                  </div>
             </div>
+
+            {/* NEW FOOTERS */}
+            <div className="mt-12 space-y-8">
+                <SuperstarScreeningGuide />
+                <DGAlphaInvestmentSeriesGuide />
+            </div>
           </div>
         ) : activeTab === 'nifty-fii-prediction' ? (
            <NiftyPrediction onGetIndicatorClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }} />
+        ) : activeTab === 'command-center' ? (
+           <CommandCenter />
+        ) : activeTab === 'careers' ? (
+           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pt-6 pb-12">
+             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                <div>
+                   <h1 className="text-3xl font-bold text-[var(--text-main)] mb-2 tracking-tight">Careers</h1>
+                   <p className="text-[var(--text-muted)] text-lg">Join the team building the future of financial intelligence.</p>
+                </div>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                 <Card className="p-6 border-t-4 border-t-[var(--accent)] hover:shadow-xl transition-all">
+                     <div className="w-12 h-12 rounded-xl bg-[rgba(var(--accent-rgb),0.1)] flex items-center justify-center mb-4 text-[var(--accent)]">
+                         <BrainCircuit className="w-6 h-6" />
+                     </div>
+                     <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">High Impact Work</h3>
+                     <p className="text-[var(--text-muted)] text-sm leading-relaxed">Solve complex data challenges that directly influence investment decisions.</p>
+                 </Card>
+                 <Card className="p-6 border-t-4 border-t-blue-500 hover:shadow-xl transition-all">
+                     <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 text-blue-500">
+                         <Globe className="w-6 h-6" />
+                     </div>
+                     <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Remote-First</h3>
+                     <p className="text-[var(--text-muted)] text-sm leading-relaxed">Work from anywhere in the world. We care about output, not your location.</p>
+                 </Card>
+                 <Card className="p-6 border-t-4 border-t-purple-500 hover:shadow-xl transition-all">
+                     <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 text-purple-500">
+                         <Zap className="w-6 h-6" />
+                     </div>
+                     <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Meritocracy</h3>
+                     <p className="text-[var(--text-muted)] text-sm leading-relaxed">Flat hierarchy. The best ideas win, regardless of who proposes them.</p>
+                 </Card>
+             </div>
+
+             <h2 className="text-2xl font-bold text-[var(--text-main)] mb-6 flex items-center gap-2">
+                 <Briefcase className="w-6 h-6 text-[var(--accent)]" />
+                 Open Positions
+             </h2>
+
+             {/* Revised Job Card per Screenshot */}
+             <div className="relative p-8 rounded-2xl bg-[var(--bg-card)] border border-indigo-500/50 shadow-[0_0_30px_rgba(99,102,241,0.1)] overflow-hidden group">
+               {/* Top Glow */}
+               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-50"></div>
+               
+               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-8">
+                 <div>
+                     <h3 className="text-2xl sm:text-3xl font-bold text-[var(--text-main)] mb-3">Internship Software Developer and Market Enthusiast</h3>
+                     <div className="flex flex-wrap items-center gap-3 text-sm">
+                         <span className="px-3 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-muted)] flex items-center gap-1.5">
+                             <Clock className="w-3.5 h-3.5" /> Part-Time
+                         </span>
+                         <span className="px-3 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-muted)] flex items-center gap-1.5">
+                             <MapPin className="w-3.5 h-3.5" /> Remote
+                         </span>
+                         <span className="text-indigo-400 font-bold ml-2 text-base">Paid internship</span>
+                     </div>
+                 </div>
+                 <button 
+                     onClick={() => { setIsAppModalOpen(true); setIsAppSubmitted(false); }}
+                     className="px-6 py-3 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-black font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] hover:scale-105 flex items-center gap-2 whitespace-nowrap"
+                 >
+                     Apply Now <ChevronRight className="w-5 h-5" />
+                 </button>
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-[var(--border-secondary)] pt-8">
+                   {/* Key Responsibilities */}
+                   <div>
+                       <h4 className="flex items-center gap-2 font-bold text-[var(--text-main)] mb-4 text-lg">
+                           <Target className="w-5 h-5 text-[var(--accent)]" /> Key Responsibilities
+                       </h4>
+                       <ul className="space-y-3 text-[var(--text-muted)] leading-relaxed">
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Develop workflows using Opal/N8n.
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Integrate websites utilizing AI Studio.
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Conduct backtesting of trading strategies.
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Gain hands-on experience with Portfolio Management Systems (PMS).
+                           </li>
+                       </ul>
+                   </div>
+
+                   {/* Qualifications */}
+                   <div>
+                       <h4 className="flex items-center gap-2 font-bold text-[var(--text-main)] mb-4 text-lg">
+                           <CheckCircle2 className="w-5 h-5 text-[var(--accent)]" /> Qualifications
+                       </h4>
+                       <ul className="space-y-3 text-[var(--text-muted)] leading-relaxed">
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Undergraduate or Graduate degree in Engineering.
+                           </li>
+                           <li className="flex items-start gap-3">
+                               <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-dim)] mt-2 shrink-0"></span>
+                               Familiarity with basic stock market concepts and Artificial Intelligence.
+                           </li>
+                       </ul>
+                   </div>
+               </div>
+             </div>
+           </div>
         ) : null}
 
         {/* --- MODALS --- */}
@@ -2089,6 +2319,65 @@ export default function App() {
                   className="w-full py-3 mt-2 bg-[var(--accent)] text-[var(--text-on-accent)] font-bold rounded-xl hover:bg-[var(--accent-hover)] transition-all shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                >
                   {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Request Access'}
+               </button>
+            </form>
+          )}
+        </Modal>
+
+        {/* Application Form Modal */}
+        <Modal 
+          isOpen={isAppModalOpen} 
+          onClose={() => setIsAppModalOpen(false)} 
+          title="Apply for Internship" 
+          maxWidth="max-w-md"
+        >
+          {isAppSubmitted ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Application Received!</h3>
+              <p className="text-[var(--text-muted)] mb-6">
+                Thank you for applying. We will review your profile and get back to you shortly.
+              </p>
+              <button 
+                onClick={() => setIsAppModalOpen(false)}
+                className="w-full py-3 bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] rounded-xl font-bold hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleAppSubmit} className="space-y-4">
+               <div>
+                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Full Name</label>
+                  <input required type="text" value={appForm.name} onChange={e => setAppForm({...appForm, name: e.target.value})} 
+                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="Your Name" />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">College / University</label>
+                  <input required type="text" value={appForm.college} onChange={e => setAppForm({...appForm, college: e.target.value})} 
+                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="University Name" />
+               </div>
+               <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Age</label>
+                    <input required type="number" value={appForm.age} onChange={e => setAppForm({...appForm, age: e.target.value})} 
+                      className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="Age" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Phone Number</label>
+                    <input required type="tel" value={appForm.phone} onChange={e => setAppForm({...appForm, phone: e.target.value})} 
+                      className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="+91..." />
+                  </div>
+               </div>
+               
+               <button 
+                  type="submit" 
+                  disabled={isAppSubmitting}
+                  className="w-full py-3 mt-4 bg-[var(--accent)] text-[var(--text-on-accent)] font-bold rounded-xl hover:bg-[var(--accent-hover)] transition-all shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+               >
+                  {isAppSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Application'}
                </button>
             </form>
           )}
