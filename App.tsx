@@ -52,6 +52,7 @@ import { ResponsiveAreaChart, ResponsiveBarChart } from './components/Charts';
 import { useAuth } from './contexts/AuthContext';
 import { AuthModal } from './components/Auth/AuthModal';
 import { LandingPage } from './components/LandingPage';
+import NiftyPrediction from './components/NiftyPrediction';
 
 // --- UI Components ---
 const Card: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
@@ -350,7 +351,7 @@ export default function App() {
   const [showDemo, setShowDemo] = useState(false);
   const showLandingPage = !user && !showDemo;
 
-  const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker'>('dg-alpha');
+  const [activeTab, setActiveTab] = useState<'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction'>('dg-alpha');
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isCaseStudyModalOpen, setIsCaseStudyModalOpen] = useState(false);
   const [reportType, setReportType] = useState<'executive' | 'trade' | 'buyback'>('executive'); 
@@ -427,7 +428,7 @@ export default function App() {
   const toggleTheme = () => setIsDarkMode(!isDarkMode);
 
   // Protected Route Handler
-  const handleTabChange = (tab: 'dg-alpha' | 'buyback-game' | 'superstar-tracker') => {
+  const handleTabChange = (tab: 'dg-alpha' | 'buyback-game' | 'superstar-tracker' | 'nifty-fii-prediction') => {
     if (tab === 'dg-alpha') {
       setActiveTab(tab);
       return;
@@ -1039,6 +1040,12 @@ export default function App() {
               onClick={() => handleTabChange('superstar-tracker')}
             />
             <SidebarItem 
+              icon={LineChart} 
+              label="Nifty Fii Prediction" 
+              isActive={activeTab === 'nifty-fii-prediction'}
+              onClick={() => handleTabChange('nifty-fii-prediction')}
+            />
+            <SidebarItem 
               icon={Send} 
               label="Chat with us on telegram" 
               onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')}
@@ -1082,9 +1089,10 @@ export default function App() {
             onClick={() => handleTabChange('superstar-tracker')} 
          />
          <BottomNavItem 
-            icon={BarChart2} 
-            label="Market" 
-            onClick={() => window.open('https://chartink.com/dashboard/406469', '_blank')} 
+            icon={LineChart} 
+            label="Nifty/FII" 
+            isActive={activeTab === 'nifty-fii-prediction'} 
+            onClick={() => handleTabChange('nifty-fii-prediction')} 
          />
          <BottomNavItem 
             icon={TrendingUp} 
@@ -2061,6 +2069,10 @@ export default function App() {
             
              {/* Decorative background glow */}
              <div className="fixed bottom-0 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl pointer-events-none -z-10 translate-x-1/2 translate-y-1/2 animate-pulse-slow"></div>
+          </div>
+        ) : activeTab === 'nifty-fii-prediction' ? (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
+             <NiftyPrediction onGetIndicatorClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }} />
           </div>
         ) : null}
 
