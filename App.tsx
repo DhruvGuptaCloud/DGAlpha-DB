@@ -44,7 +44,8 @@ import {
   Monitor,
   Scale,
   LogOut as ExitIcon,
-  Crown
+  Crown,
+  Bot
 } from 'lucide-react';
 import { generateAnalysis } from './services/geminiService';
 import { supabase } from './services/supabaseClient';
@@ -103,18 +104,18 @@ interface SidebarItemProps {
 const SidebarItem: React.FC<SidebarItemProps> = ({ icon: Icon, label, isActive, onClick }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center px-4 py-3 sm:py-4 transition-all duration-200 group relative ${
+    className={`w-full flex items-center px-4 md:px-0 lg:px-4 py-3 sm:py-4 transition-all duration-200 group relative md:justify-center lg:justify-start ${
       isActive 
         ? 'text-[var(--accent)] bg-[var(--bg-surface)] border-r-2 border-[var(--accent)]' 
         : 'text-[var(--text-muted)] hover:bg-[var(--bg-surface)] hover:text-[var(--accent)] border-r-2 border-transparent'
     }`}
   >
     <Icon className={`w-5 h-5 sm:w-6 sm:h-6 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-[var(--accent)]' : ''}`} />
-    <span className={`hidden md:block ml-3 font-medium text-sm tracking-wide text-left ${isActive ? 'text-[var(--text-main)]' : ''}`}>
+    <span className={`hidden lg:block ml-3 font-medium text-sm tracking-wide text-left ${isActive ? 'text-[var(--text-main)]' : ''}`}>
       {label}
     </span>
-    {/* Tooltip for desktop */}
-    <div className="hidden md:hidden lg:hidden absolute left-14 top-1/2 -translate-y-1/2 bg-[var(--bg-card)] text-[var(--text-main)] text-xs px-2 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 border border-[var(--border-primary)] shadow-xl">
+    {/* Tooltip for tablet (md) only */}
+    <div className="hidden md:block lg:hidden absolute left-16 top-1/2 -translate-y-1/2 bg-[var(--bg-card)] text-[var(--text-main)] text-xs px-2 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50 border border-[var(--border-primary)] shadow-xl">
       {label}
     </div>
   </button>
@@ -991,6 +992,9 @@ export default function App() {
               )}
               
               <div className="flex flex-col gap-3">
+                 <button onClick={() => window.open('https://chartink.com/dashboard/406469', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2 w-full">
+                    <BarChart2 className="w-4 h-4" /> Market Overview
+                 </button>
                  <button onClick={() => window.open('https://t.me/+kEcdam9RulcwMWVl', '_blank')} className="p-3 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg text-left text-sm font-medium text-[var(--text-muted)] hover:text-[var(--text-main)] flex items-center gap-2 w-full">
                     <Send className="w-4 h-4" /> Telegram Chat
                  </button>
@@ -1000,13 +1004,13 @@ export default function App() {
       )}
 
       {/* Sidebar Navigation (Desktop) */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] w-64 transition-all duration-300 z-40 flex-col">
+      <aside className="hidden md:flex fixed left-0 top-0 h-full bg-[var(--bg-sidebar)] border-r border-[var(--border-primary)] md:w-20 lg:w-64 transition-all duration-300 z-40 flex-col">
          {/* Logo Header */}
-         <div className="h-20 flex items-center justify-start px-6 border-b border-[var(--border-primary)]">
+         <div className="h-20 flex items-center md:justify-center lg:justify-start md:px-0 lg:px-6 border-b border-[var(--border-primary)]">
             <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(var(--accent-rgb),0.2)]">
                <Activity className={`w-5 h-5 fill-current text-[var(--text-on-accent)]`} />
             </div>
-            <span className="ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| CNT</span></span>
+            <span className="hidden lg:block ml-3 font-bold text-lg tracking-tight text-[var(--text-main)] truncate">Dhruv Gupta <span className="text-[var(--accent)]">| CNT</span></span>
          </div>
 
          {/* Menu Items */}
@@ -1053,16 +1057,16 @@ export default function App() {
          </div>
 
          {/* Footer Items */}
-         <div className="pb-4 border-t border-[var(--border-primary)] pt-4 p-6">
+         <div className="pb-4 border-t border-[var(--border-primary)] pt-4 md:p-2 lg:p-6 flex flex-col items-center lg:items-start">
             {user ? (
-               <button onClick={signOut} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-red-400 transition-colors w-full text-sm font-medium">
+               <button onClick={signOut} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-red-400 transition-colors w-full text-sm font-medium md:justify-center lg:justify-start">
                   <LogOut className="w-5 h-5" />
-                  <span>Sign Out</span>
+                  <span className="hidden lg:block">Sign Out</span>
                </button>
             ) : (
-               <button onClick={() => openAuthModal('login')} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors w-full text-sm font-medium">
+               <button onClick={() => openAuthModal('login')} className="flex items-center gap-3 text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors w-full text-sm font-medium md:justify-center lg:justify-start">
                   <LogIn className="w-5 h-5" />
-                  <span>Login</span>
+                  <span className="hidden lg:block">Login</span>
                </button>
             )}
          </div>
@@ -1102,7 +1106,7 @@ export default function App() {
       </div>
 
       {/* Main Content Wrapper */}
-      <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-10 pt-20 md:pt-6 relative overflow-x-hidden min-w-0 z-10">
+      <main className="flex-1 md:ml-20 lg:ml-64 p-4 sm:p-6 lg:p-10 pt-20 md:pt-6 relative overflow-x-hidden min-w-0 z-10">
 
         {/* Desktop Top Right Header Controls */}
         <div className="hidden md:flex absolute top-6 right-6 items-center gap-3 z-50 animate-in fade-in slide-in-from-top-2 duration-500">
@@ -1815,524 +1819,332 @@ export default function App() {
                             else if (allocation >= 5) allocColorClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
                             else if (allocation >= 2) allocColorClass = 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30';
                         } else {
-                            if (allocation >= 10) allocColorClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
-                            else if (allocation >= 5) allocColorClass = 'bg-sky-100 text-sky-800 border-sky-300 font-bold';
-                            else if (allocation >= 2) allocColorClass = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
-                            else allocColorClass = 'bg-slate-100 text-slate-700 border-slate-200';
+                            if (allocation >= 10) allocColorClass = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                            else if (allocation >= 5) allocColorClass = 'bg-blue-100 text-blue-700 border-blue-200';
+                            else if (allocation >= 2) allocColorClass = 'bg-yellow-100 text-yellow-700 border-yellow-200';
                         }
 
                         return (
-                            <div key={idx} className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl p-4 shadow-md">
+                            <Card key={idx} className="p-4 border-[var(--border-secondary)]">
                                 <div className="flex justify-between items-start mb-3">
                                     <div>
-                                        <h3 className="font-bold text-[var(--text-main)] text-sm">{stock}</h3>
-                                        <p className="text-xs text-[var(--text-muted)]">{investor}</p>
+                                        <h3 className="font-bold text-[var(--text-main)] text-lg">{stock}</h3>
+                                        <p className="text-xs text-[var(--text-muted)] flex items-center gap-1 mt-1">
+                                            <User className="w-3 h-3" /> {investor}
+                                        </p>
                                     </div>
-                                    <span className={`inline-flex items-center px-2 py-1 rounded-md text-xs font-medium border ${allocColorClass}`}>
+                                    <div className={`px-2 py-1 rounded text-xs font-bold border ${allocColorClass}`}>
                                         {allocation}% Alloc
-                                    </span>
-                                </div>
-                                <div className="grid grid-cols-2 gap-3 text-xs border-t border-[var(--border-primary)] pt-3">
-                                    <div>
-                                        <span className="block text-[var(--text-dim)]">Sept Qtr Holding</span>
-                                        <span className="font-mono text-[var(--text-muted)]">{latestQtr}</span>
-                                    </div>
-                                    <div className="text-right">
-                                        <span className="block text-[var(--text-dim)]">Portfolio Val</span>
-                                        <span className="font-mono text-[var(--text-main)]">₹{formatNumber(portValue)} Cr</span>
-                                    </div>
-                                    <div>
-                                        <span className="block text-[var(--text-dim)]">Holding %</span>
-                                        <span className="font-mono text-[var(--text-main)]">{holding}%</span>
-                                    </div>
-                                    <div className="text-right flex justify-end items-end">
-                                        <button 
-                                            onClick={() => handleStockSpecificAi(stock, investor)}
-                                            className="text-[var(--accent)] flex items-center gap-1 hover:underline"
-                                        >
-                                            <Sparkles className="w-3 h-3" /> AI Insight
-                                        </button>
                                     </div>
                                 </div>
-                            </div>
+                                <div className="grid grid-cols-2 gap-3 text-sm">
+                                    <div className="bg-[var(--bg-surface)] p-2 rounded-lg">
+                                        <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Portfolio Val</p>
+                                        <p className="font-bold text-[var(--text-main)]">₹{formatNumber(portValue)} Cr</p>
+                                    </div>
+                                    <div className="bg-[var(--bg-surface)] p-2 rounded-lg">
+                                        <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Holding %</p>
+                                        <p className="font-bold text-[var(--text-main)]">{holding}</p>
+                                    </div>
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-[var(--border-secondary)] flex justify-between items-center">
+                                    <span className="text-xs text-[var(--text-muted)]">Updated: {latestQtr}</span>
+                                    <button 
+                                        onClick={() => handleStockSpecificAi(stock, investor)}
+                                        className="text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1"
+                                    >
+                                        <Sparkles className="w-3 h-3" /> Insight
+                                    </button>
+                                </div>
+                            </Card>
                         );
                     })
                 )}
             </div>
 
-            {/* Desktop Table Container */}
-            <div className="hidden md:flex bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-xl flex-col min-h-0 hover:border-[var(--accent)]/30 transition-all duration-300 overflow-hidden mb-8">
-                {isSuperstarLoading ? (
-                    <div className="flex-1 flex flex-col items-center justify-center py-20">
-                        <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin mb-4" />
-                        <p className="text-[var(--text-muted)] animate-pulse">Fetching superstar portfolios...</p>
-                    </div>
-                ) : filteredSuperstarData.length === 0 ? (
-                    <div className="flex-1 flex flex-col items-center justify-center text-[var(--text-dim)] p-20">
-                         {superstarData.length === 0 ? (
-                           <div className="flex flex-col items-center gap-2 text-red-400">
-                              <AlertCircle className="w-8 h-8" />
-                              <p>Failed to load data or service unavailable.</p>
-                              <button onClick={fetchSuperstarData} className="text-sm underline hover:text-[var(--text-main)]">Retry</button>
-                           </div>
-                         ) : (
-                           <>
-                             <Inbox className="w-10 h-10 mb-2 opacity-50" />
-                             <p>No matching records found.</p>
-                           </>
-                         )}
-                    </div>
-                ) : (
-                    <>
-                        <div className="overflow-x-auto custom-scrollbar">
-                            <table className="w-full text-left whitespace-nowrap table-fixed">
-                                <thead className="sticky top-0 z-10 bg-[var(--bg-surface)] shadow-sm">
-                                    <tr className="border-b border-[var(--border-primary)]">
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-xl overflow-hidden shadow-xl">
+                 <div className="overflow-x-auto">
+                    {isSuperstarLoading ? (
+                        <div className="flex flex-col items-center justify-center py-20">
+                            <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin mb-4" />
+                            <p className="text-[var(--text-muted)]">Syncing institutional portfolios...</p>
+                        </div>
+                    ) : (
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="bg-[var(--bg-surface)] text-xs uppercase tracking-wider text-[var(--text-muted)] font-bold border-b border-[var(--border-primary)]">
+                                    {[
+                                        { key: 'INVESTOR NAME', label: 'Investor' },
+                                        { key: 'STOCK NAME', label: 'Stock' },
+                                        { key: 'Latest Holding Percentage', label: 'Holding %' },
+                                        { key: 'Portfoilo Value (CR)', label: 'Value (Cr)' },
+                                        { key: '% allocation', label: 'Allocation %' },
+                                        { key: 'Latest Qtr Data', label: 'Latest Qtr' },
+                                        { key: 'action', label: 'AI Insight' }
+                                    ].map((col) => (
                                         <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('INVESTOR NAME')}
+                                            key={col.label} 
+                                            className="px-6 py-4 cursor-pointer hover:bg-[var(--bg-hover)] transition-colors group select-none"
+                                            onClick={() => col.key !== 'action' && handleSuperstarSort(col.key as any)}
                                         >
-                                          <div className="flex items-center gap-2">
-                                            Investor Name
-                                            <SortIcon columnKey="INVESTOR NAME" currentSort={superstarSortConfig} />
-                                          </div>
+                                            <div className="flex items-center gap-2">
+                                                {col.label}
+                                                {col.key !== 'action' && superstarSortConfig.key === col.key && (
+                                                    superstarSortConfig.direction === 'asc' ? <ChevronUp className="w-3 h-3 text-[var(--accent)]" /> : <ChevronDown className="w-3 h-3 text-[var(--accent)]" />
+                                                )}
+                                                {col.key !== 'action' && superstarSortConfig.key !== col.key && (
+                                                    <ArrowUpDown className="w-3 h-3 text-[var(--text-dim)] opacity-0 group-hover:opacity-50" />
+                                                )}
+                                            </div>
                                         </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('STOCK NAME')}
-                                        >
-                                          <div className="flex items-center gap-2">
-                                            Stock Name
-                                            <SortIcon columnKey="STOCK NAME" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('Latest Holding Percentage')}
-                                        >
-                                          <div className="flex items-center justify-end gap-2">
-                                            Latest Holding %
-                                            <SortIcon columnKey="Latest Holding Percentage" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('Latest Qtr Data')}
-                                        >
-                                          <div className="flex items-center justify-end gap-2">
-                                            Sept Qtr Holding
-                                            <SortIcon columnKey="Latest Qtr Data" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('Portfoilo Value (CR)')}
-                                        >
-                                          <div className="flex items-center justify-end gap-2">
-                                            Portfolio Val (Cr)
-                                            <SortIcon columnKey="Portfoilo Value (CR)" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('Stake Value (CR)')}
-                                        >
-                                          <div className="flex items-center justify-end gap-2">
-                                            Stake Val (Cr)
-                                            <SortIcon columnKey="Stake Value (CR)" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                        <th 
-                                          className="px-6 py-4 text-xs font-semibold text-[var(--text-dim)] uppercase tracking-wider text-right cursor-pointer hover:text-[var(--accent)] transition-colors group"
-                                          onClick={() => handleSuperstarSort('% allocation')}
-                                        >
-                                          <div className="flex items-center justify-end gap-2">
-                                            % Allocation
-                                            <SortIcon columnKey="% allocation" currentSort={superstarSortConfig} />
-                                          </div>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-[var(--border-primary)]">
-                                    {filteredSuperstarData.map((row, idx) => {
-                                        const investor = row["INVESTOR NAME"] || '-';
-                                        const stock = row["STOCK NAME"] || '-';
-                                        const holdingRaw = row["Latest Holding Percentage"];
-                                        const holding = holdingRaw !== null ? (parseFloat(holdingRaw.toString()) * 100).toFixed(2) : '-';
-                                        const portValue = row["Portfoilo Value (CR)"];
-                                        const stakeValue = row["Stake Value (CR)"];
-                                        const allocation = parseFloat(row["% allocation"] as any);
-                                        const latestQtr = row["Latest Qtr Data"] ? formatDate(row["Latest Qtr Data"]) : '-';
-                                        
-                                        let allocColorClass = 'bg-[var(--bg-surface)] text-[var(--text-muted)] border-[var(--border-secondary)]';
-                                        
-                                        if (isDarkMode) {
-                                            if (allocation >= 10) allocColorClass = 'bg-[#D2F445]/20 text-[#D2F445] border border-[#D2F445]/30'; 
-                                            else if (allocation >= 5) allocColorClass = 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
-                                            else if (allocation >= 2) allocColorClass = 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
-                                            else allocColorClass = 'bg-[var(--bg-surface)] text-[var(--text-muted)] border border-[var(--border-secondary)]';
-                                        } else {
-                                            if (allocation >= 10) allocColorClass = 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
-                                            else if (allocation >= 5) allocColorClass = 'bg-sky-100 text-sky-800 border-sky-300 font-bold';
-                                            else if (allocation >= 2) allocColorClass = 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
-                                            else allocColorClass = 'bg-slate-100 text-slate-700 border-slate-200';
-                                        }
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-[var(--border-primary)] text-sm">
+                                {filteredSuperstarData.map((row, idx) => {
+                                    const investor = row["INVESTOR NAME"] || '-';
+                                    const stock = row["STOCK NAME"] || '-';
+                                    const holdingRaw = row["Latest Holding Percentage"];
+                                    const holding = holdingRaw !== null ? (parseFloat(holdingRaw.toString()) * 100).toFixed(2) + '%' : '-';
+                                    const portValue = formatNumber(row["Portfoilo Value (CR)"]);
+                                    const allocation = parseFloat(row["% allocation"] as any);
+                                    const latestQtr = row["Latest Qtr Data"] ? formatDate(row["Latest Qtr Data"]) : '-';
 
-                                        return (
-                                            <tr key={idx} className="group hover:bg-[var(--bg-hover)] transition-colors duration-200">
-                                                <td className="px-6 py-4 font-medium text-[var(--text-muted)] group-hover:text-[var(--accent)] transition-colors overflow-hidden text-ellipsis whitespace-nowrap">{investor}</td>
-                                                <td className="px-6 py-4 text-[var(--text-muted)] overflow-hidden text-ellipsis whitespace-nowrap">
-                                                    <div className="flex items-center gap-2">
-                                                        {stock}
-                                                        <button 
-                                                            onClick={() => handleStockSpecificAi(stock, investor)}
-                                                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-[var(--accent)] hover:text-black rounded text-[var(--accent)] shrink-0"
-                                                            title="Ask AI about this stock"
-                                                        >
-                                                            <Sparkles className="w-3 h-3" />
-                                                        </button>
+                                    // Allocation Color Logic (same as mobile)
+                                    let allocStyle = "text-[var(--text-muted)]";
+                                    if (allocation >= 10) allocStyle = "text-emerald-500 font-bold";
+                                    else if (allocation >= 5) allocStyle = "text-blue-400 font-bold";
+                                    else if (allocation >= 2) allocStyle = "text-yellow-400 font-bold";
+
+                                    return (
+                                        <tr key={idx} className="hover:bg-[var(--bg-hover)] transition-colors group">
+                                            <td className="px-6 py-4 font-bold text-[var(--text-main)] flex items-center gap-2">
+                                                <div className="w-6 h-6 rounded-full bg-[var(--bg-surface)] flex items-center justify-center text-[10px] text-[var(--text-muted)] font-bold border border-[var(--border-secondary)]">
+                                                    {investor.charAt(0)}
+                                                </div>
+                                                {investor}
+                                            </td>
+                                            <td className="px-6 py-4 text-[var(--text-muted)]">{stock}</td>
+                                            <td className="px-6 py-4 font-mono text-[var(--text-dim)]">{holding}</td>
+                                            <td className="px-6 py-4 font-mono font-bold text-[var(--text-main)]">₹ {portValue}</td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-16 h-1.5 bg-[var(--bg-surface)] rounded-full overflow-hidden">
+                                                        <div 
+                                                            className={`h-full rounded-full ${allocation >= 10 ? 'bg-emerald-500' : allocation >= 5 ? 'bg-blue-400' : 'bg-yellow-400'}`} 
+                                                            style={{ width: `${Math.min(allocation * 2, 100)}%` }}
+                                                        ></div>
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-muted)] font-mono">{holding}%</td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-muted)] font-mono">{latestQtr}</td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-muted)] font-mono">₹{formatNumber(portValue)}</td>
-                                                <td className="px-6 py-4 text-right text-[var(--text-muted)] font-mono">₹{formatNumber(stakeValue)}</td>
-                                                <td className="px-6 py-4 text-right">
-                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium ${allocColorClass} min-w-[3rem] justify-center shadow-sm`}>
-                                                        {allocation}%
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="px-6 py-3 border-t border-[var(--border-primary)] bg-[var(--bg-main)]/20 flex justify-between items-center text-xs text-[var(--text-dim)] flex-shrink-0">
-                            <span>{filteredSuperstarData.length} records found</span>
-                            <span className="flex items-center gap-1">
-                                <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></div>
-                                Live Data
-                            </span>
-                        </div>
-                    </>
-                )}
+                                                    <span className={`text-xs ${allocStyle}`}>{allocation}%</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-[var(--text-dim)]">{latestQtr}</td>
+                                            <td className="px-6 py-4">
+                                                <button 
+                                                    onClick={() => handleStockSpecificAi(stock, investor)}
+                                                    className="p-2 hover:bg-[var(--bg-surface)] rounded-lg text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
+                                                    title="Get AI Analysis"
+                                                >
+                                                    <Sparkles className="w-4 h-4" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    )}
+                 </div>
             </div>
-
-            {/* Footer 1: How to Screen Superstar Stocks */}
-            <div className="mt-8 pt-8 border-t border-[var(--border-primary)] flex-shrink-0">
-                <div className="bg-[var(--bg-card)] rounded-xl p-6 sm:p-8 border border-[var(--border-primary)] hover:border-[var(--accent)]/30 transition-all duration-300 shadow-lg">
-                    <h4 className="text-[var(--text-main)] font-bold text-2xl sm:text-3xl mb-8 flex items-center gap-3">
-                        <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--accent)]" />
-                        How to Screen Superstar Stocks
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-sm sm:text-base text-[var(--text-muted)]">
-                        <div className="space-y-4">
-                            <div className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">1</div>
-                                <p className="pt-0.5">Screen all stocks held by selected superstars</p>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">2</div>
-                                <div>
-                                    <p className="pt-0.5 mb-2 font-bold text-[var(--text-main)]">Identify:</p>
-                                    <ul className="list-disc list-inside pl-2 space-y-1 text-[var(--text-dim)]">
-                                        <li>Newly added stocks</li>
-                                        <li>Existing (older) holdings</li>
-                                        <li>Stocks removed from their portfolios</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">3</div>
-                                <p className="pt-0.5">Add all active stocks (new + existing) to the TradingView watchlist & remove stocks no longer held</p>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">4</div>
-                                <p className="pt-0.5">Apply DG Alpha System on all watchlist stocks & monitor for signal generation</p>
-                            </div>
-                            <div className="flex gap-4">
-                                <div className="w-7 h-7 rounded-full bg-[var(--bg-surface)] border border-[var(--border-secondary)] flex items-center justify-center shrink-0 font-bold text-[var(--accent)] text-xs">5</div>
-                                <p className="pt-0.5 text-[var(--text-main)] font-medium">Follow DG Alpha System rules for <span className="text-[var(--accent)] font-bold">Entry and Exit</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Footer 2: How to Play – DG Alpha Investment Series */}
-            <div className="mt-8 pt-8 flex-shrink-0">
-               <DGAlphaInvestmentSeriesGuide />
-            </div>
-            
-             {/* Decorative background glow */}
-             <div className="fixed bottom-0 right-0 w-96 h-96 bg-[var(--accent)]/5 rounded-full blur-3xl pointer-events-none -z-10 translate-x-1/2 translate-y-1/2 animate-pulse-slow"></div>
           </div>
         ) : activeTab === 'nifty-fii-prediction' ? (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
-             <NiftyPrediction onGetIndicatorClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }} />
-          </div>
+           <NiftyPrediction onGetIndicatorClick={() => { setIsLeadModalOpen(true); setIsLeadSubmitted(false); }} />
         ) : null}
 
-        {/* Floating Chat Button (Refactored for mobile responsiveness) */}
-        <div className={`fixed z-50 transition-all duration-300 ${isChatOpen ? 'bottom-20 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto' : 'bottom-20 right-4'}`}>
-           {!isChatOpen ? (
-             <button 
-               onClick={() => setIsChatOpen(true)}
-               className="bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-lg shadow-[#D2F445]/20 flex items-center justify-center transition-all hover:scale-110 active:scale-95 animate-float ml-auto"
-             >
-               <MessageSquare className="w-6 h-6" />
-             </button>
-           ) : (
-             <div className="bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl w-full sm:w-96 shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300 h-[60vh] sm:h-[500px]">
-                {/* Chat Header */}
-                <div className="bg-[var(--bg-surface)] p-4 flex items-center justify-between border-b border-[var(--border-primary)]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></div>
-                    <h3 className="font-bold text-sm text-[var(--text-main)]">DG Alpha Assistant</h3>
+        {/* --- MODALS --- */}
+        
+        {/* Report/Insight Modal */}
+        <Modal 
+            isOpen={isReportModalOpen} 
+            onClose={() => setIsReportModalOpen(false)} 
+            title={
+                <div className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-[var(--accent)]" />
+                    <span>DG Alpha Intelligence</span>
+                </div>
+            }
+        >
+            {isGeneratingReport ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="w-10 h-10 text-[var(--accent)] animate-spin mb-4" />
+                    <p className="text-[var(--text-muted)] animate-pulse">Analyzing portfolio data...</p>
+                </div>
+            ) : (
+                <div className="prose prose-sm dark:prose-invert max-w-none text-[var(--text-muted)]">
+                     <div className="whitespace-pre-wrap font-medium leading-relaxed">
+                        {reportContent}
+                     </div>
+                </div>
+            )}
+        </Modal>
+
+        {/* Case Study Modal */}
+        <Modal isOpen={isCaseStudyModalOpen} onClose={() => setIsCaseStudyModalOpen(false)} title="Historical Performance Case Studies" maxWidth="max-w-4xl">
+             <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm whitespace-nowrap">
+                   <thead className="bg-[var(--bg-surface)] text-[var(--text-muted)] font-bold text-xs uppercase">
+                      <tr>
+                         <th className="px-4 py-3">Stock / Strategy</th>
+                         <th className="px-4 py-3">Launch Date</th>
+                         <th className="px-4 py-3 text-center">Trades</th>
+                         <th className="px-4 py-3 text-right">Total ROI %</th>
+                         <th className="px-4 py-3 text-right">Time (Yrs)</th>
+                         <th className="px-4 py-3 text-right">Ann. ROI %</th>
+                         <th className="px-4 py-3 text-right text-red-400">Max DD %</th>
+                         <th className="px-4 py-3 text-right text-[var(--accent)]">ROI/DD Ratio</th>
+                      </tr>
+                   </thead>
+                   <tbody className="divide-y divide-[var(--border-primary)]">
+                      {caseStudies.map((cs, i) => (
+                         <tr key={i} className="hover:bg-[var(--bg-hover)] transition-colors">
+                            <td className="px-4 py-3 font-bold text-[var(--text-main)]">{cs.counter}</td>
+                            <td className="px-4 py-3 text-[var(--text-muted)]">{cs.launchedOn}</td>
+                            <td className="px-4 py-3 text-center text-[var(--text-dim)]">{cs.trades}</td>
+                            <td className="px-4 py-3 text-right font-bold text-green-500">{cs.roi}%</td>
+                            <td className="px-4 py-3 text-right text-[var(--text-muted)]">{cs.time}</td>
+                            <td className="px-4 py-3 text-right font-bold text-[var(--text-main)]">{cs.annualRoi}%</td>
+                            <td className="px-4 py-3 text-right text-red-400 font-medium">{cs.maxDd}%</td>
+                            <td className="px-4 py-3 text-right font-bold text-[var(--accent)]">{cs.rr}</td>
+                         </tr>
+                      ))}
+                   </tbody>
+                </table>
+             </div>
+        </Modal>
+
+        {/* Lead Form Modal */}
+        <Modal 
+          isOpen={isLeadModalOpen} 
+          onClose={() => setIsLeadModalOpen(false)} 
+          title="Get DG Alpha Indicator Access" 
+          maxWidth="max-w-md"
+        >
+          {isLeadSubmitted ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
+                <CheckCircle2 className="w-8 h-8" />
+              </div>
+              <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Request Received!</h3>
+              <p className="text-[var(--text-muted)] mb-6">
+                Our team will review your profile and contact you on <strong>{leadForm.phone}</strong> shortly to set up your indicator access.
+              </p>
+              <button 
+                onClick={() => setIsLeadModalOpen(false)}
+                className="w-full py-3 bg-[var(--bg-surface)] border border-[var(--border-secondary)] text-[var(--text-main)] rounded-xl font-bold hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleLeadSubmit} className="space-y-4">
+               <div>
+                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Full Name</label>
+                  <input required type="text" value={leadForm.name} onChange={e => setLeadForm({...leadForm, name: e.target.value})} 
+                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="Your Name" />
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">City</label>
+                  <input required type="text" value={leadForm.city} onChange={e => setLeadForm({...leadForm, city: e.target.value})} 
+                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="City" />
+               </div>
+               <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Age</label>
+                    <input required type="number" value={leadForm.age} onChange={e => setLeadForm({...leadForm, age: e.target.value})} 
+                      className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="Age" />
                   </div>
-                  <button onClick={() => setIsChatOpen(false)} className="text-[var(--text-muted)] hover:text-[var(--text-main)] p-1">
-                    <X className="w-5 h-5" />
-                  </button>
+                  <div>
+                    <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Portfolio Size</label>
+                    <select value={leadForm.portfolio} onChange={e => setLeadForm({...leadForm, portfolio: e.target.value})}
+                      className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none">
+                       <option>Above 1 Lakh</option>
+                       <option>Above 5 Lakhs</option>
+                       <option>Above 10 Lakhs</option>
+                       <option>Above 50 Lakhs</option>
+                    </select>
+                  </div>
+               </div>
+               <div>
+                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Phone Number (WhatsApp)</label>
+                  <input required type="tel" value={leadForm.phone} onChange={e => setLeadForm({...leadForm, phone: e.target.value})} 
+                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] outline-none" placeholder="+91 XXXXX XXXXX" />
+               </div>
+               <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full py-3 mt-2 bg-[var(--accent)] text-[var(--text-on-accent)] font-bold rounded-xl hover:bg-[var(--accent-hover)] transition-all shadow-[0_0_15px_rgba(var(--accent-rgb),0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+               >
+                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Request Access'}
+               </button>
+            </form>
+          )}
+        </Modal>
+
+        {/* Floating Chat Button (Bottom Right) */}
+        {!isChatOpen && (
+           <button 
+             onClick={() => setIsChatOpen(true)}
+             className="fixed bottom-20 md:bottom-6 right-6 w-14 h-14 bg-[var(--accent)] rounded-full shadow-[0_0_20px_rgba(var(--accent-rgb),0.4)] flex items-center justify-center hover:scale-110 transition-transform z-40 animate-bounce-slow"
+           >
+             <MessageSquare className="w-7 h-7 text-[var(--text-on-accent)] fill-current" />
+           </button>
+        )}
+
+        {/* Chat Window */}
+        {isChatOpen && (
+            <div className="fixed bottom-20 md:bottom-6 right-6 w-[90vw] md:w-[350px] h-[500px] bg-[var(--bg-card)] border border-[var(--border-primary)] rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+                <div className="bg-[var(--accent)] p-4 flex justify-between items-center text-[var(--text-on-accent)]">
+                    <div className="flex items-center gap-2">
+                        <Bot className="w-5 h-5" />
+                        <span className="font-bold">DG Alpha AI</span>
+                    </div>
+                    <button onClick={() => setIsChatOpen(false)} className="hover:bg-black/10 p-1 rounded">
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
                 
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[var(--bg-main)]/50 custom-scrollbar">
-                   {chatHistory.map((msg, i) => (
-                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
-                        <div className={`max-w-[85%] rounded-xl p-3 text-sm ${
-                          msg.role === 'user' 
-                            ? 'bg-[#333] text-white rounded-tr-none' 
-                            : 'bg-[rgba(var(--accent-rgb),0.1)] text-[var(--text-muted)] border border-[var(--border-accent)]/20 rounded-tl-none'
-                        }`}>
-                          {msg.text}
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-[var(--bg-surface)]">
+                    {chatHistory.map((msg, i) => (
+                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-[80%] p-3 rounded-xl text-sm ${msg.role === 'user' ? 'bg-[var(--accent)] text-[var(--text-on-accent)] rounded-tr-none' : 'bg-[var(--bg-card)] border border-[var(--border-secondary)] text-[var(--text-main)] rounded-tl-none shadow-sm'}`}>
+                                {msg.text}
+                            </div>
                         </div>
-                     </div>
-                   ))}
-                   {isChatLoading && (
-                     <div className="flex justify-start">
-                        <div className="bg-[rgba(var(--accent-rgb),0.1)] p-3 rounded-xl rounded-tl-none">
-                           <Loader2 className="w-4 h-4 animate-spin text-[var(--accent)]" />
+                    ))}
+                    {isChatLoading && (
+                        <div className="flex justify-start">
+                            <div className="bg-[var(--bg-card)] border border-[var(--border-secondary)] p-3 rounded-xl rounded-tl-none">
+                                <Loader2 className="w-4 h-4 text-[var(--accent)] animate-spin" />
+                            </div>
                         </div>
-                     </div>
-                   )}
+                    )}
                 </div>
 
-                {/* Input Area */}
-                <form onSubmit={handleChatSubmit} className="p-3 bg-[var(--bg-surface)] border-t border-[var(--border-primary)] flex gap-2 pb-safe-area">
-                  <input 
-                    type="text" 
-                    value={chatQuery}
-                    onChange={(e) => setChatQuery(e.target.value)}
-                    placeholder="Ask about your returns..."
-                    className="flex-1 bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-3 py-3 text-base sm:text-sm text-[var(--text-main)] focus:outline-none focus:border-[var(--accent)] placeholder:[var(--text-dim)]"
-                  />
-                  <button 
-                    type="submit"
-                    disabled={isChatLoading || !chatQuery.trim()}
-                    className="bg-[var(--accent)] text-[var(--text-on-accent)] p-3 rounded-lg hover:bg-[var(--accent-hover)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
+                <form onSubmit={handleChatSubmit} className="p-3 bg-[var(--bg-card)] border-t border-[var(--border-primary)] flex gap-2">
+                    <input 
+                        value={chatQuery}
+                        onChange={(e) => setChatQuery(e.target.value)}
+                        placeholder="Ask about Neuland..." 
+                        className="flex-1 bg-[var(--bg-surface)] border border-[var(--border-secondary)] rounded-lg px-3 py-2 text-sm text-[var(--text-main)] outline-none focus:border-[var(--accent)]"
+                    />
+                    <button type="submit" disabled={!chatQuery.trim() || isChatLoading} className="p-2 bg-[var(--accent)] rounded-lg text-[var(--text-on-accent)] hover:bg-[var(--accent-hover)] disabled:opacity-50 transition-colors">
+                        <Send className="w-4 h-4" />
+                    </button>
                 </form>
-             </div>
-           )}
-        </div>
-
-      {/* Case Study Modal */}
-      <Modal
-        isOpen={isCaseStudyModalOpen}
-        onClose={() => setIsCaseStudyModalOpen(false)}
-        title={
-          <div className="flex items-center gap-2">
-            <LayoutDashboard className="w-5 h-5 text-[var(--accent)]" />
-            <span>Dashboard Manager - Case Studies</span>
-          </div>
-        }
-        maxWidth="max-w-5xl"
-      >
-        <div className="overflow-x-auto pb-4">
-          <table className="w-full text-left border-collapse border-spacing-0 whitespace-nowrap">
-             <thead>
-               <tr className="border-b border-[var(--border-primary)] bg-[var(--bg-surface)]">
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider sticky left-0 bg-[var(--bg-surface)] z-10">Counter</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-center">Launched On</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-center">Trades</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-right">ROI (%)</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-center">Inv. Time (Yr)</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-right">Annual ROI</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-center">Max DD (%)</th>
-                 <th className="px-4 py-3 text-xs font-bold text-[var(--accent)] uppercase tracking-wider text-right">RR Ratio</th>
-               </tr>
-             </thead>
-             <tbody className="divide-y divide-[var(--border-primary)]">
-               {caseStudies.map((study, idx) => (
-                 <tr key={idx} className="hover:bg-[var(--bg-hover)] transition-colors group">
-                    <td className="px-4 py-3 text-sm font-medium text-[var(--text-main)] border-r border-[var(--border-primary)] bg-[var(--bg-card)] sticky left-0 group-hover:bg-[var(--bg-hover)] z-10 shadow-[2px_0_5px_rgba(0,0,0,0.1)]">
-                      {study.counter}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-muted)] text-center border-r border-[var(--border-primary)]">{study.launchedOn}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-main)] text-center border-r border-[var(--border-primary)] font-bold">{study.trades}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--accent)] text-right border-r border border-[var(--border-primary)] font-mono font-bold">{study.roi.toFixed(1)}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-muted)] text-center border-r border-[var(--border-primary)]">{study.time}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-main)] text-right border-r border border-[var(--border-primary)] font-mono font-bold">{study.annualRoi.toFixed(1)}</td>
-                    <td className="px-4 py-3 text-sm text-red-400 text-center border-r border-[var(--border-primary)]">{study.maxDd}</td>
-                    <td className="px-4 py-3 text-sm text-[var(--text-main)] text-right font-mono font-bold">{study.rr.toFixed(1)}</td>
-                 </tr>
-               ))}
-             </tbody>
-          </table>
-        </div>
-        <div className="mt-4 text-xs text-[var(--text-dim)] flex justify-end">
-           * Historical performance data of featured system strategies.
-        </div>
-      </Modal>
-
-      {/* AI Report Modal */}
-      <Modal 
-        isOpen={isReportModalOpen} 
-        onClose={() => setIsReportModalOpen(false)}
-        title={
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[var(--accent)]" />
-            <span>AI Insight Report</span>
-          </div>
-        }
-      >
-        {isGeneratingReport ? (
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-[var(--accent)] animate-spin mb-4" />
-            <p className="text-[var(--text-muted)] animate-pulse">Analyzing market data...</p>
-          </div>
-        ) : (
-          <div className="prose prose-invert max-w-none text-[var(--text-muted)] text-sm sm:text-base animate-in fade-in duration-500">
-            <div className="whitespace-pre-wrap">{reportContent}</div>
-            
-            <div className="mt-8 pt-6 border-t border-[var(--border-primary)] flex justify-end">
-               <button 
-                onClick={() => setIsReportModalOpen(false)}
-                className="px-4 py-2 bg-[var(--bg-hover)] hover:bg-[var(--bg-surface)] text-[var(--text-main)] rounded-lg text-sm font-medium transition-colors"
-               >
-                 Close Report
-               </button>
             </div>
-          </div>
         )}
-      </Modal>
-
-      {/* Lead Generation Modal */}
-      <Modal
-        isOpen={isLeadModalOpen}
-        onClose={() => setIsLeadModalOpen(false)}
-        title="Get DG Indicator Access"
-      >
-        {isLeadSubmitted ? (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 bg-[rgba(var(--accent-rgb),0.1)] rounded-full flex items-center justify-center mx-auto mb-4 animate-in zoom-in duration-300">
-               <CheckCircle2 className="w-8 h-8 text-[var(--accent)]" />
-            </div>
-            <h3 className="text-xl font-bold text-[var(--text-main)] mb-2">Request Submitted!</h3>
-            <p className="text-[var(--text-muted)]">Our team will contact you shortly to set up your indicator access.</p>
-            <button 
-              onClick={() => setIsLeadModalOpen(false)}
-              className="mt-6 px-6 py-2 bg-[var(--accent)] text-[var(--text-on-accent)] font-bold rounded-lg hover:bg-[var(--accent-hover)] transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleLeadSubmit} className="space-y-4 animate-in fade-in duration-300">
-             <div>
-                <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Full Name</label>
-                <input 
-                  required
-                  type="text" 
-                  value={leadForm.name}
-                  onChange={e => setLeadForm({...leadForm, name: e.target.value})}
-                  className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"
-                  placeholder="Enter your name"
-                />
-             </div>
-             <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">City</label>
-                  <input 
-                    required
-                    type="text" 
-                    value={leadForm.city}
-                    onChange={e => setLeadForm({...leadForm, city: e.target.value})}
-                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"
-                    placeholder="City"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Age</label>
-                  <input 
-                    required
-                    type="number" 
-                    value={leadForm.age}
-                    onChange={e => setLeadForm({...leadForm, age: e.target.value})}
-                    className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"
-                    placeholder="Age"
-                  />
-                </div>
-             </div>
-             <div>
-                <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Phone Number</label>
-                <input 
-                  required
-                  type="tel" 
-                  value={leadForm.phone}
-                  onChange={e => setLeadForm({...leadForm, phone: e.target.value})}
-                  className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none"
-                  placeholder="+91 XXXXX XXXXX"
-                />
-             </div>
-             <div>
-                <label className="block text-sm font-medium text-[var(--text-muted)] mb-1">Portfolio Size</label>
-                <select 
-                  value={leadForm.portfolio}
-                  onChange={e => setLeadForm({...leadForm, portfolio: e.target.value})}
-                  className="w-full bg-[var(--bg-main)] border border-[var(--border-secondary)] rounded-lg px-4 py-3 text-[var(--text-main)] focus:border-[var(--accent)] focus:outline-none appearance-none"
-                >
-                   <option>Above 1 Lakh</option>
-                   <option>Above 5 Lakhs</option>
-                   <option>Above 10 Lakhs</option>
-                   <option>Above 50 Lakhs</option>
-                </select>
-             </div>
-             
-             <button 
-               type="submit"
-               disabled={isSubmitting}
-               className="w-full bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-[var(--text-on-accent)] font-bold py-3 rounded-lg transition-all mt-4 flex items-center justify-center gap-2 disabled:opacity-50"
-             >
-               {isSubmitting ? (
-                 <>
-                   <Loader2 className="w-4 h-4 animate-spin" />
-                   Submitting...
-                 </>
-               ) : (
-                 'Request Access'
-               )}
-             </button>
-          </form>
-        )}
-      </Modal>
-
       </main>
     </div>
   );
 }
-
-const SortIcon: React.FC<{ 
-  columnKey: keyof SuperstarEntry, 
-  currentSort: { key: keyof SuperstarEntry | null, direction: 'asc' | 'desc' } 
-}> = ({ columnKey, currentSort }) => {
-  if (currentSort.key !== columnKey) return <ArrowUpDown className="w-3.5 h-3.5 opacity-30 group-hover:opacity-100" />;
-  return currentSort.direction === 'asc' 
-    ? <ChevronUp className="w-3.5 h-3.5 text-[var(--accent)]" /> 
-    : <ChevronDown className="w-3.5 h-3.5 text-[var(--accent)]" />;
-};

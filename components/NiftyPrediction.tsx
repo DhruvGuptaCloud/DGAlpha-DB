@@ -589,7 +589,7 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
           <div className="flex items-center gap-3">
             <h2 className="text-2xl font-bold text-[var(--text-main)] flex items-center gap-2">
               <span className="w-1.5 h-8 bg-indigo-500 rounded-full"></span>
-              Performance Metrics
+              Why to use this Indicator
             </h2>
           </div>
           
@@ -709,6 +709,7 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
             {/* Latest Prediction Highlight (Hero Card) */}
           {data.length > 0 && (() => {
           const latest = data[data.length - 1];
+          const changeVal = Number(latest.change);
           return (
               <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-[2rem] opacity-30 blur-lg group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
@@ -762,9 +763,9 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
                   {/* Nifty Change */}
                   <div className="flex flex-col gap-2 p-2 rounded-xl hover:bg-[var(--bg-surface)] transition-colors">
                       <p className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-muted)]">Nifty Change</p>
-                      <p className={`font-bold text-2xl ${latest.change > 0 ? 'text-emerald-500' : latest.change < 0 ? 'text-rose-500' : 'text-[var(--text-muted)]'}`}>
+                      <p className={`font-bold text-2xl ${!isNaN(changeVal) && changeVal > 0 ? 'text-emerald-500' : !isNaN(changeVal) && changeVal < 0 ? 'text-rose-500' : 'text-[var(--text-muted)]'}`}>
                       {latest.change !== undefined && latest.change !== null && String(latest.change) !== '' 
-                          ? <>{latest.change > 0 ? '+' : ''}{latest.change}</> 
+                          ? <>{!isNaN(changeVal) && changeVal > 0 ? '+' : ''}{latest.change}</> 
                           : '-'}
                       </p>
                   </div>
@@ -997,7 +998,9 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
                           </td>
                       </tr>
                       ) : (
-                      data.slice().reverse().map((row, index) => (
+                      data.slice().reverse().map((row, index) => {
+                          const changeVal = Number(row.change);
+                          return (
                           <tr key={index} className="hover:bg-[var(--bg-hover)] transition-colors group">
                           {/* Date */}
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-[var(--text-main)] first:pl-8">
@@ -1017,8 +1020,8 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
                           </td>
                           
                           {/* Nifty Change */}
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${row.change > 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
-                              {row.change > 0 ? '+' : ''}{row.change}
+                          <td className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${!isNaN(changeVal) && changeVal > 0 ? 'text-emerald-500' : !isNaN(changeVal) && changeVal < 0 ? 'text-rose-500' : 'text-[var(--text-muted)]'}`}>
+                              {!isNaN(changeVal) && changeVal > 0 ? '+' : ''}{row.change}
                           </td>
                           
                           {/* Prediction */}
@@ -1042,7 +1045,8 @@ export default function NiftyPrediction({ onGetIndicatorClick }: NiftyPrediction
                               )}
                           </td>
                           </tr>
-                      ))
+                          );
+                      })
                       )}
                   </tbody>
                   </table>
