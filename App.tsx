@@ -1879,6 +1879,7 @@ export default function App() {
                                         { key: 'STOCK NAME', label: 'Stock' },
                                         { key: 'Latest Holding Percentage', label: 'Holding %' },
                                         { key: 'Portfoilo Value (CR)', label: 'Value (Cr)' },
+                                        { key: 'Stake Value (CR)', label: 'Stake (Cr)' },
                                         { key: '% allocation', label: 'Allocation %' },
                                         { key: 'Latest Qtr Data', label: 'Latest Qtr' },
                                         { key: 'action', label: 'AI Insight' }
@@ -1908,6 +1909,7 @@ export default function App() {
                                     const holdingRaw = row["Latest Holding Percentage"];
                                     const holding = holdingRaw !== null ? (parseFloat(holdingRaw.toString()) * 100).toFixed(2) + '%' : '-';
                                     const portValue = formatNumber(row["Portfoilo Value (CR)"]);
+                                    const stakeValue = formatNumber(row["Stake Value (CR)"]);
                                     const allocation = parseFloat(row["% allocation"] as any);
                                     const latestQtr = row["Latest Qtr Data"] ? formatDate(row["Latest Qtr Data"]) : '-';
 
@@ -1928,6 +1930,7 @@ export default function App() {
                                             <td className="px-6 py-4 text-[var(--text-muted)]">{stock}</td>
                                             <td className="px-6 py-4 font-mono text-[var(--text-dim)]">{holding}</td>
                                             <td className="px-6 py-4 font-mono font-bold text-[var(--text-main)]">₹ {portValue}</td>
+                                            <td className="px-6 py-4 font-mono text-[var(--text-muted)]">₹ {stakeValue}</td>
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-16 h-1.5 bg-[var(--bg-surface)] rounded-full overflow-hidden">
