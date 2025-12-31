@@ -31,7 +31,7 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
   
   // Direct path to the image in the public folder.
   // Make sure the file is named 'hero-person.png' inside the 'public' folder.
-  const heroImage = "/hero-person.png";
+  const heroImage = "public/hero-person.png";
 
   const testimonials = [
     {
