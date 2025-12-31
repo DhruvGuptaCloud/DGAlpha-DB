@@ -29,7 +29,8 @@ import { useAuth } from '../contexts/AuthContext';
 export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick }) => {
   const { openAuthModal } = useAuth();
   
-  // Point directly to the file in the public folder
+  // Direct path to the image in the public folder.
+  // Make sure the file is named 'hero-person.png' inside the 'public' folder.
   const heroImage = "/hero-person.png";
 
   const testimonials = [
@@ -203,7 +204,7 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
                 <img 
                   src={heroImage} 
                   alt="Dhruv Gupta" 
-                  className="w-full max-w-[500px] lg:max-w-full h-auto max-h-[600px] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] hover:scale-105 transition-transform duration-700 pointer-events-none"
+                  className="w-full max-w-[500px] lg:max-w-full h-auto max-h-[600px] object-cover rounded-2xl shadow-2xl border border-[var(--border-primary)] hover:scale-105 transition-transform duration-700 pointer-events-none"
                 />
              </div>
           </div>
@@ -465,7 +466,11 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
           <div className="flex-1 relative w-full lg:min-h-[500px] animate-slide-up">
               <div className="relative rounded-2xl overflow-hidden border border-[var(--border-secondary)] shadow-2xl h-full">
                   {/* Using consistent object-cover and h-full to fill the column height */}
-                  <img src={heroImage} alt="Dhruv Gupta" className="w-full h-full object-cover bg-gradient-to-b from-[var(--bg-card)] to-[var(--bg-main)]" />
+                  <img 
+                    src={heroImage} 
+                    alt="Dhruv Gupta" 
+                    className="w-full h-full object-cover bg-gradient-to-b from-[var(--bg-card)] to-[var(--bg-main)]" 
+                  />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-8">
                       <p className="text-[var(--accent)] font-bold text-2xl">Dhruv Gupta</p>
                       <p className="text-gray-300 text-sm font-medium">Founder, DG Alpha</p>
