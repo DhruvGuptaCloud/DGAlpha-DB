@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, 
@@ -29,9 +28,21 @@ import { useAuth } from '../contexts/AuthContext';
 export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick }) => {
   const { openAuthModal } = useAuth();
   
-  // Direct path to the image in the public folder.
-  // Make sure the file is named 'hero-person.png' inside the 'public' folder.
-  const heroImage = "public/hero-person.png";
+  // --- IMAGE CONFIGURATION OPTIONS ---
+  
+  // OPTION 1: Abstract Tech & Professional (Active)
+  // Hero: Abstract 3D blocks representing systematic wealth building
+  const heroImage = "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=3432&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"; 
+  // About: The Founder (Original Image)
+  const aboutImage = "https://images.unsplash.com/photo-1767163372877-4ccb276cb07d?q=80&w=1365&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+  /* 
+  // OPTION 2: Market Data & Lifestyle (Uncomment to switch)
+  // Hero: Trading screens / Data visualization
+  const heroImage = "https://images.unsplash.com/photo-1611974765270-ca1258634369?q=80&w=1364&auto=format&fit=crop";
+  // About: Same founder image, or replace with another URL
+  const aboutImage = "https://images.unsplash.com/photo-1767163372877-4ccb276cb07d?q=80&w=1365&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+  */
 
   const testimonials = [
     {
@@ -55,7 +66,7 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
   ];
 
   return (
-    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans selection:bg-[var(--accent)] selection:text-black flex flex-col overflow-hidden relative">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans selection:bg-[var(--accent)] selection:text-black flex flex-col overflow-x-hidden relative">
       
       {/* Dynamic Background Elements */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -131,7 +142,7 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-32 pb-12 lg:pb-20 px-6 relative z-10 overflow-hidden">
+      <section className="pt-32 pb-12 lg:pb-20 px-6 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
           
           {/* Left Content */}
@@ -169,25 +180,15 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
             </div>
           </div>
 
-          {/* Right Image */}
-          <div className="flex-1 relative w-full max-w-md lg:max-w-full animate-slide-up delay-200 flex flex-col items-center lg:items-end">
-             {/* Glow Background - Strengthened for better contrast with black shirt */}
+          {/* Right Image Container */}
+          <div className="flex-1 relative w-full max-w-md lg:max-w-full animate-slide-up delay-200 flex flex-col items-center lg:items-end z-30">
+             {/* Glow Background */}
              <div className="absolute top-1/2 left-1/2 lg:left-auto lg:right-10 -translate-x-1/2 lg:translate-x-0 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-[var(--accent)]/30 via-blue-500/20 to-purple-500/20 rounded-full blur-[80px] opacity-70 pointer-events-none"></div>
              
              {/* Floating Elements (Decorative) */}
-             <div className="absolute top-10 -right-4 lg:right-4 bg-[var(--bg-card)]/80 backdrop-blur-md p-4 rounded-2xl border border-[var(--border-primary)] shadow-2xl z-20 animate-float hidden sm:block">
-                <div className="flex items-center gap-3">
-                   <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
-                      <TrendingUp size={20} />
-                   </div>
-                   <div>
-                      <p className="text-xs text-[var(--text-muted)] font-bold">Nifty Accuracy</p>
-                      <p className="text-lg font-bold text-[var(--text-main)]">75%+</p>
-                   </div>
-                </div>
-             </div>
-
-             <div className="absolute bottom-20 -left-4 lg:left-10 bg-[var(--bg-card)]/80 backdrop-blur-md p-4 rounded-2xl border border-[var(--border-primary)] shadow-2xl z-20 animate-float animation-delay-2000 hidden sm:block">
+             
+             {/* Community Card - Positioned Center Left */}
+             <div className="absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-12 bg-[var(--bg-card)]/90 backdrop-blur-md p-4 rounded-2xl border border-[var(--border-primary)] shadow-2xl z-40 animate-float hidden sm:block hover:scale-105 transition-transform duration-300">
                 <div className="flex items-center gap-3">
                    <div className="p-2 bg-[var(--accent)]/10 rounded-lg text-[var(--accent)]">
                       <Users size={20} />
@@ -199,11 +200,24 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
                 </div>
              </div>
 
-             {/* Main Image with Robust Fallback */}
-             <div className="relative z-10 flex justify-center lg:justify-end w-full">
+             {/* Nifty Accuracy Card - Positioned Bottom Right */}
+             <div className="absolute bottom-10 -right-4 lg:-right-4 bg-[var(--bg-card)]/90 backdrop-blur-md p-4 rounded-2xl border border-[var(--border-primary)] shadow-2xl z-40 animate-float animation-delay-2000 hidden sm:block hover:scale-105 transition-transform duration-300">
+                <div className="flex items-center gap-3">
+                   <div className="p-2 bg-green-500/10 rounded-lg text-green-500">
+                      <TrendingUp size={20} />
+                   </div>
+                   <div>
+                      <p className="text-xs text-[var(--text-muted)] font-bold">Nifty Accuracy</p>
+                      <p className="text-lg font-bold text-[var(--text-main)]">75%+</p>
+                   </div>
+                </div>
+             </div>
+
+             {/* Main Image */}
+             <div className="relative z-30 flex justify-center lg:justify-end w-full">
                 <img 
                   src={heroImage} 
-                  alt="Dhruv Gupta" 
+                  alt="DG Alpha System" 
                   className="w-full max-w-[500px] lg:max-w-full h-auto max-h-[600px] object-cover rounded-2xl shadow-2xl border border-[var(--border-primary)] hover:scale-105 transition-transform duration-700 pointer-events-none"
                 />
              </div>
@@ -467,7 +481,7 @@ export const LandingPage: React.FC<{ onDemoClick: () => void }> = ({ onDemoClick
               <div className="relative rounded-2xl overflow-hidden border border-[var(--border-secondary)] shadow-2xl h-full">
                   {/* Using consistent object-cover and h-full to fill the column height */}
                   <img 
-                    src={heroImage} 
+                    src={aboutImage} 
                     alt="Dhruv Gupta" 
                     className="w-full h-full object-cover bg-gradient-to-b from-[var(--bg-card)] to-[var(--bg-main)]" 
                   />
