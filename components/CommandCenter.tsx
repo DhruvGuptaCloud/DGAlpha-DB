@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { Search, ExternalLink, Activity, TrendingUp, FileText, Database, BarChart2 } from 'lucide-react';
+import { Search, ExternalLink, Activity, TrendingUp, FileText, Database, BarChart2, Landmark } from 'lucide-react';
 
 const toolsData = [
   {
@@ -57,6 +58,13 @@ const toolsData = [
     link: "https://scanx.trade/",
     category: "Market Activity",
     icon: <TrendingUp className="w-5 h-5 text-orange-400" />
+  },
+  {
+    id: 9,
+    name: "All Banks Data (Private/Psu/Housing/Small Banks)",
+    link: "https://lookerstudio.google.com/u/0/reporting/a457803f-0833-41d6-b904-2db4c3613b34/page/p_7jpqlgu1rd",
+    category: "Dashboard",
+    icon: <Landmark className="w-5 h-5 text-cyan-400" />
   }
 ];
 
